@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+   tools:showIn="navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/my_orders"
+            android:title="My Orders"/>
+
+        <item
+            android:id="@+id/delivery_address"
+            android:title="Delivery Address"/>
+
+        <item
+            android:id="@+id/payment_method"
+            android:title="Payment Method"/>
+
+        <item
+
+            android:id="@+id/contact_us"
+            android:title="Contact Us"/>
+
+        <item
+            android:id="@+id/settngs"
+            android:title="Settings"/>
+
+        <item
+            android:id="@+id/log_out"
+            android:title="Log Out"/>
+    </group>
+
+</menu>

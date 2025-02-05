@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.FoodDeliveryApp_Student" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:statusBarColor">@color/purple</item>
+    </style>
+
+    <style name="Theme.FoodDeliveryApp_Student" parent="Base.Theme.FoodDeliveryApp_Student" />
+
+    <style name="ThemeOverlay.AppCompat.navTheme">
+        <item name="colorPrimary">@color/white</item>
+    </style>
+</resources>
