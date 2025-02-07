@@ -13,8 +13,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="350dp"
-        android:layout_height="550dp"
-        android:layout_marginTop="150dp"
+        android:layout_height="600dp"
+        android:layout_marginTop="120dp"
         android:background="@drawable/custom_edittext"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp">
@@ -64,7 +64,7 @@
             android:layout_marginTop="200dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/custom_edittext"
-            android:hint="Student ID (5 uppercase + 5 digits) *"
+            android:hint="ID (5 uppercase + 5 digits) *"
             android:importantForAccessibility="yes"
             android:inputType="textCapCharacters"
             android:padding="8dp"
@@ -98,6 +98,46 @@
             android:padding="8dp"
             android:textColor="@color/black"
             android:textSize="16sp"/>
+<RadioGroup
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/userTypeGroup"
+    android:orientation="horizontal"
+    android:layout_marginTop="380dp"
+    android:gravity="center">
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="Student"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="40dp"
+        android:id="@+id/radioStudent"
+        android:buttonTint="@color/purple"
+        android:checked="true"/>
+
+    <RadioButton
+        android:id="@+id/radioVendor"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:buttonTint="@color/purple"
+        android:text="Vendor" />
+
+</RadioGroup>
+        <EditText
+            android:layout_width="310dp"
+            android:layout_height="50dp"
+            android:id="@+id/shopName"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:9layout_below="@+id/userTypeGroup"
+            android:background="@drawable/custom_edittext"
+            android:hint="Enter Shop Name *"
+            android:importantForAccessibility="yes"
+            android:visibility="gone"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -114,7 +154,7 @@
                 android:backgroundTint="@color/purple"
                 android:text="Register"
                 android:textSize="18sp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="60dp"
                 android:textColor="@android:color/white"
                 app:cornerRadius="20dp"/>
 
@@ -135,7 +175,7 @@
             android:textAlignment="center"
             android:textColor="@color/purple"
             android:text="Already have an account? Login now"
-            android:layout_marginTop="450dp"
+            android:layout_marginTop="500dp"
             android:textSize="16sp"/>
 
         <Button
@@ -143,7 +183,7 @@
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginLeft="25dp"
-            android:layout_marginTop="470dp"
+            android:layout_marginTop="520dp"
             android:backgroundTint="@color/purple"
             android:text="Login"
             android:textSize="18sp"

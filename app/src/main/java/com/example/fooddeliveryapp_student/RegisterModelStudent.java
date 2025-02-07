@@ -1,11 +1,12 @@
 package com.example.fooddeliveryapp_student;
 
 public class RegisterModelStudent {
-    public RegisterModelStudent(String stuname, String stuid, String stuemail, String stuphno) {
+    public RegisterModelStudent(String stuname, String stuid, String stuemail, String stuphno,String userType) {
         this.stuname = stuname;
         this.stuid = stuid;
         this.stuemail = stuemail;
         this.stuphno = stuphno;
+        this.userType=userType;
     }
 
     public RegisterModelStudent() {
@@ -20,6 +21,16 @@ public class RegisterModelStudent {
     }
 
     private String stuname;
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    private String userType;
 
     public String getStuid() {
         return stuid;

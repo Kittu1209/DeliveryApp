@@ -23,6 +23,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginPage extends AppCompatActivity {
 
@@ -30,6 +33,7 @@ public class LoginPage extends AppCompatActivity {
     private EditText email_lg, pass_lg;
     private TextView forgotPassword;
     private FirebaseAuth authProfile;
+    private DatabaseReference usersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class LoginPage extends AppCompatActivity {
         forgotPassword = findViewById(R.id.ForgotPassword); // Reference Forgot Password TextView
 
         authProfile = FirebaseAuth.getInstance();
+        usersRef= FirebaseDatabase.getInstance().getReference("Users");
 
         // Login Button Click
         login_btn.setOnClickListener(new View.OnClickListener() {
@@ -75,9 +80,11 @@ public class LoginPage extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+                                    String userId=authProfile.getCurrentUser().getUid();
+                                    checkUserRole(userId);
                                     Toast.makeText(LoginPage.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(LoginPage.this, HomePage_Student.class));
-                                    finish();
+                                    //startActivity(new Intent(LoginPage.this, HomePage_Student.class));
+                                    //finish();
                                 } else {
                                     if (task.getException() instanceof FirebaseAuthInvalidUserException) {
                                         Toast.makeText(LoginPage.this, "No account found with this email", Toast.LENGTH_LONG).show();
@@ -87,6 +94,26 @@ public class LoginPage extends AppCompatActivity {
                                         Toast.makeText(LoginPage.this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 }
+                            }
+
+                            private void checkUserRole(String userId) {
+                                usersRef.child(userId).get().addOnCompleteListener(task->
+                                {
+                                    if(task.isSuccessful()){
+                                        DataSnapshot snapshot=task.getResult();
+                                        if(snapshot.exists())
+                                        {
+                                            String role=snapshot.child("role").getValue(String.class);
+                                            if(role!=null)
+                                            {
+//                                                switch (role){
+//                                                    case
+                                                //}
+                                            }
+                                        }
+                                    }
+                                });
+
                             }
                         });
             }
