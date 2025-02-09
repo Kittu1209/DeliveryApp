@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/orders_vendor"
+            android:title="Orders"/>
+
+        <item
+            android:id="@+id/products"
+            android:title="Products"/>
+
+        <item
+            android:id="@+id/faq_side"
+            android:title="FAQs"/>
+
+        <item
+
+            android:id="@+id/contact_us_vendor"
+            android:title="Contact Us"/>
+
+        <item
+            android:id="@+id/settings_vendor"
+            android:title="Settings"/>
+
+        <item
+            android:id="@+id/log_out_vendor"
+            android:title="Log Out"/>
+    </group>
+
+</menu>

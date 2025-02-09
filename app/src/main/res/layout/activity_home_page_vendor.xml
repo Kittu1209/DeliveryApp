@@ -1,10 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePageVendor">
+    tools:context=".HomePage_Student">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/purple_200">
+
+        <!-- FrameLayout to Stack Image over Toolbar -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true">
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:id="@+id/toolbar_vendor"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:navigationIcon="@drawable/ic_menu"
+                app:navigationIconTint="@color/purple"
+                android:contentInsetStart="16dp"/>
+
+            <!-- ImageView Overlapping Toolbar
+            <ImageView
+                android:id="@+id/top_image"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:src="@drawable/fdalogo"
+                android:scaleType="fitCenter"
+                android:layout_marginStart="40dp"
+                android:layout_centerHorizontal="true"
+                android:adjustViewBounds="true"
+                android:layout_alignTop="@id/toolbar_vendor"/>  -->
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/fragment_container_vendor"
+            android:layout_below="@id/toolbar_vendor"
+            tools:ignore="NotSibling" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottomAppBar"
+                android:layout_gravity="bottom"
+                android:backgroundTint="@color/white"
+                app:fabCradleMargin="10dp"
+                app:fabAlignmentMode="center"
+                app:fabCradleRoundedCornerRadius="50dp">
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bottom_navigation_vendor"
+                    app:labelVisibilityMode="labeled"
+                    app:menu="@menu/bottom_nevigation_menu_vendor"
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.bottomappbar.BottomAppBar>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/baseline_add_24"
+                android:tint="@color/purple"
+                app:layout_anchor="@id/bottomAppBar"
+                app:layout_anchorGravity="center"
+                app:maxImageSize="44dp"
+                android:contentDescription="Add new item"/>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </RelativeLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_drawer_vendor"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nevigation_drawer_menu_vendor"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>
