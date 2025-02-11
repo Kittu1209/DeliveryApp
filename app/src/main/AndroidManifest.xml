@@ -13,6 +13,24 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".Manage_App_permission"
+            android:exported="false" />
+        <activity
+            android:name=".Two_Factor_Authentication"
+            android:exported="false" />
+        <activity
+            android:name=".Help_Support_Setting"
+            android:exported="false" />
+        <activity
+            android:name=".Privacy_Setting"
+            android:exported="false" />
+        <activity
+            android:name=".Notification_Setting"
+            android:exported="false" />
+        <activity
+            android:name=".Account_Setting"
+            android:exported="false" />
+        <activity
             android:name=".HomePageVendor"
             android:exported="false" />
         <activity

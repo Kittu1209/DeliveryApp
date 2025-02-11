@@ -6,25 +6,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/purple_200">
+    android:background="@color/white">
 
     <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings"
+        android:text="Privacy And Security"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginBottom="20dp"/>
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp" />
 
-    <!-- Account Settings -->
+    <!-- Change Password -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cardaccountsetting"
         app:cardCornerRadius="12dp"
         app:cardElevation="5dp"
+        android:id="@+id/PSchngpass"
         android:layout_marginBottom="12dp"
         android:clickable="true"
         android:focusable="true">
@@ -38,26 +39,26 @@
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/baseline_app_settings_alt_24"
+                android:src="@drawable/baseline_lock_reset_24"
                 app:tint="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Account Settings"
+                android:text="Change Password"
                 android:textSize="18sp"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Notifications -->
+    <!-- Two-Factor Authentication -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
-        android:id="@+id/cardnotification"
         app:cardElevation="5dp"
         android:layout_marginBottom="12dp"
+        android:id="@+id/PStfauth"
         android:clickable="true"
         android:focusable="true">
 
@@ -70,58 +71,26 @@
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/baseline_circle_notifications_24"
-                app:tint="@color/black" />
+                android:src="@drawable/twofactrauth"
+                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notifications"
+                android:text="Enable Two-Factor Authentication"
                 android:textSize="18sp"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Privacy -->
+    <!-- Manage Permissions -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
         app:cardElevation="5dp"
         android:layout_marginBottom="12dp"
-        android:clickable="true"
-        android:id="@+id/cardprivacy"
-        android:focusable="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_admin_panel_settings_24"
-                app:tint="@color/black" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Privacy And Security"
-                android:textSize="18sp"
-                android:layout_marginStart="12dp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Help & Support -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="5dp"
-        android:layout_marginBottom="12dp"
-        android:id="@+id/cardhelp"
+        android:id="@+id/PSapppermission"
         android:clickable="true"
         android:focusable="true">
 
@@ -134,50 +103,27 @@
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@drawable/baseline_contact_support_24"
+                android:src="@drawable/baseline_aod_24"
                 app:tint="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Help and Support"
+                android:text="Manage App Permissions"
                 android:textSize="18sp"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Logout -->
-    <androidx.cardview.widget.CardView
+    <!-- Back Button -->
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="5dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:id="@+id/cardlogout"
+        android:text="Back"
+        android:textSize="16sp"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@color/white"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/teal_700">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_exit_to_app_24"
-                app:tint="@color/white" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:layout_marginStart="12dp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        android:id="@+id/btnBack" />
 
 </LinearLayout>

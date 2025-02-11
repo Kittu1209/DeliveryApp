@@ -13,7 +13,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginStart="20dp"
         android:layout_marginTop="-40dp"
@@ -25,19 +25,19 @@
     <TextView
         android:id="@+id/otpmail"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="-270dp"
         android:layout_gravity=""
-        android:layout_marginTop="350dp"
+        android:layout_marginTop="330dp"
         android:textSize="18sp"
         android:textColor="@color/purple"
         android:text="Email Address" />
 
     <TextView
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="test@gmail.com"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="35dp"
         android:layout_marginLeft="-210dp"
         android:layout_gravity="center"
         android:textColor="@color/purple"
@@ -47,19 +47,19 @@
     <TextView
         android:id="@+id/otpphno"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_gravity=""
         android:layout_marginStart="-190dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginTop="410dp"
         android:text="Phone Number"
         android:textColor="@color/purple"
         android:textSize="18sp" />
 
     <TextView
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="+91 4567894321"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="110dp"
         android:layout_marginLeft="-210dp"
         android:layout_gravity="center"
         android:textColor="@color/purple"
@@ -101,17 +101,10 @@
         android:layout_marginLeft="-320dp"
         android:text="Verify"
         android:id="@+id/vrifybton"
-        android:background="@color/purple"
+        android:backgroundTint="@color/purple"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginTop="600dp"/>
 
-    <TextView
-        android:layout_width="400dp"
-        android:layout_height="20dp"
-        android:text="Don't have account? Sign up"
-        android:id="@+id/signuptext"
-        android:textColor="@color/purple"
-        android:textSize="18sp"/>
 
 </LinearLayout>
