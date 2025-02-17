@@ -1,10 +1,11 @@
+// LoginPage.java
 package com.example.fooddeliveryapp_student;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,9 +14,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,17 +21,18 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginPage extends AppCompatActivity {
 
-    private Button login_btn, register_btn;
     private EditText email_lg, pass_lg;
+    private Button login_btn, register_btn;
     private TextView forgotPassword;
     private FirebaseAuth authProfile;
-    private DatabaseReference usersRef;
+    private FirebaseFirestore firestoreDB;
+
+    private static final String TAG = "LoginPage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,111 +45,83 @@ public class LoginPage extends AppCompatActivity {
         pass_lg = findViewById(R.id.Password);
         login_btn = findViewById(R.id.Loginbutton);
         register_btn = findViewById(R.id.Registerbutton);
-        forgotPassword = findViewById(R.id.ForgotPassword); // Reference Forgot Password TextView
+        forgotPassword = findViewById(R.id.ForgotPassword);
 
         authProfile = FirebaseAuth.getInstance();
-        usersRef= FirebaseDatabase.getInstance().getReference("Users");
+        firestoreDB = FirebaseFirestore.getInstance();
 
-        // Login Button Click
-        login_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String st_email = email_lg.getText().toString().trim();
-                String st_pass = pass_lg.getText().toString().trim();
-
-                if (TextUtils.isEmpty(st_email)) {
-                    email_lg.setError("Email is required");
-                    email_lg.requestFocus();
-                    return;
-                } else if (!Patterns.EMAIL_ADDRESS.matcher(st_email).matches()) {
-                    email_lg.setError("Enter a valid email");
-                    email_lg.requestFocus();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(st_pass)) {
-                    pass_lg.setError("Password is required");
-                    pass_lg.requestFocus();
-                    return;
-                }
-
-                // Firebase Login
-                authProfile.signInWithEmailAndPassword(st_email, st_pass)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    String userId=authProfile.getCurrentUser().getUid();
-                                    checkUserRole(userId);
-                                    Toast.makeText(LoginPage.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                                    //startActivity(new Intent(LoginPage.this, HomePage_Student.class));
-                                    //finish();
-                                } else {
-                                    if (task.getException() instanceof FirebaseAuthInvalidUserException) {
-                                        Toast.makeText(LoginPage.this, "No account found with this email", Toast.LENGTH_LONG).show();
-                                    } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                        Toast.makeText(LoginPage.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(LoginPage.this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            }
-
-                            private void checkUserRole(String userId) {
-                                usersRef.child(userId).get().addOnCompleteListener(task->
-                                {
-                                    if(task.isSuccessful()){
-                                        DataSnapshot snapshot=task.getResult();
-                                        if(snapshot.exists())
-                                        {
-                                            String role=snapshot.child("role").getValue(String.class);
-                                            if(role!=null)
-                                            {
-//                                                switch (role){
-//                                                    case
-                                                //}
-                                            }
-                                        }
-                                    }
-                                });
-
-                            }
-                        });
-            }
-        });
-
-        // Register Button Click
-        register_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginPage.this, RegistrationPage.class));
-                Toast.makeText(LoginPage.this, "Redirecting to Registration Page", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Forgot Password Click
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginPage.this, ForgetPassword.class));
-                Toast.makeText(LoginPage.this, "Redirecting to Password Recovery", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        login_btn.setOnClickListener(view -> loginUser());
+        register_btn.setOnClickListener(v -> navigateTo(RegistrationPage.class, "Redirecting to Registration Page"));
+        forgotPassword.setOnClickListener(v -> navigateTo(ForgetPassword.class, "Redirecting to Password Recovery"));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (authProfile.getCurrentUser() != null) {
-            Toast.makeText(LoginPage.this, "Already Logged In", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(LoginPage.this, Student_Profile.class));
-            finish();
+    private void loginUser() {
+        String email = email_lg.getText().toString().trim();
+        String password = pass_lg.getText().toString().trim();
+
+        if (!validateInputs(email, password)) return;
+
+        authProfile.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && authProfile.getCurrentUser() != null) {
+                        Log.d(TAG, "Login successful, checking user role...");
+                        checkAdminRole(authProfile.getCurrentUser().getUid());
+                    } else {
+                        handleLoginError(task);
+                    }
+                });
+    }
+
+    private boolean validateInputs(String email, String password) {
+        if (TextUtils.isEmpty(email)) {
+            email_lg.setError("Email is required");
+            email_lg.requestFocus();
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            email_lg.setError("Enter a valid email");
+            email_lg.requestFocus();
+            return false;
         }
+        if (TextUtils.isEmpty(password)) {
+            pass_lg.setError("Password is required");
+            pass_lg.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private void checkAdminRole(String userId) {
+        Log.d(TAG, "Checking if user is Admin...");
+        firestoreDB.collection("Admins").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        Log.d(TAG, "Admin found! Redirecting...");
+                        navigateTo(HomePageAdmin.class, "Welcome Admin!");
+                    } else {
+                        showToast("Access Denied! Not an Admin");
+                        authProfile.signOut();
+                    }
+                });
+    }
+
+    private void handleLoginError(@NonNull Task<AuthResult> task) {
+        if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+            showToast("No account found with this email");
+        } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+            showToast("Invalid email or password");
+        } else {
+            showToast("Login Failed: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"));
+        }
+    }
+
+    private void navigateTo(Class<?> targetActivity, String message) {
+        Intent intent = new Intent(LoginPage.this, targetActivity);
+        startActivity(intent);
+        showToast(message);
+        finish();  // Close the login activity
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

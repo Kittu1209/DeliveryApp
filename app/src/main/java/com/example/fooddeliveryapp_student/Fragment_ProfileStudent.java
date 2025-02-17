@@ -15,19 +15,18 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 public class Fragment_ProfileStudent extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, idEditText;
     private Button changePasswordButton, editProfileButton, saveButton;
     private FirebaseAuth auth;
-    private FirebaseDatabase database;
-    private DatabaseReference userRef;
+    private FirebaseFirestore firestore;
+    private DocumentReference userRef;
     private FirebaseUser user;
 
     @Override
@@ -37,11 +36,12 @@ public class Fragment_ProfileStudent extends Fragment {
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
         if (user != null) {
-            userRef = database.getReference("Student_Registration").child(user.getUid());
+            // Get reference to the student's document in Firestore
+            userRef = firestore.collection("Students").document(user.getUid());
         }
 
         // Get UI elements
@@ -56,7 +56,7 @@ public class Fragment_ProfileStudent extends Fragment {
         // Disable editing initially
         disableEditing();
 
-        // Fetch user data in real-time
+        // Fetch user data from Firestore
         fetchUserData();
 
         // Edit Profile button click
@@ -74,25 +74,34 @@ public class Fragment_ProfileStudent extends Fragment {
         return view;
     }
 
-    // Fetch user data in real-time
+    // Fetch user data from Firestore
     private void fetchUserData() {
         if (userRef != null) {
-            userRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        nameEditText.setText(snapshot.child("stuname").getValue(String.class));
-                        emailEditText.setText(snapshot.child("stuemail").getValue(String.class));
-                        phoneEditText.setText(snapshot.child("stuphno").getValue(String.class));
-                        idEditText.setText(snapshot.child("stuid").getValue(String.class));
-                    }
-                }
+            userRef.get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                // Retrieve data from Firestore and set it in the EditTexts
+                                String name = documentSnapshot.getString("stuname");
+                                String email = documentSnapshot.getString("stuemail");
+                                String phone = documentSnapshot.getString("stuphno");
+                                String studentId = documentSnapshot.getString("stuid");
+                                String userType = documentSnapshot.getString("userType");
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("Firebase", "Error fetching data", error.toException());
-                }
-            });
+                                // Logging for debugging
+                                Log.d("Firestore", "Name: " + name + ", Email: " + email + ", Phone: " + phone + ", ID: " + studentId + ", UserType: " + userType);
+
+                                // Set the data into the EditTexts
+                                nameEditText.setText(name);
+                                emailEditText.setText(email);
+                                phoneEditText.setText(phone);
+                                idEditText.setText(studentId);
+                            }
+                        } else {
+                            Log.e("Firestore", "Error fetching document", task.getException());
+                        }
+                    });
         }
     }
 
@@ -105,21 +114,32 @@ public class Fragment_ProfileStudent extends Fragment {
         saveButton.setVisibility(View.VISIBLE);
     }
 
-    // Save updated data to Firebase
+    // Save updated data to Firestore
     private void saveUpdatedData() {
         if (userRef != null) {
-            userRef.child("stuname").setValue(nameEditText.getText().toString());
-            userRef.child("stuid").setValue(idEditText.getText().toString());
-            userRef.child("stuemail").setValue(emailEditText.getText().toString());
-            userRef.child("stuphno").setValue(phoneEditText.getText().toString())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
-                            disableEditing();
-                        } else {
-                            Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            // Get values from the EditTexts
+            String name = nameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
+            String phone = phoneEditText.getText().toString();
+            String studentId = idEditText.getText().toString();
+
+            // Create a map of the updated data
+            if (!name.isEmpty() && !email.isEmpty() && !phone.isEmpty() && !studentId.isEmpty()) {
+                RegisterModelStudent updatedStudent = new RegisterModelStudent(name, studentId, email, phone, "Student");
+
+                userRef.set(updatedStudent, SetOptions.merge())
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
+                                // Disable editing and hide save button
+                                disableEditing();
+                            } else {
+                                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

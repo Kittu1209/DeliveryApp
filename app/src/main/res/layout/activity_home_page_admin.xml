@@ -7,4 +7,29 @@
     android:layout_height="match_parent"
     tools:context=".HomePageAdmin">
 
+    <Button
+        android:id="@+id/category_btn_admin"
+        android:layout_width="164dp"
+        android:layout_height="62dp"
+        android:text="ADD CATEGORY "
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.064"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.073" />
+
+    <Button
+        android:id="@+id/logout_btn_admin"
+        android:layout_width="163dp"
+        android:layout_height="50dp"
+        android:text="LOGOUT"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.062"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.192" />
 </androidx.constraintlayout.widget.ConstraintLayout>

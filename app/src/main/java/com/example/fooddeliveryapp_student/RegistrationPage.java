@@ -18,18 +18,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegistrationPage extends AppCompatActivity {
 
     private FirebaseAuth mauth;
+    private FirebaseFirestore firestoreDB;
     private ProgressBar progressBar;
+    private EditText email, name, phone, password, userId, shopNameInput;
+    private RadioGroup userTypeGroup;
+    private RadioButton radioStudent, radioVendor;
+    private Button regButton, loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,25 +48,24 @@ public class RegistrationPage extends AppCompatActivity {
         });
 
         mauth = FirebaseAuth.getInstance();
+        firestoreDB = FirebaseFirestore.getInstance();
 
-        final EditText email = findViewById(R.id.REmail);
-        final EditText sname = findViewById(R.id.RName);
-        final EditText phno = findViewById(R.id.Phoneno);
-        final EditText rpassword = findViewById(R.id.RPassword);
-        final EditText stid = findViewById(R.id.RId);
-        final RadioGroup userTypeGroup = findViewById(R.id.userTypeGroup);
-        final RadioButton radioStudent = findViewById(R.id.radioStudent);
-        final RadioButton radioVendor = findViewById(R.id.radioVendor);
-        final EditText shopNameInput = findViewById(R.id.shopName);
-        final Button regbutton = findViewById(R.id.RRegisterButton);
-        final Button l_in = findViewById(R.id.RLoginButton);
+        email = findViewById(R.id.REmail);
+        name = findViewById(R.id.RName);
+        phone = findViewById(R.id.Phoneno);
+        password = findViewById(R.id.RPassword);
+        userId = findViewById(R.id.RId);
+        shopNameInput = findViewById(R.id.shopName);
 
+        userTypeGroup = findViewById(R.id.userTypeGroup);
+        radioStudent = findViewById(R.id.radioStudent);
+        radioVendor = findViewById(R.id.radioVendor);
+
+        regButton = findViewById(R.id.RRegisterButton);
+        loginButton = findViewById(R.id.RLoginButton);
         progressBar = findViewById(R.id.progressBar);
 
-        l_in.setOnClickListener(view -> {
-            Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
-            startActivity(intent);
-        });
+        loginButton.setOnClickListener(view -> startActivity(new Intent(RegistrationPage.this, LoginPage.class)));
 
         userTypeGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioVendor) {
@@ -72,76 +75,77 @@ public class RegistrationPage extends AppCompatActivity {
             }
         });
 
-        regbutton.setOnClickListener(v -> {
-            progressBar.setVisibility(View.VISIBLE);
+        regButton.setOnClickListener(v -> registerUser());
+    }
 
-            final String sid = stid.getText().toString().trim();
-            final String stname = sname.getText().toString().trim();
-            final String sphno = phno.getText().toString().trim();
-            final String semail = email.getText().toString().trim();
-            final String spass = rpassword.getText().toString().trim();
+    private void registerUser() {
+        progressBar.setVisibility(View.VISIBLE);
 
-            final String selectedUserType;
-            final String finalShopName;
+        final String userEmail = email.getText().toString().trim();
+        final String userName = name.getText().toString().trim();
+        final String userPhone = phone.getText().toString().trim();
+        final String userPassword = password.getText().toString().trim();
+        final String userUniqueId = userId.getText().toString().trim();
+        final String userType;
+        final String shopName;
 
-            if (radioStudent.isChecked()) {
-                selectedUserType = "Student";
-                finalShopName = "";  // No shop name for students
-            } else if (radioVendor.isChecked()) {
-                selectedUserType = "Vendor";
-                finalShopName = shopNameInput.getText().toString().trim();
-                if (TextUtils.isEmpty(finalShopName)) {
-                    showToast("Enter Shop Name");
+        if (radioStudent.isChecked()) {
+            userType = "Student";
+            shopName = "";
+        } else if (radioVendor.isChecked()) {
+            userType = "Vendor";
+            shopName = shopNameInput.getText().toString().trim();
+            if (TextUtils.isEmpty(shopName)) {
+                showToast("Enter Shop Name");
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+        } else {
+            showToast("Select a user type");
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
+        // Validations
+        if (TextUtils.isEmpty(userUniqueId)) {
+            showToast("Enter a unique ID");
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+        if (TextUtils.isEmpty(userName)) {
+            showToast("Enter Name");
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+        if (TextUtils.isEmpty(userPhone) || !userPhone.matches("\\d{10}")) {
+            showToast("Phone number must be 10 digits");
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+        if (TextUtils.isEmpty(userEmail) || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+            showToast("Enter a valid Email Address");
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+        if (TextUtils.isEmpty(userPassword) || !isValidPassword(userPassword)) {
+            showToast("Password must be at least 6 characters, contain 1 uppercase letter, 1 digit, and 1 special character (@#$%^&+=!)");
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
+        // Firebase Authentication
+        mauth.createUserWithEmailAndPassword(userEmail, userPassword)
+                .addOnCompleteListener(task -> {
                     progressBar.setVisibility(View.GONE);
-                    return;
-                }
-            } else {
-                showToast("Select a user type");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-
-            // Validations
-            if (TextUtils.isEmpty(sid) || !sid.matches("^[A-Z]{5}\\d{5}$")) {
-                showToast("Student ID must have first 5 uppercase letters and last 5 digits");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (TextUtils.isEmpty(stname)) {
-                showToast("Enter Name");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (TextUtils.isEmpty(sphno) || !sphno.matches("\\d{10}")) {
-                showToast("Phone number must be 10 digits");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (TextUtils.isEmpty(semail) || !Patterns.EMAIL_ADDRESS.matcher(semail).matches()) {
-                showToast("Enter a valid Email Address");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-            if (TextUtils.isEmpty(spass) || !isValidPassword(spass)) {
-                showToast("Password must be at least 6 characters, contain 1 uppercase letter, 1 digit, and 1 special character (@#$%^&+=!)");
-                progressBar.setVisibility(View.GONE);
-                return;
-            }
-
-            // Create user in Firebase Authentication
-            mauth.createUserWithEmailAndPassword(semail, spass)
-                    .addOnCompleteListener(task -> {
-                        progressBar.setVisibility(View.GONE);
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mauth.getCurrentUser();
-                            if (user != null) {
-                                saveUserToFirebase(user.getUid(), sid, stname, semail, sphno, selectedUserType, finalShopName);
-                            }
-                        } else {
-                            showToast("Authentication Failed! " + task.getException().getMessage());
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mauth.getCurrentUser();
+                        if (user != null) {
+                            saveUserToFirestore(user.getUid(), userUniqueId, userName, userEmail, userPhone, userType, shopName);
                         }
-                    });
-        });
+                    } else {
+                        showToast("Authentication Failed! " + task.getException().getMessage());
+                    }
+                });
     }
 
     private boolean isValidPassword(String password) {
@@ -149,21 +153,29 @@ public class RegistrationPage extends AppCompatActivity {
         return password.matches(passwordPattern);
     }
 
-    private void saveUserToFirebase(String uid, String sid, String stname, String semail, String sphno, String userType, String shopName) {
-        DatabaseReference databaseReference;
-        if ("Student".equals(userType)) {
-            databaseReference = FirebaseDatabase.getInstance().getReference("Student_Registration");
-            RegisterModelStudent student = new RegisterModelStudent(sid, stname, semail, sphno, userType);
-            databaseReference.child(uid).setValue(student)
-                    .addOnSuccessListener(aVoid -> showToast("Student registered successfully"))
-                    .addOnFailureListener(e -> showToast("Error saving student: " + e.getMessage()));
-        } else {
-            databaseReference = FirebaseDatabase.getInstance().getReference("Vendor_Registration");
-            RegisterModelVendor vendor = new RegisterModelVendor(stname, sid, semail, sphno, shopName, userType);
-            databaseReference.child(uid).setValue(vendor)
-                    .addOnSuccessListener(aVoid -> showToast("Vendor registered successfully"))
-                    .addOnFailureListener(e -> showToast("Error saving vendor: " + e.getMessage()));
+    private void saveUserToFirestore(String uid, String uniqueId, String name, String email, String phone, String userType, String shopName) {
+        Map<String, Object> user = new HashMap<>();
+
+        if (userType.equals("Student")) {
+            user.put("stuemail", email);
+            user.put("stuid", uniqueId);
+            user.put("stuname", name);
+            user.put("stuphno", phone);
+            user.put("userType", "Student");
+        } else if (userType.equals("Vendor")) {
+            user.put("vendorEmail", email);
+            user.put("vendorId", uniqueId);
+            user.put("vendorName", name);
+            user.put("vendorPhone", phone);
+            user.put("userType", "Vendor");
+            user.put("shopName", shopName);
         }
+
+        String collection = userType.equals("Student") ? "Students" : "Vendors";
+
+        firestoreDB.collection(collection).document(uid).set(user)
+                .addOnSuccessListener(aVoid -> showToast(userType + " registered successfully"))
+                .addOnFailureListener(e -> showToast("Error saving data: " + e.getMessage()));
     }
 
     private void showToast(String message) {

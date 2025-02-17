@@ -1,17 +1,26 @@
 package com.example.fooddeliveryapp_student;
 
 public class RegisterModelStudent {
-    public RegisterModelStudent(String stuname, String stuid, String stuemail, String stuphno,String userType) {
+
+    private String stuname;
+    private String stuid;
+    private String stuemail;
+    private String stuphno;
+    private String userType;
+
+    // Constructor with parameters
+    public RegisterModelStudent(String stuname, String stuid, String stuemail, String stuphno, String userType) {
         this.stuname = stuname;
         this.stuid = stuid;
         this.stuemail = stuemail;
         this.stuphno = stuphno;
-        this.userType=userType;
+        this.userType = userType;
     }
 
-    public RegisterModelStudent() {
-    }
+    // Default constructor
+    public RegisterModelStudent() {}
 
+    // Getter and setter methods for each field
     public String getStuname() {
         return stuname;
     }
@@ -19,18 +28,6 @@ public class RegisterModelStudent {
     public void setStuname(String stuname) {
         this.stuname = stuname;
     }
-
-    private String stuname;
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    private String userType;
 
     public String getStuid() {
         return stuid;
@@ -56,8 +53,11 @@ public class RegisterModelStudent {
         this.stuphno = stuphno;
     }
 
-    private String stuid;
-    private String stuemail;
-    private String stuphno;
+    public String getUserType() {
+        return userType;
+    }
 
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 }

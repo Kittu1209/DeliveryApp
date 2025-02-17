@@ -15,19 +15,18 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 public class Profile_Fragment_Vendor extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, shopeEditText;
     private Button changePasswordButton, editProfileButton, saveButton;
     private FirebaseAuth auth;
-    private FirebaseDatabase database;
-    private DatabaseReference userRef;
+    private FirebaseFirestore firestore;
+    private DocumentReference userRef;
     private FirebaseUser user;
 
     @Override
@@ -37,17 +36,18 @@ public class Profile_Fragment_Vendor extends Fragment {
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
         if (user != null) {
-            userRef = database.getReference("Vendor_Registration").child(user.getUid());
+            // Get reference to the vendor's document in Firestore
+            userRef = firestore.collection("Vendors").document(user.getUid());
         }
 
         // Get UI elements
         nameEditText = view.findViewById(R.id.name_v);
         emailEditText = view.findViewById(R.id.email_v);
-        shopeEditText=view.findViewById(R.id.shopname_v);
+        shopeEditText = view.findViewById(R.id.shopname_v);
         phoneEditText = view.findViewById(R.id.phone_v);
         changePasswordButton = view.findViewById(R.id.change_pass_btn_v);
         editProfileButton = view.findViewById(R.id.edit_profile_btn_v);
@@ -56,7 +56,7 @@ public class Profile_Fragment_Vendor extends Fragment {
         // Disable editing initially
         disableEditing();
 
-        // Fetch user data in real-time
+        // Fetch user data from Firestore
         fetchUserData();
 
         // Edit Profile button click
@@ -74,26 +74,24 @@ public class Profile_Fragment_Vendor extends Fragment {
         return view;
     }
 
-    // Fetch user data in real-time
+    // Fetch user data from Firestore
     private void fetchUserData() {
         if (userRef != null) {
-            userRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        nameEditText.setText(snapshot.child("vendorName").getValue(String.class));
-                        emailEditText.setText(snapshot.child("vendorEmail").getValue(String.class));
-                        phoneEditText.setText(snapshot.child("vendorPhone").getValue(String.class));
-                        shopeEditText.setText(snapshot.child("shopName").getValue(String.class));
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("Firebase", "Error fetching data", error.toException());
-                }
-            });
+            userRef.get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                // Retrieve data from Firestore and set it in the EditTexts
+                                nameEditText.setText(documentSnapshot.getString("vendorName"));
+                                emailEditText.setText(documentSnapshot.getString("vendorEmail"));
+                                phoneEditText.setText(documentSnapshot.getString("vendorPhone"));
+                                shopeEditText.setText(documentSnapshot.getString("shopName"));
+                            }
+                        } else {
+                            Log.e("Firestore", "Error fetching document", task.getException());
+                        }
+                    });
         }
     }
 
@@ -106,21 +104,31 @@ public class Profile_Fragment_Vendor extends Fragment {
         saveButton.setVisibility(View.VISIBLE);
     }
 
-    // Save updated data to Firebase
+    // Save updated data to Firestore
     private void saveUpdatedData() {
         if (userRef != null) {
-            userRef.child("vendorName").setValue(nameEditText.getText().toString());
-            userRef.child("vendorEmail").setValue(emailEditText.getText().toString());
-            userRef.child("shopName").setValue(shopeEditText.getText().toString());
-            userRef.child("vendorPhone").setValue(phoneEditText.getText().toString())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
-                            disableEditing();
-                        } else {
-                            Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            // Get values from the EditTexts
+            String name = nameEditText.getText().toString();
+            String email = emailEditText.getText().toString();
+            String phone = phoneEditText.getText().toString();
+            String shopName = shopeEditText.getText().toString();
+
+            // Create a map of the updated data
+            if (!name.isEmpty() && !email.isEmpty() && !phone.isEmpty() && !shopName.isEmpty()) {
+                userRef.set(
+                        new Vendor(name, email, phone, shopName), SetOptions.merge()
+                ).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
+                        // Disable editing and hide save button
+                        disableEditing();
+                    } else {
+                        Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -131,5 +139,56 @@ public class Profile_Fragment_Vendor extends Fragment {
         phoneEditText.setFocusable(false);
         shopeEditText.setFocusable(false);
         saveButton.setVisibility(View.GONE);
+    }
+
+    // Vendor class to store data
+    public static class Vendor {
+        private String vendorName;
+        private String vendorEmail;
+        private String vendorPhone;
+        private String shopName;
+
+        public Vendor() {
+            // Default constructor required for Firestore
+        }
+
+        public Vendor(String vendorName, String vendorEmail, String vendorPhone, String shopName) {
+            this.vendorName = vendorName;
+            this.vendorEmail = vendorEmail;
+            this.vendorPhone = vendorPhone;
+            this.shopName = shopName;
+        }
+
+        public String getVendorName() {
+            return vendorName;
+        }
+
+        public void setVendorName(String vendorName) {
+            this.vendorName = vendorName;
+        }
+
+        public String getVendorEmail() {
+            return vendorEmail;
+        }
+
+        public void setVendorEmail(String vendorEmail) {
+            this.vendorEmail = vendorEmail;
+        }
+
+        public String getVendorPhone() {
+            return vendorPhone;
+        }
+
+        public void setVendorPhone(String vendorPhone) {
+            this.vendorPhone = vendorPhone;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
+
+        public void setShopName(String shopName) {
+            this.shopName = shopName;
+        }
     }
 }
