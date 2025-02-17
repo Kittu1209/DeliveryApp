@@ -1,5 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,41 +8,26 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Logout_Fragment_Vendor#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class Logout_Fragment_Vendor extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FirebaseAuth mAuth;
 
     public Logout_Fragment_Vendor() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Logout_Fragment_Vendor.
-     */
-    // TODO: Rename and change types and number of parameters
+    // Factory method to create an instance of the fragment
     public static Logout_Fragment_Vendor newInstance(String param1, String param2) {
         Logout_Fragment_Vendor fragment = new Logout_Fragment_Vendor();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString("param1", param1);
+        args.putString("param2", param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,16 +35,36 @@ public class Logout_Fragment_Vendor extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        mAuth = FirebaseAuth.getInstance();  // Initialize Firebase Auth
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_logout___vendor, container, false);
+        View view = inflater.inflate(R.layout.fragment_logout___vendor, container, false);
+
+        // Find the logout button and set the click listener
+        Button logoutButton = view.findViewById(R.id.logout_button); // Make sure to add this button in your XML
+
+        logoutButton.setOnClickListener(v -> {
+            // Perform the logout action
+            mAuth.signOut();
+
+            // Check if the user is logged out successfully
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null) {
+                // If the user is logged out, redirect to login activity
+                Intent intent = new Intent(getActivity(), LoginPage.class); // Replace with your LoginActivity
+                startActivity(intent);
+                getActivity().finish(); // Finish current activity to prevent going back
+                Toast.makeText(getActivity(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                // If there's an error in logout
+                Toast.makeText(getActivity(), "Logout failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
     }
 }

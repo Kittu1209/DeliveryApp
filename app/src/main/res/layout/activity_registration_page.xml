@@ -129,7 +129,7 @@
             android:id="@+id/shopName"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
-            android:9layout_below="@+id/userTypeGroup"
+            android:layout_below="@+id/userTypeGroup"
             android:background="@drawable/custom_edittext"
             android:hint="Enter Shop Name *"
             android:importantForAccessibility="yes"

@@ -1,0 +1,1826 @@
+Index: app/src/main/res/layout/fragment_category.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_category.xml b/app/src/main/res/layout/fragment_category.xml
+new file mode 100644
+--- /dev/null	(date 1739739859786)
++++ b/app/src/main/res/layout/fragment_category.xml	(date 1739739859786)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="utf-8"?>
++<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context=".CategoryFragment">
++
++    <!-- TODO: Update blank fragment layout -->
++    <TextView
++        android:layout_width="match_parent"
++        android:layout_height="match_parent"
++        android:text="@string/hello_blank_fragment" />
++
++</FrameLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/fragment_home___vendor.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_home___vendor.xml b/app/src/main/res/layout/fragment_home___vendor.xml
+--- a/app/src/main/res/layout/fragment_home___vendor.xml	
++++ b/app/src/main/res/layout/fragment_home___vendor.xml	(date 1739739053991)
+@@ -5,10 +5,13 @@
+     android:layout_height="match_parent"
+     tools:context=".Home_Fragment_Vendor">
+ 
+-    <!-- TODO: Update blank fragment layout -->
+-    <TextView
+-        android:layout_width="match_parent"
+-        android:layout_height="match_parent"
+-        android:text="@string/hello_blank_fragment" />
++
++    <Button
++        android:id="@+id/category_btn"
++        android:layout_width="207dp"
++        android:layout_height="252dp"
++        android:layout_marginTop="30dp"
++        android:text="Category"
++        />
+ 
+ </FrameLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_home_page_vendor.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_home_page_vendor.xml b/app/src/main/res/layout/activity_home_page_vendor.xml
+--- a/app/src/main/res/layout/activity_home_page_vendor.xml	
++++ b/app/src/main/res/layout/activity_home_page_vendor.xml	(date 1739746256807)
+@@ -3,7 +3,7 @@
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+-    android:id="@+id/drawer_layout_vendor"
++    android:id="@+id/drawer_layout"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     tools:context=".HomePageVendor">
+@@ -13,35 +13,52 @@
+         android:layout_height="match_parent"
+         android:background="@color/purple_200">
+ 
+-        <!-- Toolbar -->
+-        <androidx.appcompat.widget.Toolbar
+-            android:id="@+id/toolbar_vendor"
+-            android:layout_width="match_parent"
+-            android:layout_height="?attr/actionBarSize"
+-            android:background="@color/white"
+-            android:elevation="4dp"
+-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+-            app:navigationIcon="@drawable/ic_menu"
+-            app:navigationIconTint="@color/purple"
+-            android:contentInsetStart="16dp"/>
++        <!-- FrameLayout to Stack Image over Toolbar -->
++        <FrameLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:layout_alignParentTop="true">
++
++            <androidx.appcompat.widget.Toolbar
++                android:layout_width="match_parent"
++                android:id="@+id/toolbar_vendor"
++                android:layout_height="?attr/actionBarSize"
++                android:background="@color/white"
++                android:elevation="4dp"
++                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
++                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
++                app:navigationIcon="@drawable/ic_menu"
++                app:navigationIconTint="@color/purple"
++                android:contentInsetStart="16dp"/>
+ 
+-        <!-- Fragment Container (Fixed ID Reference) -->
++            <!-- ImageView Overlapping Toolbar
++            <ImageView
++                android:id="@+id/top_image"
++                android:layout_width="200dp"
++                android:layout_height="100dp"
++                android:src="@drawable/fdalogo"
++                android:scaleType="fitCenter"
++                android:layout_marginStart="40dp"
++                android:layout_centerHorizontal="true"
++                android:adjustViewBounds="true"
++                android:layout_alignTop="@id/toolbar_vendor"/>  -->
++        </FrameLayout>
++
+         <FrameLayout
+-            android:id="@+id/fragment_container_vendor"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+-            android:layout_below="@id/toolbar_vendor"/>
++            android:id="@+id/fragment_container_vendor"
++            android:layout_below="@id/toolbar_vendor"
++            tools:ignore="NotSibling" />
+ 
+-        <!-- Bottom Navigation and Floating Button -->
+         <androidx.coordinatorlayout.widget.CoordinatorLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+ 
+             <com.google.android.material.bottomappbar.BottomAppBar
+-                android:id="@+id/bottomAppBar"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
++                android:id="@+id/bottomAppBar"
+                 android:layout_gravity="bottom"
+                 android:backgroundTint="@color/white"
+                 app:fabCradleMargin="10dp"
+@@ -49,9 +66,9 @@
+                 app:fabCradleRoundedCornerRadius="50dp">
+ 
+                 <com.google.android.material.bottomnavigation.BottomNavigationView
+-                    android:id="@+id/bottom_navigation_vendor"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
++                    android:id="@+id/bottom_navigation_vendor"
+                     app:labelVisibilityMode="labeled"
+                     app:menu="@menu/bottom_nevigation_menu_vendor"
+                     android:background="@android:color/transparent"/>
+@@ -67,18 +84,15 @@
+                 app:layout_anchor="@id/bottomAppBar"
+                 app:layout_anchorGravity="center"
+                 app:maxImageSize="44dp"
+-                android:contentDescription="Add new item" />
++                android:contentDescription="Add new item"/>
+         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+-
+     </RelativeLayout>
+ 
+-    <!-- Navigation Drawer (Fixed ID Reference) -->
+     <com.google.android.material.navigation.NavigationView
+         android:id="@+id/navigation_drawer_vendor"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         android:layout_gravity="start"
+-        android:background="@color/purple"
+         app:itemIconTint="@color/white"
+         app:itemTextColor="@color/white"
+         app:headerLayout="@layout/nav_header"
+Index: app/src/main/res/layout/activity_home_page_student.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_home_page_student.xml b/app/src/main/res/layout/activity_home_page_student.xml
+--- a/app/src/main/res/layout/activity_home_page_student.xml	
++++ b/app/src/main/res/layout/activity_home_page_student.xml	(date 1739736725172)
+@@ -14,8 +14,8 @@
+         android:background="@color/purple_200">
+ 
+         <androidx.appcompat.widget.Toolbar
+-            android:id="@+id/toolbar"
+             android:layout_width="match_parent"
++            android:id="@+id/toolbarr"
+             android:layout_height="?attr/actionBarSize"
+             android:background="@color/white"
+             android:elevation="4dp"
+@@ -23,33 +23,34 @@
+             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+             app:navigationIcon="@drawable/ic_menu"
+             app:navigationIconTint="@color/purple"
+-            android:contentInsetStart="16dp" />
+-
++            android:contentInsetStart="16dp">
+         <ImageView
+             android:id="@+id/top_image"
+             android:layout_width="200dp"
+             android:layout_height="100dp"
+             android:src="@drawable/fdalogo"
+             android:scaleType="fitCenter"
++            android:layout_marginStart="40dp"
+             android:layout_centerHorizontal="true"
+-            android:layout_marginTop="60dp"
+-            android:adjustViewBounds="true" />
++            android:adjustViewBounds="true"
++            android:layout_alignTop="@id/toolbarr"/>
++
++        </androidx.appcompat.widget.Toolbar>
+ 
+         <FrameLayout
+-            android:id="@+id/fragment_container"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+-            android:layout_below="@id/toolbar"/>
++            android:id="@+id/fragment_container"
++            android:layout_below="@id/toolbarr"/>
+ 
+         <androidx.coordinatorlayout.widget.CoordinatorLayout
+             android:layout_width="match_parent"
+-            android:layout_height="match_parent"
+-            android:layout_alignParentBottom="true">
++            android:layout_height="match_parent">
+ 
+             <com.google.android.material.bottomappbar.BottomAppBar
+-                android:id="@+id/bottomAppBar"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
++                android:id="@+id/bottomAppBar"
+                 android:layout_gravity="bottom"
+                 android:backgroundTint="@color/white"
+                 app:fabCradleMargin="10dp"
+@@ -57,11 +58,12 @@
+                 app:fabCradleRoundedCornerRadius="50dp">
+ 
+                 <com.google.android.material.bottomnavigation.BottomNavigationView
+-                    android:id="@+id/bottom_navigation"
+-                    android:layout_width="match_parent"
++                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
++                    android:id="@+id/bottom_nevigation"
+                     app:labelVisibilityMode="labeled"
+-                    app:menu="@menu/bottom_navigation_menu_student" />
++                    app:menu="@menu/bottom_navigation_menu_student"
++                    android:background="@android:color/transparent"/>
+             </com.google.android.material.bottomappbar.BottomAppBar>
+ 
+             <com.google.android.material.floatingactionbutton.FloatingActionButton
+@@ -71,13 +73,14 @@
+                 android:backgroundTint="@color/white"
+                 android:src="@drawable/baseline_add_24"
+                 android:tint="@color/purple"
+-                app:layout_anchor="@id/bottomAppBar"
++                app:layout_anchor="@+id/bottomAppBar"
+                 app:layout_anchorGravity="center"
+                 app:maxImageSize="44dp"
+                 android:contentDescription="Add new item" />
+         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+     </RelativeLayout>
+ 
++    <!-- **Add This Navigation View** -->
+     <com.google.android.material.navigation.NavigationView
+         android:id="@+id/navigation_drawer"
+         android:layout_width="wrap_content"
+@@ -89,4 +92,5 @@
+         android:theme="@style/ThemeOverlay.AppCompat.navTheme"
+         app:headerLayout="@layout/nav_header"
+         app:menu="@menu/navigation_drawer_menu_srudent"/>
++
+ </androidx.drawerlayout.widget.DrawerLayout>
+Index: app/src/main/java/com/example/fooddeliveryapp_student/LoginPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/LoginPage.java b/app/src/main/java/com/example/fooddeliveryapp_student/LoginPage.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/LoginPage.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/LoginPage.java	(date 1739745752711)
+@@ -10,9 +10,11 @@
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
++import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ 
++import com.google.android.gms.tasks.OnCompleteListener;
+ import com.google.android.gms.tasks.Task;
+ import com.google.firebase.auth.AuthResult;
+ import com.google.firebase.auth.FirebaseAuth;
+@@ -23,132 +25,122 @@
+ 
+ public class LoginPage extends AppCompatActivity {
+ 
+-    private static final String TAG = "LoginPage";
+-    private Button loginBtn, registerBtn;
+-    private EditText emailField, passwordField;
++    private EditText email_lg, pass_lg;
++    private Button login_btn, register_btn;
+     private TextView forgotPassword;
+     private FirebaseAuth authProfile;
+-    private FirebaseFirestore db;
++    private FirebaseFirestore firestoreDB;
++
++    private static final String TAG = "LoginPage";
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
+         setContentView(R.layout.activity_login_page);
+ 
+         // Initialize UI elements
+-        emailField = findViewById(R.id.Username);
+-        passwordField = findViewById(R.id.Password);
+-        loginBtn = findViewById(R.id.Loginbutton);
+-        registerBtn = findViewById(R.id.Registerbutton);
++        email_lg = findViewById(R.id.Username);
++        pass_lg = findViewById(R.id.Password);
++        login_btn = findViewById(R.id.Loginbutton);
++        register_btn = findViewById(R.id.Registerbutton);
+         forgotPassword = findViewById(R.id.ForgotPassword);
+ 
+-        // Firebase instances
+         authProfile = FirebaseAuth.getInstance();
+-        db = FirebaseFirestore.getInstance();
+-
+-        // Login Button Click
+-        loginBtn.setOnClickListener(view -> loginUser());
++        firestoreDB = FirebaseFirestore.getInstance();
+ 
+-        // Register Button Click
+-        registerBtn.setOnClickListener(v -> {
+-            startActivity(new Intent(LoginPage.this, RegistrationPage.class));
+-            Toast.makeText(LoginPage.this, "Redirecting to Registration Page", Toast.LENGTH_SHORT).show();
+-        });
+-
+-        // Forgot Password Click
+-        forgotPassword.setOnClickListener(v -> {
+-            startActivity(new Intent(LoginPage.this, ForgetPassword.class));
+-            Toast.makeText(LoginPage.this, "Redirecting to Password Recovery", Toast.LENGTH_SHORT).show();
+-        });
++        login_btn.setOnClickListener(view -> loginUser());
++        register_btn.setOnClickListener(v -> navigateTo(RegistrationPage.class, "Redirecting to Registration Page"));
++        forgotPassword.setOnClickListener(v -> navigateTo(ForgetPassword.class, "Redirecting to Password Recovery"));
+     }
+ 
+     private void loginUser() {
+-        String email = emailField.getText().toString().trim();
+-        String password = passwordField.getText().toString().trim();
++        String email = email_lg.getText().toString().trim();
++        String password = pass_lg.getText().toString().trim();
+ 
+-        if (!validateInput(email, password)) return;
++        if (!validateInputs(email, password)) return;
+ 
+         authProfile.signInWithEmailAndPassword(email, password)
+                 .addOnCompleteListener(task -> {
+                     if (task.isSuccessful() && authProfile.getCurrentUser() != null) {
+-                        String userId = authProfile.getCurrentUser().getUid();
+-                        checkUserRole(userId);
++                        Log.d(TAG, "Login successful, checking user role...");
++                        checkUserRole(authProfile.getCurrentUser().getUid());
+                     } else {
+-                        handleLoginFailure(task);
++                        handleLoginError(task);
+                     }
+                 });
+     }
+ 
+-    private boolean validateInput(String email, String password) {
++    private boolean validateInputs(String email, String password) {
+         if (TextUtils.isEmpty(email)) {
+-            emailField.setError("Email is required");
+-            emailField.requestFocus();
++            email_lg.setError("Email is required");
++            email_lg.requestFocus();
+             return false;
+-        }
+-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+-            emailField.setError("Enter a valid email");
+-            emailField.requestFocus();
++        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
++            email_lg.setError("Enter a valid email");
++            email_lg.requestFocus();
+             return false;
+         }
+         if (TextUtils.isEmpty(password)) {
+-            passwordField.setError("Password is required");
+-            passwordField.requestFocus();
++            pass_lg.setError("Password is required");
++            pass_lg.requestFocus();
+             return false;
+         }
+         return true;
+     }
+ 
+-    private void handleLoginFailure(@NonNull Task<AuthResult> task) {
+-        Exception e = task.getException();
+-        if (e instanceof FirebaseAuthInvalidUserException) {
+-            Toast.makeText(LoginPage.this, "No account found with this email", Toast.LENGTH_LONG).show();
+-        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+-            Toast.makeText(LoginPage.this, "Invalid email or password", Toast.LENGTH_LONG).show();
+-        } else {
+-            Toast.makeText(LoginPage.this, "Login Failed: " + (e != null ? e.getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+-        }
+-    }
+-
+     private void checkUserRole(String userId) {
+-        db.collection("Students").document(userId).get().addOnCompleteListener(task -> {
+-            if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+-                Log.d(TAG, "User found in Students collection");
+-                navigateTo(HomePage_Student.class);
+-            } else {
+-                db.collection("Vendors").document(userId).get().addOnCompleteListener(vendorTask -> {
+-                    if (vendorTask.isSuccessful() && vendorTask.getResult() != null && vendorTask.getResult().exists()) {
+-                        Log.d(TAG, "User found in Vendors collection");
+-                        navigateTo(HomePageVendor.class);
++        Log.d(TAG, "Checking user role for ID: " + userId);
++
++        checkUserInCollection("Students", userId, HomePage_Student.class, "Welcome Student!",
++                () -> checkUserInCollection("Vendors", userId, HomePageVendor.class, "Welcome Vendor!",
++                        () -> checkUserInCollection("Admins", userId, HomePageAdmin.class, "Welcome Admin!",
++                                () -> {
++                                    showToast("User data not found in any collection!");
++                                    Log.d(TAG, "User not found in any collection.");
++                                })));
++    }
++
++    private void checkUserInCollection(String collection, String userId, Class<?> targetActivity, String message, Runnable nextCheck) {
++        firestoreDB.collection(collection).document(userId).get()
++                .addOnCompleteListener(task -> {
++                    if (task.isSuccessful() && task.getResult().exists()) {
++                        Log.d(TAG, "User found in " + collection + " collection. Redirecting...");
++                        navigateTo(targetActivity, message);
+                     } else {
+-                        db.collection("Admins").document(userId).get().addOnCompleteListener(adminTask -> {
+-                            if (adminTask.isSuccessful() && adminTask.getResult() != null && adminTask.getResult().exists()) {
+-                                Log.d(TAG, "User found in Admins collection");
+-                                navigateTo(HomePageAdmin.class);
+-                            } else {
+-                                Log.e(TAG, "User role not found");
+-                                Toast.makeText(LoginPage.this, "User role not found!", Toast.LENGTH_SHORT).show();
+-                            }
+-                        });
+-                    }
+-                });
+-            }
+-        });
++                        Log.d(TAG, "User not found in " + collection + ", checking next collection...");
++                        nextCheck.run();
++                    }
++                });
++    }
++
++    private void handleLoginError(@NonNull Task<AuthResult> task) {
++        if (task.getException() instanceof FirebaseAuthInvalidUserException) {
++            showToast("No account found with this email");
++        } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
++            showToast("Invalid email or password");
++        } else {
++            showToast("Login Failed: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"));
++        }
++    }
++
++    private void navigateTo(Class<?> targetActivity, String message) {
++        Intent intent = new Intent(LoginPage.this, targetActivity);
++        startActivity(intent);
++        showToast(message);
++        finish();  // Close the login activity
+     }
+ 
+-    private void navigateTo(Class<?> targetActivity) {
+-        startActivity(new Intent(LoginPage.this, targetActivity));
+-        finish();
++    private void showToast(String message) {
++        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+     }
+ 
+     @Override
+     protected void onStart() {
+         super.onStart();
+         if (authProfile.getCurrentUser() != null) {
+-            String userId = authProfile.getCurrentUser().getUid();
+-            Log.d(TAG, "User already logged in, checking role...");
+-            checkUserRole(userId);
+-        } else {
+-            Log.d(TAG, "No user logged in");
++            Log.d(TAG, "User already logged in, redirecting...");
++            checkUserRole(authProfile.getCurrentUser().getUid());
+         }
+     }
+ }
+Index: app/src/main/java/com/example/fooddeliveryapp_student/HomePageVendor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/HomePageVendor.java b/app/src/main/java/com/example/fooddeliveryapp_student/HomePageVendor.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/HomePageVendor.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/HomePageVendor.java	(date 1739736725151)
+@@ -1,100 +1,113 @@
+ package com.example.fooddeliveryapp_student;
+ 
++import androidx.appcompat.app.ActionBar;
+ import androidx.appcompat.app.ActionBarDrawerToggle;
+-import androidx.core.graphics.Insets;
+-import androidx.core.view.ViewCompat;
+-import androidx.core.view.WindowInsetsCompat;
+ import androidx.fragment.app.Fragment;
++
++import android.annotation.SuppressLint;
+ import android.os.Bundle;
+ import android.view.MenuItem;
+ import android.view.View;
+ import android.widget.Toast;
++
++import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.appcompat.widget.Toolbar;
++import androidx.core.graphics.Insets;
+ import androidx.core.view.GravityCompat;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
+ import androidx.drawerlayout.widget.DrawerLayout;
+ import androidx.fragment.app.FragmentManager;
+ import androidx.fragment.app.FragmentTransaction;
++
+ import com.google.android.material.bottomnavigation.BottomNavigationView;
+ import com.google.android.material.floatingactionbutton.FloatingActionButton;
++import com.google.android.material.navigation.NavigationBarView;
+ import com.google.android.material.navigation.NavigationView;
+ 
+ public class HomePageVendor extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+ 
+-    private DrawerLayout drawerlayout;
+-    private BottomNavigationView bottomNavigationView;
+-    private Toolbar toolbar;
+-    private FloatingActionButton fab;
+-
++    DrawerLayout drawerlayout;
++    BottomNavigationView bottomNavigationView;
++    FragmentManager fregmentManager;
++    Toolbar toolbar;
++    FloatingActionButton fab;
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
+         setContentView(R.layout.activity_home_page_vendor);
+-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container_vendor), (v, insets) -> {
+-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-            return insets;
+-        });
+ 
+-        // Initialize Views
+-        fab = findViewById(R.id.fab);
+-        toolbar = findViewById(R.id.toolbar_vendor);  // Fixed ID reference
++        fab=findViewById(R.id.fab);
++        toolbar=findViewById(R.id.toolbar_vendor);
+         setSupportActionBar(toolbar);
+ 
+-        // DrawerLayout Setup
+-        drawerlayout = findViewById(R.id.drawer_layout_vendor);
+-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+-                this, drawerlayout, toolbar,
+-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+-        drawerlayout.addDrawerListener(toggle);
+-        toggle.syncState();
++        drawerlayout= findViewById(R.id.drawer_layout);
++        ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawerlayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
++        drawerlayout.addDrawerListener(toogle);
++        toogle.syncState();
+ 
+-        // NavigationView Setup
+         NavigationView navigationView = findViewById(R.id.navigation_drawer_vendor);
+         navigationView.setNavigationItemSelectedListener(this);
+ 
+-        // BottomNavigationView Setup
+-        bottomNavigationView = findViewById(R.id.bottom_navigation_vendor);
++        bottomNavigationView=findViewById(R.id.bottom_navigation_vendor);
+         bottomNavigationView.setBackground(null);
+ 
+-        bottomNavigationView.setOnItemSelectedListener(item -> {
+-            int itemId = item.getItemId();
+-            if (itemId == R.id.bottom_dashboard_vendor) {
+-                openFragment(new Dashboard_Fragment_vendor());
+-            } else if (itemId == R.id.bottom_home_vendor) {
+-                openFragment(new Home_Fragment_Vendor());
+-            } else if (itemId == R.id.orders_vendor) {
+-                openFragment(new Orders_Fragment_Vendor());
+-            } else if (itemId == R.id.bottom_profile_vendor) {
+-                openFragment(new Profile_Fragment_Vendor());
+-            }
+-            return true;
++        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
++            @Override
++            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
++                int itemId = item.getItemId();
++                if(itemId==R.id.bottom_dashboard_vendor){
++                    openFragment(new Dashboard_Fragment_vendor());
++                    return true;
++                } else if (itemId==R.id.bottom_home_vendor) {
++                    openFragment(new Home_Fragment_Vendor());
++                    return true;
++                }else if (itemId==R.id.orders_vendor) {
++                    openFragment(new Orders_Fragment_Vendor());
++                    return true;
++                }else if (itemId==R.id.bottom_profile_vendor) {
++                    openFragment(new Profile_Fragment_Vendor());
++                    return true;
++                }
++                return false;
++            }
++        });
++
++        fregmentManager = getSupportFragmentManager();
++        openFragment(new Fragment_HomeStudent());
++
++        fab.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                Toast.makeText(HomePageVendor.this,"Home Page",Toast.LENGTH_SHORT).show();
++            }
+         });
+ 
+-        // Load Default Fragment
+-        openFragment(new Home_Fragment_Vendor());
+ 
+-        // FAB Click Listener
+-        fab.setOnClickListener(view ->
+-                Toast.makeText(HomePageVendor.this, "Home Page", Toast.LENGTH_SHORT).show()
+-        );
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
+     }
+ 
+     @Override
+     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+         int itemId = item.getItemId();
+-        if (itemId == R.id.orders_vendor) {
++        if(itemId == R.id.orders_vendor){
+             openFragment(new Orders_Fragment_Vendor());
+-        } else if (itemId == R.id.products) {
++        }else if(itemId == R.id.products) {
+             openFragment(new Product_Fragment_Vendor());
+-        } else if (itemId == R.id.settings_vendor) {
++        }else if(itemId == R.id.settings_vendor) {
+             openFragment(new Setting_Fragement_Vendor());
+-        } else if (itemId == R.id.faq_side) {
++        }else if(itemId == R.id.faq_side) {
+             openFragment(new FAQs_Fragment_Vendor());
+-        } else if (itemId == R.id.log_out_vendor) {
++        }else if(itemId == R.id.log_out_vendor) {
+             openFragment(new Logout_Fragment_Vendor());
+-        } else if (itemId == R.id.contact_us_vendor) {
++        }else if(itemId == R.id.contact_us_vendor) {
+             openFragment(new Contactus_Fragment_Vendor());
+         }
+         drawerlayout.closeDrawer(GravityCompat.START);
+@@ -103,16 +116,15 @@
+ 
+     @Override
+     public void onBackPressed() {
+-        if (drawerlayout.isDrawerOpen(GravityCompat.START)) {
++        if (drawerlayout != null && drawerlayout.isDrawerOpen(GravityCompat.START)) {
+             drawerlayout.closeDrawer(GravityCompat.START);
+         } else {
+             super.onBackPressed();
+         }
+     }
+-
+-    private void openFragment(Fragment fragment) {
++    private void openFragment(Fragment fragment){
+         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+-        transaction.replace(R.id.fragment_container_vendor, fragment);
++        transaction.replace(R.id.fragment_container, fragment);
+         transaction.commit();
+     }
+ }
+Index: app/src/main/java/com/example/fooddeliveryapp_student/CategoryFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/CategoryFragment.java b/app/src/main/java/com/example/fooddeliveryapp_student/CategoryFragment.java
+new file mode 100644
+--- /dev/null	(date 1739739859870)
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/CategoryFragment.java	(date 1739739859870)
+@@ -0,0 +1,64 @@
++package com.example.fooddeliveryapp_student;
++
++import android.os.Bundle;
++
++import androidx.fragment.app.Fragment;
++
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++
++/**
++ * A simple {@link Fragment} subclass.
++ * Use the {@link CategoryFragment#newInstance} factory method to
++ * create an instance of this fragment.
++ */
++public class CategoryFragment extends Fragment {
++
++    // TODO: Rename parameter arguments, choose names that match
++    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
++    private static final String ARG_PARAM1 = "param1";
++    private static final String ARG_PARAM2 = "param2";
++
++    // TODO: Rename and change types of parameters
++    private String mParam1;
++    private String mParam2;
++
++    public CategoryFragment() {
++        // Required empty public constructor
++    }
++
++    /**
++     * Use this factory method to create a new instance of
++     * this fragment using the provided parameters.
++     *
++     * @param param1 Parameter 1.
++     * @param param2 Parameter 2.
++     * @return A new instance of fragment CategoryFragment.
++     */
++    // TODO: Rename and change types and number of parameters
++    public static CategoryFragment newInstance(String param1, String param2) {
++        CategoryFragment fragment = new CategoryFragment();
++        Bundle args = new Bundle();
++        args.putString(ARG_PARAM1, param1);
++        args.putString(ARG_PARAM2, param2);
++        fragment.setArguments(args);
++        return fragment;
++    }
++
++    @Override
++    public void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        if (getArguments() != null) {
++            mParam1 = getArguments().getString(ARG_PARAM1);
++            mParam2 = getArguments().getString(ARG_PARAM2);
++        }
++    }
++
++    @Override
++    public View onCreateView(LayoutInflater inflater, ViewGroup container,
++                             Bundle savedInstanceState) {
++        // Inflate the layout for this fragment
++        return inflater.inflate(R.layout.fragment_category, container, false);
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/fooddeliveryapp_student/HomePage_Student.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/HomePage_Student.java b/app/src/main/java/com/example/fooddeliveryapp_student/HomePage_Student.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/HomePage_Student.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/HomePage_Student.java	(date 1739736725151)
+@@ -1,21 +1,27 @@
+ package com.example.fooddeliveryapp_student;
+ 
++import androidx.appcompat.app.ActionBar;
++import androidx.appcompat.app.ActionBarDrawerToggle;
++import androidx.fragment.app.Fragment;
++
++import android.annotation.SuppressLint;
++import android.os.Bundle;
++import android.view.MenuItem;
++import android.view.View;
++import android.widget.Toast;
++
++import androidx.activity.EdgeToEdge;
+ import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ import androidx.appcompat.widget.Toolbar;
++import androidx.core.graphics.Insets;
+ import androidx.core.view.GravityCompat;
+ import androidx.core.view.ViewCompat;
+ import androidx.core.view.WindowInsetsCompat;
+ import androidx.drawerlayout.widget.DrawerLayout;
+-import androidx.fragment.app.Fragment;
+ import androidx.fragment.app.FragmentManager;
+ import androidx.fragment.app.FragmentTransaction;
+ 
+-import android.os.Bundle;
+-import android.view.MenuItem;
+-import android.view.View;
+-import android.widget.Toast;
+-
+ import com.google.android.material.bottomnavigation.BottomNavigationView;
+ import com.google.android.material.floatingactionbutton.FloatingActionButton;
+ import com.google.android.material.navigation.NavigationBarView;
+@@ -23,99 +29,100 @@
+ 
+ public class HomePage_Student extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+ 
+-    private DrawerLayout drawerLayout;
+-    private BottomNavigationView bottomNavigationView;
+-    private Toolbar toolbar;
+-    private FloatingActionButton fab;
+-
++    DrawerLayout drawerlayout;
++    BottomNavigationView bottomNavigationView;
++    FragmentManager fregmentManager;
++    Toolbar toolbar;
++    FloatingActionButton fab;
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
+         setContentView(R.layout.activity_home_page_student);
+ 
+-        // Initialize UI components
+-        fab = findViewById(R.id.fab);
+-        toolbar = findViewById(R.id.toolbar);
+-        drawerLayout = findViewById(R.id.drawer_layout);
+-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+-
++        fab=findViewById(R.id.fab);
++        toolbar=findViewById(R.id.toolbarr);
+         setSupportActionBar(toolbar);
+ 
+-        // Set up navigation drawer
++        drawerlayout= findViewById(R.id.drawer_layout);
++        ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawerlayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
++        drawerlayout.addDrawerListener(toogle);
++        toogle.syncState();
++
+         NavigationView navigationView = findViewById(R.id.navigation_drawer);
+         navigationView.setNavigationItemSelectedListener(this);
+ 
+-        // Set up bottom navigation
++        bottomNavigationView=findViewById(R.id.bottom_nevigation);
+         bottomNavigationView.setBackground(null);
+-        bottomNavigationView.setOnItemSelectedListener(this::onBottomNavigationItemSelected);
+ 
+-        // Open home fragment initially
+-        openFragment(new Fragment_HomeStudent());
+-
+-        // FAB Click Listener
+-        fab.setOnClickListener(view ->
+-                Toast.makeText(HomePage_Student.this, "Home Page", Toast.LENGTH_SHORT).show()
+-        );
+-
+-        // Handle window insets for edge-to-edge display
+-        ViewCompat.setOnApplyWindowInsetsListener(drawerLayout, (v, insets) -> {
+-            v.setPadding(
+-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).left,
+-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).top,
+-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).right,
+-                    insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+-            );
+-            return insets;
+-        });
+-    }
+-
+-    // Handle bottom navigation item selection
+-    private boolean onBottomNavigationItemSelected(@NonNull MenuItem item) {
+-        Fragment fragment = null;
+-
+-        if (item.getItemId() == R.id.bottom_cart) {
+-            fragment = new Fragment_CartStudent();
+-        } else if (item.getItemId() == R.id.bottom_home) {
+-            fragment = new Fragment_HomeStudent();
+-        } else if (item.getItemId() == R.id.bottom_faq) {
+-            fragment = new Fragment_faqStudent();
+-        } else if (item.getItemId() == R.id.bottom_profile) {
+-            fragment = new Fragment_ProfileStudent();
+-        }
+-
+-        if (fragment != null) {
+-            openFragment(fragment);
+-            return true;
+-        }
+-        return false;
++        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
++            @Override
++            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
++                int itemId = item.getItemId();
++                if(itemId==R.id.bottom_cart){
++                    openFragment(new Fragment_CartStudent());
++                    return true;
++                } else if (itemId==R.id.bottom_home) {
++                    openFragment(new Fragment_HomeStudent());
++                    return true;
++                }else if (itemId==R.id.bottom_faq) {
++                    openFragment(new Fragment_faqStudent());
++                    return true;
++                }else if (itemId==R.id.bottom_profile) {
++                    openFragment(new Fragment_ProfileStudent());
++                    return true;
++                }
++                return false;
++            }
++        });
++
++        fregmentManager = getSupportFragmentManager();
++        openFragment(new Fragment_HomeStudent());
++
++        fab.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                Toast.makeText(HomePage_Student.this,"Home Page",Toast.LENGTH_SHORT).show();
++            }
++        });
++
++
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
+     }
+ 
+     @Override
+     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+-        Fragment fragment = null;
+-
+-        if (item.getItemId() == R.id.my_orders) {
+-            fragment = new Fragment_myorderStudent();
+-        } else if (item.getItemId() == R.id.payment_method) {
+-            fragment = new Fragment_PaymentStudent();
+-        } else if (item.getItemId() == R.id.settngs) {
+-            fragment = new Fragment_SettingStudent();
+-        } else if (item.getItemId()==R.id.delivery_address){
+-            fragment= new Fragment_DeliveryAddressStudent();
+-        } else if(item.getItemId()==R.id.contact_us){
+-            fragment= new Fragment_ContactusStudent();
+-        } else if(item.getItemId()==R.id.log_out){
+-            fragment= new Fragment_LogoutStudent();
++        int itemId = item.getItemId();
++        if(itemId == R.id.my_orders){
++            openFragment(new Fragment_myorderStudent());
++        }else if(itemId == R.id.payment_method) {
++            openFragment(new Fragment_PaymentStudent());
++        }else if(itemId == R.id.settngs) {
++            openFragment(new Fragment_SettingStudent());
++        }else if(itemId == R.id.delivery_address) {
++            openFragment(new Fragment_DeliveryAddressStudent());
++        }else if(itemId == R.id.log_out) {
++            openFragment(new Fragment_LogoutStudent());
++        }else if(itemId == R.id.contact_us) {
++            openFragment(new Fragment_ContactusStudent());
+         }
+-
+-        if (fragment != null) {
+-            openFragment(fragment);
+-        }
+-        drawerLayout.closeDrawer(GravityCompat.START);
++        drawerlayout.closeDrawer(GravityCompat.START);
+         return true;
+     }
+ 
+-    private void openFragment(Fragment fragment) {
++    @Override
++    public void onBackPressed() {
++        if (drawerlayout != null && drawerlayout.isDrawerOpen(GravityCompat.START)) {
++            drawerlayout.closeDrawer(GravityCompat.START);
++        } else {
++            super.onBackPressed();
++        }
++    }
++    private void openFragment(Fragment fragment){
+         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+         transaction.replace(R.id.fragment_container, fragment);
+         transaction.commit();
+Index: app/src/main/java/com/example/fooddeliveryapp_student/RegistrationPage.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/RegistrationPage.java b/app/src/main/java/com/example/fooddeliveryapp_student/RegistrationPage.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/RegistrationPage.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/RegistrationPage.java	(date 1739743742490)
+@@ -23,15 +23,14 @@
+ import com.google.firebase.auth.FirebaseUser;
+ import com.google.firebase.firestore.FirebaseFirestore;
+ 
++import java.util.HashMap;
++import java.util.Map;
++
+ public class RegistrationPage extends AppCompatActivity {
+ 
+     private FirebaseAuth mauth;
+-    private FirebaseFirestore firestore;
++    private FirebaseFirestore firestoreDB;
+     private ProgressBar progressBar;
+-    private EditText email, sname, phno, rpassword, stid, shopNameInput;
+-    private RadioGroup userTypeGroup;
+-    private RadioButton radioStudent, radioVendor;
+-    private Button regbutton, l_in;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -46,22 +45,26 @@
+         });
+ 
+         mauth = FirebaseAuth.getInstance();
+-        firestore = FirebaseFirestore.getInstance();
++        firestoreDB = FirebaseFirestore.getInstance();
+ 
+-        email = findViewById(R.id.REmail);
+-        sname = findViewById(R.id.RName);
+-        phno = findViewById(R.id.Phoneno);
+-        rpassword = findViewById(R.id.RPassword);
+-        stid = findViewById(R.id.RId);
+-        userTypeGroup = findViewById(R.id.userTypeGroup);
+-        radioStudent = findViewById(R.id.radioStudent);
+-        radioVendor = findViewById(R.id.radioVendor);
+-        shopNameInput = findViewById(R.id.shopName);
+-        regbutton = findViewById(R.id.RRegisterButton);
+-        l_in = findViewById(R.id.RLoginButton);
++        final EditText email = findViewById(R.id.REmail);
++        final EditText sname = findViewById(R.id.RName);
++        final EditText phno = findViewById(R.id.Phoneno);
++        final EditText rpassword = findViewById(R.id.RPassword);
++        final EditText stid = findViewById(R.id.RId);
++        final RadioGroup userTypeGroup = findViewById(R.id.userTypeGroup);
++        final RadioButton radioStudent = findViewById(R.id.radioStudent);
++        final RadioButton radioVendor = findViewById(R.id.radioVendor);
++        final EditText shopNameInput = findViewById(R.id.shopName);
++        final Button regbutton = findViewById(R.id.RRegisterButton);
++        final Button l_in = findViewById(R.id.RLoginButton);
++
+         progressBar = findViewById(R.id.progressBar);
+ 
+-        l_in.setOnClickListener(view -> startActivity(new Intent(RegistrationPage.this, LoginPage.class)));
++        l_in.setOnClickListener(view -> {
++            Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
++            startActivity(intent);
++        });
+ 
+         userTypeGroup.setOnCheckedChangeListener((group, checkedId) -> {
+             if (checkedId == R.id.radioVendor) {
+@@ -71,112 +74,101 @@
+             }
+         });
+ 
+-        regbutton.setOnClickListener(v -> registerUser());
+-    }
+-
+-    private void registerUser() {
+-        progressBar.setVisibility(View.VISIBLE);
++        regbutton.setOnClickListener(v -> {
++            progressBar.setVisibility(View.VISIBLE);
+ 
+-        final String sid = stid.getText().toString().trim();
+-        final String stname = sname.getText().toString().trim();
+-        final String sphno = phno.getText().toString().trim();
+-        final String semail = email.getText().toString().trim();
+-        final String spass = rpassword.getText().toString().trim();
++            final String sid = stid.getText().toString().trim();
++            final String stname = sname.getText().toString().trim();
++            final String sphno = phno.getText().toString().trim();
++            final String semail = email.getText().toString().trim();
++            final String spass = rpassword.getText().toString().trim();
+ 
+-        final String selectedUserType;
+-        final String finalShopName;
++            final String selectedUserType;
++            final String finalShopName;
+ 
+-        if (radioStudent.isChecked()) {
+-            selectedUserType = "Student";
+-            finalShopName = "";
+-        } else if (radioVendor.isChecked()) {
+-            selectedUserType = "Vendor";
+-            finalShopName = shopNameInput.getText().toString().trim();
+-            if (TextUtils.isEmpty(finalShopName)) {
+-                showToast("Enter Shop Name");
+-                progressBar.setVisibility(View.GONE);
+-                return;
+-            }
+-        } else {
+-            showToast("Select a user type");
+-            progressBar.setVisibility(View.GONE);
+-            return;
+-        }
++            if (radioStudent.isChecked()) {
++                selectedUserType = "Student";
++                finalShopName = "";  // No shop name for students
++            } else if (radioVendor.isChecked()) {
++                selectedUserType = "Vendor";
++                finalShopName = shopNameInput.getText().toString().trim();
++                if (TextUtils.isEmpty(finalShopName)) {
++                    showToast("Enter Shop Name");
++                    progressBar.setVisibility(View.GONE);
++                    return;
++                }
++            } else {
++                showToast("Select a user type");
++                progressBar.setVisibility(View.GONE);
++                return;
++            }
+ 
+-        // Validations
+-        if (TextUtils.isEmpty(sid) || !sid.matches("^[A-Z]{5}\\d{5}$")) {
+-            showToast("Student ID must have first 5 uppercase letters and last 5 digits");
+-            progressBar.setVisibility(View.GONE);
+-            return;
+-        }
+-        if (TextUtils.isEmpty(stname)) {
+-            showToast("Enter Name");
+-            progressBar.setVisibility(View.GONE);
+-            return;
+-        }
+-        if (TextUtils.isEmpty(sphno) || !sphno.matches("\\d{10}")) {
+-            showToast("Phone number must be 10 digits");
+-            progressBar.setVisibility(View.GONE);
+-            return;
+-        }
+-        if (TextUtils.isEmpty(semail) || !Patterns.EMAIL_ADDRESS.matcher(semail).matches()) {
+-            showToast("Enter a valid Email Address");
+-            progressBar.setVisibility(View.GONE);
+-            return;
+-        }
+-        if (TextUtils.isEmpty(spass) || !isValidPassword(spass)) {
+-            showToast("Password must be at least 6 characters, contain 1 uppercase letter, 1 digit, and 1 special character (@#$%^&+=!)");
+-            progressBar.setVisibility(View.GONE);
+-            return;
+-        }
++            // Validations
++            if (TextUtils.isEmpty(sid) || !sid.matches("^[A-Z]{5}\\d{5}$")) {
++                showToast("Student ID must have first 5 uppercase letters and last 5 digits");
++                progressBar.setVisibility(View.GONE);
++                return;
++            }
++            if (TextUtils.isEmpty(stname)) {
++                showToast("Enter Name");
++                progressBar.setVisibility(View.GONE);
++                return;
++            }
++            if (TextUtils.isEmpty(sphno) || !sphno.matches("\\d{10}")) {
++                showToast("Phone number must be 10 digits");
++                progressBar.setVisibility(View.GONE);
++                return;
++            }
++            if (TextUtils.isEmpty(semail) || !Patterns.EMAIL_ADDRESS.matcher(semail).matches()) {
++                showToast("Enter a valid Email Address");
++                progressBar.setVisibility(View.GONE);
++                return;
++            }
++            if (TextUtils.isEmpty(spass) || !isValidPassword(spass)) {
++                showToast("Password must be at least 6 characters, contain 1 uppercase letter, 1 digit, and 1 special character (@#$%^&+=!)");
++                progressBar.setVisibility(View.GONE);
++                return;
++            }
+ 
+-        mauth.createUserWithEmailAndPassword(semail, spass).addOnCompleteListener(task -> {
+-            progressBar.setVisibility(View.GONE);
+-            if (task.isSuccessful()) {
+-                FirebaseUser user = mauth.getCurrentUser();
+-                if (user != null) {
+-                    saveUserToFirestore(user.getUid(), sid, stname, semail, sphno, selectedUserType, finalShopName);
+-                }
+-            } else {
+-                showToast("Authentication Failed! " + task.getException().getMessage());
+-            }
++            // Create user in Firebase Authentication
++            mauth.createUserWithEmailAndPassword(semail, spass)
++                    .addOnCompleteListener(task -> {
++                        progressBar.setVisibility(View.GONE);
++                        if (task.isSuccessful()) {
++                            FirebaseUser user = mauth.getCurrentUser();
++                            if (user != null) {
++                                saveUserToFirestore(user.getUid(), sid, stname, semail, sphno, selectedUserType, finalShopName);
++                            }
++                        } else {
++                            showToast("Authentication Failed! " + task.getException().getMessage());
++                        }
++                    });
+         });
++    }
++
++    private boolean isValidPassword(String password) {
++        String passwordPattern = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{6,}$";
++        return password.matches(passwordPattern);
+     }
+ 
+     private void saveUserToFirestore(String uid, String sid, String stname, String semail, String sphno, String userType, String shopName) {
+-        Object userObject = "Student".equals(userType) ? new RegisterModelStudent(stname, sid, semail, sphno, userType)
+-                : new RegisterModelVendor(stname, sid, semail, sphno, shopName, userType);
++        Map<String, Object> user = new HashMap<>();
++        user.put("studentID", sid);
++        user.put("name", stname);
++        user.put("email", semail);
++        user.put("phoneNumber", sphno);
++        user.put("userType", userType);
++        if (userType.equals("Vendor")) {
++            user.put("shopName", shopName);
++        }
+ 
+-        String collection = "Student".equals(userType) ? "Students" : "Vendors";
+-        firestore.collection(collection).document(uid)
+-                .set(userObject)
+-                .addOnSuccessListener(aVoid -> {
+-                    showToast(userType + " registered successfully");
+-                    clearFields();
+-                    navigateToHome(userType);
+-                })
++        String collection = userType.equals("Student") ? "Students" : "Vendors";
++
++        firestoreDB.collection(collection).document(uid).set(user)
++                .addOnSuccessListener(aVoid -> showToast(userType + " registered successfully"))
+                 .addOnFailureListener(e -> showToast("Error saving data: " + e.getMessage()));
+     }
+ 
+-    private void clearFields() {
+-        email.setText("");
+-        sname.setText("");
+-        phno.setText("");
+-        rpassword.setText("");
+-        stid.setText("");
+-        shopNameInput.setText("");
+-    }
+-
+-    private void navigateToHome(String userType) {
+-        Intent intent = new Intent(this, "Student".equals(userType) ? HomePage_Student.class : HomePageVendor.class);
+-        startActivity(intent);
+-        finish();
+-    }
+-
+-    private boolean isValidPassword(String password) {
+-        return password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{6,}$");
+-    }
+-
+     private void showToast(String message) {
+         Toast.makeText(RegistrationPage.this, message, Toast.LENGTH_SHORT).show();
+     }
+Index: app/src/main/java/com/example/fooddeliveryapp_student/Home_Fragment_Vendor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/Home_Fragment_Vendor.java b/app/src/main/java/com/example/fooddeliveryapp_student/Home_Fragment_Vendor.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/Home_Fragment_Vendor.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/Home_Fragment_Vendor.java	(date 1739740094366)
+@@ -7,6 +7,7 @@
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
++import android.widget.Button;
+ 
+ /**
+  * A simple {@link Fragment} subclass.
+@@ -23,6 +24,7 @@
+     // TODO: Rename and change types of parameters
+     private String mParam1;
+     private String mParam2;
++    private Button cat_btn;
+ 
+     public Home_Fragment_Vendor() {
+         // Required empty public constructor
+@@ -53,12 +55,24 @@
+             mParam1 = getArguments().getString(ARG_PARAM1);
+             mParam2 = getArguments().getString(ARG_PARAM2);
+         }
++
++
+     }
+ 
+     @Override
+     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                              Bundle savedInstanceState) {
+         // Inflate the layout for this fragment
++        View view = inflater.inflate(R.layout.fragment_home___vendor, container, false);
++        cat_btn=view.findViewById(R.id.category_btn);
++        cat_btn.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                Fragment categoryFragment=new CategoryFragment();
++                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,categoryFragment).addToBackStack(null).commit();
++
++            }
++        });
+         return inflater.inflate(R.layout.fragment_home___vendor, container, false);
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/fooddeliveryapp_student/Fragment_ProfileStudent.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/Fragment_ProfileStudent.java b/app/src/main/java/com/example/fooddeliveryapp_student/Fragment_ProfileStudent.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/Fragment_ProfileStudent.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/Fragment_ProfileStudent.java	(date 1739743842120)
+@@ -16,31 +16,32 @@
+ import com.google.firebase.auth.FirebaseAuth;
+ import com.google.firebase.auth.FirebaseUser;
+ import com.google.firebase.firestore.DocumentReference;
+-import com.google.firebase.firestore.DocumentSnapshot;
+ import com.google.firebase.firestore.FirebaseFirestore;
+ import com.google.firebase.firestore.ListenerRegistration;
++import com.google.firebase.firestore.DocumentSnapshot;
+ 
+ public class Fragment_ProfileStudent extends Fragment {
+ 
+     private EditText nameEditText, emailEditText, phoneEditText, idEditText;
+     private Button changePasswordButton, editProfileButton, saveButton;
+     private FirebaseAuth auth;
+-    private FirebaseFirestore db;
++    private FirebaseFirestore firestoreDB;
+     private DocumentReference userRef;
+     private FirebaseUser user;
+-    private ListenerRegistration profileListener;
++    private ListenerRegistration userListener;
+ 
+     @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
++    public View onCreateView(LayoutInflater inflater, ViewGroup container,
++                             Bundle savedInstanceState) {
+         View view = inflater.inflate(R.layout.fragment__profile_student, container, false);
+ 
+         // Initialize Firebase
+         auth = FirebaseAuth.getInstance();
+-        db = FirebaseFirestore.getInstance();
++        firestoreDB = FirebaseFirestore.getInstance();
+         user = auth.getCurrentUser();
+ 
+         if (user != null) {
+-            userRef = db.collection("Students").document(user.getUid());
++            userRef = firestoreDB.collection("Students").document(user.getUid());
+         }
+ 
+         // Get UI elements
+@@ -55,7 +56,7 @@
+         // Disable editing initially
+         disableEditing();
+ 
+-        // Fetch user data from Firestore
++        // Fetch user data in real-time
+         fetchUserData();
+ 
+         // Edit Profile button click
+@@ -73,33 +74,25 @@
+         return view;
+     }
+ 
+-    @Override
+-    public void onDestroyView() {
+-        super.onDestroyView();
+-        if (profileListener != null) {
+-            profileListener.remove();
+-        }
+-    }
+-
+-    // Fetch user data from Firestore in real-time
++    // Fetch user data in real-time
+     private void fetchUserData() {
+         if (userRef != null) {
+-            profileListener = userRef.addSnapshotListener((snapshot, error) -> {
++            userListener = userRef.addSnapshotListener((snapshot, error) -> {
+                 if (error != null) {
+-                    Log.e("Firestore", "Error fetching data", error);
++                    Log.e("Firebase", "Error fetching data", error);
+                     return;
+                 }
+                 if (snapshot != null && snapshot.exists()) {
+-                    nameEditText.setText(snapshot.getString("stuname"));
+-                    emailEditText.setText(snapshot.getString("stuemail"));
+-                    phoneEditText.setText(snapshot.getString("stuphno"));
+-                    idEditText.setText(snapshot.getString("stuid"));
++                    nameEditText.setText(snapshot.getString("name"));
++                    emailEditText.setText(snapshot.getString("email"));
++                    phoneEditText.setText(snapshot.getString("phoneNumber"));
++                    idEditText.setText(snapshot.getString("studentID"));
+                 }
+             });
+         }
+     }
+ 
+-    // Enable editing fields
++    // Enable editing
+     private void enableEditing() {
+         nameEditText.setFocusableInTouchMode(true);
+         idEditText.setFocusableInTouchMode(true);
+@@ -111,19 +104,18 @@
+     // Save updated data to Firestore
+     private void saveUpdatedData() {
+         if (userRef != null) {
+-            userRef.update(
+-                    "stuname", nameEditText.getText().toString(),
+-                    "stuid", idEditText.getText().toString(),
+-                    "stuemail", emailEditText.getText().toString(),
+-                    "stuphno", phoneEditText.getText().toString()
+-            ).addOnCompleteListener(task -> {
+-                if (task.isSuccessful()) {
+-                    Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
+-                    disableEditing();
+-                } else {
+-                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+-                }
+-            });
++            userRef.update("name", nameEditText.getText().toString(),
++                            "studentID", idEditText.getText().toString(),
++                            "email", emailEditText.getText().toString(),
++                            "phoneNumber", phoneEditText.getText().toString())
++                    .addOnCompleteListener(task -> {
++                        if (task.isSuccessful()) {
++                            Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
++                            disableEditing();
++                        } else {
++                            Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
++                        }
++                    });
+         }
+     }
+ 
+@@ -135,4 +127,12 @@
+         idEditText.setFocusable(false);
+         saveButton.setVisibility(View.GONE);
+     }
++
++    @Override
++    public void onDestroyView() {
++        super.onDestroyView();
++        if (userListener != null) {
++            userListener.remove();
++        }
++    }
+ }
+Index: app/src/main/java/com/example/fooddeliveryapp_student/Profile_Fragment_Vendor.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/fooddeliveryapp_student/Profile_Fragment_Vendor.java b/app/src/main/java/com/example/fooddeliveryapp_student/Profile_Fragment_Vendor.java
+--- a/app/src/main/java/com/example/fooddeliveryapp_student/Profile_Fragment_Vendor.java	
++++ b/app/src/main/java/com/example/fooddeliveryapp_student/Profile_Fragment_Vendor.java	(date 1739750121333)
+@@ -17,6 +17,8 @@
+ import com.google.firebase.auth.FirebaseUser;
+ import com.google.firebase.firestore.DocumentReference;
+ import com.google.firebase.firestore.FirebaseFirestore;
++import com.google.firebase.firestore.ListenerRegistration;
++import com.google.firebase.firestore.QuerySnapshot;
+ import com.google.firebase.firestore.SetOptions;
+ 
+ import java.util.HashMap;
+@@ -24,17 +26,17 @@
+ 
+ public class Profile_Fragment_Vendor extends Fragment {
+ 
+-    private static final String TAG = "ProfileFragmentVendor";
+-
+     private EditText nameEditText, emailEditText, phoneEditText, shopEditText;
+     private Button changePasswordButton, editProfileButton, saveButton;
+     private FirebaseAuth auth;
+     private FirebaseFirestore firestore;
+     private DocumentReference userDocRef;
+     private FirebaseUser user;
++    private ListenerRegistration listenerRegistration;
+ 
+     @Override
+-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
++    public View onCreateView(LayoutInflater inflater, ViewGroup container,
++                             Bundle savedInstanceState) {
+         View view = inflater.inflate(R.layout.fragment_profile___vendor, container, false);
+ 
+         // Initialize Firebase
+@@ -44,35 +46,30 @@
+ 
+         if (user != null) {
+             userDocRef = firestore.collection("Vendor_Registration").document(user.getUid());
+-            Log.d(TAG, "User authenticated, fetching data...");
+-        } else {
+-            Log.e(TAG, "User not logged in");
+-            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_LONG).show();
+-            return view; // Return early to prevent null reference errors
+         }
+ 
+-        // Initialize UI Elements
++        // Get UI elements
+         nameEditText = view.findViewById(R.id.name_v);
+         emailEditText = view.findViewById(R.id.email_v);
+-        phoneEditText = view.findViewById(R.id.phone_v);
+         shopEditText = view.findViewById(R.id.shopname_v);
++        phoneEditText = view.findViewById(R.id.phone_v);
+         changePasswordButton = view.findViewById(R.id.change_pass_btn_v);
+         editProfileButton = view.findViewById(R.id.edit_profile_btn_v);
+         saveButton = view.findViewById(R.id.save_btn_v);
+ 
+-        // Disable Editing Initially
++        // Disable editing initially
+         disableEditing();
+ 
+         // Fetch user data from Firestore
+         fetchUserData();
+ 
+-        // Edit Profile Button Click
++        // Edit Profile button click
+         editProfileButton.setOnClickListener(v -> enableEditing());
+ 
+-        // Save Profile Button Click
++        // Save Profile button click
+         saveButton.setOnClickListener(v -> saveUpdatedData());
+ 
+-        // Change Password Button Click
++        // Change Password button click
+         changePasswordButton.setOnClickListener(v -> {
+             Intent intent = new Intent(getActivity(), ChangePasswordActivityStudent.class);
+             startActivity(intent);
+@@ -86,65 +83,45 @@
+         if (userDocRef != null) {
+             userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+                 if (documentSnapshot.exists()) {
+-                    Log.d(TAG, "Document fetched: " + documentSnapshot.getData());
+-
+                     nameEditText.setText(documentSnapshot.getString("vendorName"));
+                     emailEditText.setText(documentSnapshot.getString("vendorEmail"));
+                     phoneEditText.setText(documentSnapshot.getString("vendorPhone"));
+                     shopEditText.setText(documentSnapshot.getString("shopName"));
+-                } else {
+-                    Log.e(TAG, "No document found for user: " + user.getUid());
+-                    Toast.makeText(getContext(), "No profile data found", Toast.LENGTH_SHORT).show();
+                 }
+             }).addOnFailureListener(e -> {
+-                Log.e(TAG, "Error fetching Firestore document", e);
++                Log.e("Firestore", "Error fetching data", e);
+                 Toast.makeText(getContext(), "Failed to fetch profile data", Toast.LENGTH_SHORT).show();
+             });
+-        } else {
+-            Log.e(TAG, "Firestore document reference is null");
+         }
+     }
+ 
+-    // Enable editing of fields
++    // Enable editing
+     private void enableEditing() {
+         nameEditText.setFocusableInTouchMode(true);
+         phoneEditText.setFocusableInTouchMode(true);
+         emailEditText.setFocusableInTouchMode(true);
+         shopEditText.setFocusableInTouchMode(true);
+         saveButton.setVisibility(View.VISIBLE);
+-        editProfileButton.setVisibility(View.GONE);
+     }
+ 
+     // Save updated data to Firestore
+     private void saveUpdatedData() {
+         if (userDocRef != null) {
+-            String newName = nameEditText.getText().toString().trim();
+-            String newEmail = emailEditText.getText().toString().trim();
+-            String newPhone = phoneEditText.getText().toString().trim();
+-            String newShop = shopEditText.getText().toString().trim();
+-
+-            if (newName.isEmpty() || newEmail.isEmpty() || newPhone.isEmpty() || newShop.isEmpty()) {
+-                Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
+-                return;
+-            }
+-
+             Map<String, Object> updatedData = new HashMap<>();
+-            updatedData.put("vendorName", newName);
+-            updatedData.put("vendorEmail", newEmail);
+-            updatedData.put("vendorPhone", newPhone);
+-            updatedData.put("shopName", newShop);
++            updatedData.put("vendorName", nameEditText.getText().toString());
++            updatedData.put("vendorEmail", emailEditText.getText().toString());
++            updatedData.put("shopName", shopEditText.getText().toString());
++            updatedData.put("vendorPhone", phoneEditText.getText().toString());
+ 
+             userDocRef.set(updatedData, SetOptions.merge())
+                     .addOnSuccessListener(aVoid -> {
+-                        Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
++                        Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
+                         disableEditing();
+                     })
+                     .addOnFailureListener(e -> {
+-                        Log.e(TAG, "Error updating Firestore document", e);
+                         Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
++                        Log.e("Firestore", "Error updating profile", e);
+                     });
+-        } else {
+-            Log.e(TAG, "Firestore document reference is null");
+         }
+     }
+ 
+@@ -155,6 +132,5 @@
+         phoneEditText.setFocusable(false);
+         shopEditText.setFocusable(false);
+         saveButton.setVisibility(View.GONE);
+-        editProfileButton.setVisibility(View.VISIBLE);
+     }
+ }
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	(date 1739748818344)
+@@ -1,0 +1,9 @@
++<project version="4">
++  <component name="ExternalStorageConfigurationManager" enabled="true" />
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="jbr-21" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/build/classes" />
++  </component>
++  <component name="ProjectType">
++    <option name="id" value="Android" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .gradle/config.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/.gradle/config.properties b/.gradle/config.properties
+deleted file mode 100644
+--- a/.gradle/config.properties	
++++ /dev/null	
+@@ -1,2 +0,0 @@
+-#Tue Feb 11 13:40:48 IST 2025
+-java.home=C\:\\Program Files\\Android\\Android Studio\\jbr
+Index: local.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/local.properties b/local.properties
+--- a/local.properties	
++++ b/local.properties	(date 1739736735402)
+@@ -4,5 +4,5 @@
+ # Location of the SDK. This is only used by Gradle.
+ # For customization when using a Version Control System, please read the
+ # header note.
+-#Tue Feb 11 13:40:55 IST 2025
++#Mon Feb 17 01:42:15 IST 2025
+ sdk.dir=C\:\\Users\\Kirti Rajani\\AppData\\Local\\Android\\Sdk
+diff --git a/.git/HEAD b/.git/HEAD
+deleted file mode 100644
+diff --git a/.git/info/exclude b/.git/info/exclude
+deleted file mode 100644
+diff --git a/.git/refs/heads/main b/.git/refs/heads/main
+deleted file mode 100644
+diff --git a/.git/refs/remotes/origin/HEAD b/.git/refs/remotes/origin/HEAD
+deleted file mode 100644
+diff --git a/.git/hooks/update.sample b/.git/hooks/update.sample
+deleted file mode 100644
+diff --git a/.git/hooks/pre-push.sample b/.git/hooks/pre-push.sample
+deleted file mode 100644
+diff --git a/.git/hooks/commit-msg.sample b/.git/hooks/commit-msg.sample
+deleted file mode 100644
+diff --git a/.git/hooks/pre-commit.sample b/.git/hooks/pre-commit.sample
+deleted file mode 100644
+diff --git a/.git/hooks/pre-rebase.sample b/.git/hooks/pre-rebase.sample
+deleted file mode 100644
+diff --git a/.git/hooks/post-update.sample b/.git/hooks/post-update.sample
+deleted file mode 100644
+diff --git a/.git/hooks/pre-receive.sample b/.git/hooks/pre-receive.sample
+deleted file mode 100644
+diff --git a/.git/hooks/applypatch-msg.sample b/.git/hooks/applypatch-msg.sample
+deleted file mode 100644
+diff --git a/.git/hooks/pre-applypatch.sample b/.git/hooks/pre-applypatch.sample
+deleted file mode 100644
+diff --git a/.git/hooks/pre-merge-commit.sample b/.git/hooks/pre-merge-commit.sample
+deleted file mode 100644
+diff --git a/.git/hooks/push-to-checkout.sample b/.git/hooks/push-to-checkout.sample
+deleted file mode 100644
+diff --git a/.git/hooks/fsmonitor-watchman.sample b/.git/hooks/fsmonitor-watchman.sample
+deleted file mode 100644
+diff --git a/.git/hooks/prepare-commit-msg.sample b/.git/hooks/prepare-commit-msg.sample
+deleted file mode 100644
+diff --git a/.git/hooks/sendemail-validate.sample b/.git/hooks/sendemail-validate.sample
+deleted file mode 100644
+diff --git a/.git/config b/.git/config
+deleted file mode 100644
+diff --git a/.git/description b/.git/description
+deleted file mode 100644
+diff --git a/.git/packed-refs b/.git/packed-refs
+deleted file mode 100644
+diff --git a/.idea/.name b/.idea/.name
+deleted file mode 100644
+diff --git a/.idea/caches/deviceStreaming.xml b/.idea/caches/deviceStreaming.xml
+deleted file mode 100644
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+deleted file mode 100644
+diff --git a/.gradle/vcs-1/gc.properties b/.gradle/vcs-1/gc.properties
+deleted file mode 100644
+diff --git a/.gradle/8.10.2/gc.properties b/.gradle/8.10.2/gc.properties
+deleted file mode 100644
+diff --git a/.gradle/8.10.2/dependencies-accessors/gc.properties b/.gradle/8.10.2/dependencies-accessors/gc.properties
+deleted file mode 100644
+diff --git a/.gradle/8.10.2/dependencies-accessors/3edff9ae26f7e81f9c27466f8162170f088e33d4/sources/org/gradle/accessors/dm/LibrariesForLibs.java b/.gradle/8.10.2/dependencies-accessors/3edff9ae26f7e81f9c27466f8162170f088e33d4/sources/org/gradle/accessors/dm/LibrariesForLibs.java
+deleted file mode 100644
+diff --git a/.gradle/8.10.2/dependencies-accessors/3edff9ae26f7e81f9c27466f8162170f088e33d4/sources/org/gradle/accessors/dm/LibrariesForLibsInPluginsBlock.java b/.gradle/8.10.2/dependencies-accessors/3edff9ae26f7e81f9c27466f8162170f088e33d4/sources/org/gradle/accessors/dm/LibrariesForLibsInPluginsBlock.java
+deleted file mode 100644
+diff --git a/.gradle/buildOutputCleanup/cache.properties b/.gradle/buildOutputCleanup/cache.properties
+deleted file mode 100644
+diff --git a/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/processDebugResources/R.jar b/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/processDebugResources/R.jar
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.git/refs/remotes/origin/main b/.git/refs/remotes/origin/main
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.git/index b/.git/index
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.git/ORIG_HEAD b/.git/ORIG_HEAD
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.git/FETCH_HEAD b/.git/FETCH_HEAD
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.git/COMMIT_EDITMSG b/.git/COMMIT_EDITMSG
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.git/.COMMIT_EDITMSG.swp b/.git/.COMMIT_EDITMSG.swp
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/checksums/checksums.lock b/.gradle/8.10.2/checksums/checksums.lock
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/fileHashes/fileHashes.bin b/.gradle/8.10.2/fileHashes/fileHashes.bin
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/fileHashes/fileHashes.lock b/.gradle/8.10.2/fileHashes/fileHashes.lock
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/fileHashes/resourceHashesCache.bin b/.gradle/8.10.2/fileHashes/resourceHashesCache.bin
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/fileChanges/last-build.bin b/.gradle/8.10.2/fileChanges/last-build.bin
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/executionHistory/executionHistory.bin b/.gradle/8.10.2/executionHistory/executionHistory.bin
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/executionHistory/executionHistory.lock b/.gradle/8.10.2/executionHistory/executionHistory.lock
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/8.10.2/dependencies-accessors/3edff9ae26f7e81f9c27466f8162170f088e33d4/metadata.bin b/.gradle/8.10.2/dependencies-accessors/3edff9ae26f7e81f9c27466f8162170f088e33d4/metadata.bin
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/file-system.probe b/.gradle/file-system.probe
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/buildOutputCleanup/outputFiles.bin b/.gradle/buildOutputCleanup/outputFiles.bin
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+
+diff --git a/.gradle/buildOutputCleanup/buildOutputCleanup.lock b/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+deleted file mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..0000000000000000000000000000000000000000
+GIT binary patch
+literal 0
+Hc$@<O00001
+

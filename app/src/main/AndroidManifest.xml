@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".CategoryPage"
+            android:exported="false" />
+        <activity
             android:name=".Manage_App_permission"
             android:exported="false" />
         <activity
