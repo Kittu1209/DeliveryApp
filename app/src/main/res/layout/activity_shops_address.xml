@@ -9,6 +9,20 @@
     android:background="@drawable/fgprofile">
 
 
+    <Button
+        android:id="@+id/update_address_vendor"
+        android:layout_width="306dp"
+        android:layout_height="62dp"
+        android:text="Update Address"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.778" />
+
     <TextView
         android:id="@+id/name_shops_add"
         android:layout_width="303dp"
@@ -51,4 +65,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.669" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
