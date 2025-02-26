@@ -3,6 +3,7 @@ package com.example.fooddeliveryapp_student;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Shops_Address extends AppCompatActivity {
-    TextView name_vendor, address_vendor;
+    TextView name_vendor;
+    EditText address_vendor;
     Button save_address_btn;
 
     FirebaseAuth auth;
@@ -53,9 +55,9 @@ public class Shops_Address extends AppCompatActivity {
             String userId = user.getUid();
 
             // Fetch the user's name from Firestore and set it in name_vendor
-            db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            db.collection("Vendors").document(userId).get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
-                    String userName = documentSnapshot.getString("name"); // Assuming the name field is "name"
+                    String userName = documentSnapshot.getString("vendorName"); // Assuming the name field is "name"
                     if (userName != null) {
                         name_vendor.setText(userName);
                     }

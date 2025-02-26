@@ -27,7 +27,7 @@ import java.util.Map;
 public class Profile_Fragment_Vendor extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, shopEditText;
-    private Button changePasswordButton, editProfileButton, saveButton, saveAddressButton;
+    private Button changePasswordButton, editProfileButton, saveButton, addAddressButton;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
@@ -44,7 +44,6 @@ public class Profile_Fragment_Vendor extends Fragment {
         user = auth.getCurrentUser();
 
         if (user != null) {
-            // Get reference to the vendor's document in Firestore
             userRef = firestore.collection("Vendors").document(user.getUid());
         }
 
@@ -56,7 +55,7 @@ public class Profile_Fragment_Vendor extends Fragment {
         changePasswordButton = view.findViewById(R.id.change_pass_btn_v);
         editProfileButton = view.findViewById(R.id.edit_profile_btn_v);
         saveButton = view.findViewById(R.id.save_btn_v);
-        saveAddressButton = view.findViewById(R.id.save_address_vendor);
+        addAddressButton = view.findViewById(R.id.add_address); // Corrected ID
 
         // Disable editing initially
         disableEditing();
@@ -76,8 +75,8 @@ public class Profile_Fragment_Vendor extends Fragment {
             startActivity(intent);
         });
 
-        // Save Address button click
-        saveAddressButton.setOnClickListener(v -> {
+        // Add Address button click
+        addAddressButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), Shops_Address.class);
             startActivity(intent);
         });
@@ -93,7 +92,6 @@ public class Profile_Fragment_Vendor extends Fragment {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             if (documentSnapshot.exists()) {
-                                // Retrieve data from Firestore and set it in the EditTexts
                                 nameEditText.setText(documentSnapshot.getString("vendorName"));
                                 emailEditText.setText(documentSnapshot.getString("vendorEmail"));
                                 phoneEditText.setText(documentSnapshot.getString("vendorPhone"));
@@ -108,17 +106,24 @@ public class Profile_Fragment_Vendor extends Fragment {
 
     // Enable editing
     private void enableEditing() {
+        nameEditText.setFocusable(true);
         nameEditText.setFocusableInTouchMode(true);
+
+        phoneEditText.setFocusable(true);
         phoneEditText.setFocusableInTouchMode(true);
+
+        emailEditText.setFocusable(true);
         emailEditText.setFocusableInTouchMode(true);
+
+        shopEditText.setFocusable(true);
         shopEditText.setFocusableInTouchMode(true);
+
         saveButton.setVisibility(View.VISIBLE);
     }
 
     // Save updated data to Firestore
     private void saveUpdatedData() {
         if (userRef != null) {
-            // Get values from the EditTexts
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
             String phone = phoneEditText.getText().toString().trim();
@@ -129,15 +134,13 @@ public class Profile_Fragment_Vendor extends Fragment {
                 return;
             }
 
-            // Create a map of the updated data
             Map<String, Object> updatedData = new HashMap<>();
             updatedData.put("vendorName", name);
             updatedData.put("vendorEmail", email);
             updatedData.put("vendorPhone", phone);
             updatedData.put("shopName", shopName);
 
-            // Update Firestore document
-            userRef.update(updatedData)
+            userRef.set(updatedData, SetOptions.merge())  // Merge updates
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
@@ -152,10 +155,18 @@ public class Profile_Fragment_Vendor extends Fragment {
 
     // Disable editing initially
     private void disableEditing() {
+        nameEditText.setFocusable(false);
         nameEditText.setFocusableInTouchMode(false);
+
+        emailEditText.setFocusable(false);
         emailEditText.setFocusableInTouchMode(false);
+
+        phoneEditText.setFocusable(false);
         phoneEditText.setFocusableInTouchMode(false);
+
+        shopEditText.setFocusable(false);
         shopEditText.setFocusableInTouchMode(false);
+
         saveButton.setVisibility(View.GONE);
     }
 }
