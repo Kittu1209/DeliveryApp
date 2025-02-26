@@ -48,6 +48,8 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.0.0")
     implementation("com.squareup.picasso:picasso:2.71828")
     implementation("com.google.android.gms:play-services-measurement:21.3.0")
+    implementation ("com.google.android.material:material:1.9.0")
+
 
 }}
 dependencies {
@@ -60,6 +62,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.storage)
 
 
 }
