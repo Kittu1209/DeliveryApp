@@ -1,4 +1,3 @@
-// LoginPage.java
 package com.example.fooddeliveryapp_student;
 
 import android.content.Intent;
@@ -15,7 +14,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,7 +63,7 @@ public class LoginPage extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && authProfile.getCurrentUser() != null) {
                         Log.d(TAG, "Login successful, checking user role...");
-                        checkAdminRole(authProfile.getCurrentUser().getUid());
+                        checkUserRole(authProfile.getCurrentUser().getUid());
                     } else {
                         handleLoginError(task);
                     }
@@ -90,15 +88,35 @@ public class LoginPage extends AppCompatActivity {
         return true;
     }
 
-    private void checkAdminRole(String userId) {
-        Log.d(TAG, "Checking if user is Admin...");
+    private void checkUserRole(String userId) {
         firestoreDB.collection("Admins").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
-                        Log.d(TAG, "Admin found! Redirecting...");
                         navigateTo(HomePageAdmin.class, "Welcome Admin!");
                     } else {
-                        showToast("Access Denied! Not an Admin");
+                        checkStudentRole(userId);
+                    }
+                });
+    }
+
+    private void checkStudentRole(String userId) {
+        firestoreDB.collection("Students").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        navigateTo(HomePage_Student.class, "Welcome Student!");
+                    } else {
+                        checkVendorRole(userId);
+                    }
+                });
+    }
+
+    private void checkVendorRole(String userId) {
+        firestoreDB.collection("Vendors").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        navigateTo(HomePageVendor.class, "Welcome Vendor!");
+                    } else {
+                        showToast("Access Denied! Role not recognized");
                         authProfile.signOut();
                     }
                 });

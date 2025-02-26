@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    tools:context=".ProductEditActivity">
+
+    <EditText
+        android:id="@+id/editTextProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Product Name"
+        android:minHeight="48dp"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextProductCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category"
+        android:minHeight="48dp"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextProductPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Price"
+        android:minHeight="48dp"
+        android:inputType="numberDecimal"
+        android:padding="10dp"/>
+
+    <EditText
+        android:id="@+id/editTextProductDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Description"
+        android:minHeight="48dp"
+        android:padding="10dp"/>
+
+    <ImageView
+        android:id="@+id/imageViewProduct"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"/>
+
+    <Button
+        android:id="@+id/buttonUpdateProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Product"
+        android:minHeight="48dp"
+        android:padding="10dp"/>
+</LinearLayout>

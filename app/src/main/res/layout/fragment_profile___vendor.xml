@@ -18,68 +18,69 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="488dp"
             android:orientation="vertical"
             android:padding="20dp">
 
             <EditText
                 android:id="@+id/name_v"
                 android:layout_width="match_parent"
-                android:layout_marginEnd="20dp"
                 android:layout_height="48dp"
-                android:background="@android:drawable/editbox_background"
                 android:layout_marginStart="20dp"
-                android:hint="NAME"
-                android:padding="10dp"
-                android:textSize="16sp"
-                android:textColor="@color/black"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:drawable/editbox_background"
                 android:focusable="false"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp"/>
+                android:hint="NAME"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/email_v"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="E-MAIL"
-                android:background="@android:drawable/editbox_background"
-                android:padding="10dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="16sp"
-                android:textColor="@color/black"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:drawable/editbox_background"
                 android:focusable="false"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp"/>
+                android:hint="E-MAIL"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/phone_v"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="PHONE NO"
-                android:background="@android:drawable/editbox_background"
-                android:padding="10dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="16sp"
-                android:textColor="@color/black"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:drawable/editbox_background"
                 android:focusable="false"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp"/>
+                android:hint="PHONE NO"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/shopname_v"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="SHOP NAME"
-                android:background="@android:drawable/editbox_background"
-                android:padding="10dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
-                android:textSize="16sp"
-                android:textColor="@color/black"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@android:drawable/editbox_background"
                 android:focusable="false"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp"/>
+                android:hint="SHOP NAME"
+                android:padding="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
 
         </LinearLayout>
@@ -123,6 +124,18 @@
             android:backgroundTint="@color/purple_200"
             android:textColor="@android:color/white"
             android:layout_marginTop="370dp"/>
+        <Button
+            android:id="@+id/add_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Address"
+            android:textSize="20sp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:textStyle="bold"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="430dp"/>
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>
