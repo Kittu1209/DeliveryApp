@@ -1,3 +1,5 @@
+package com.example.fooddeliveryapp_student;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -6,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.fooddeliveryapp_student.CartAdapter;
+import com.example.fooddeliveryapp_student.CartItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 import java.util.*;
@@ -24,9 +29,9 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        recyclerView = findViewById(R.id.recyclerCart);
-        totalPrice = findViewById(R.id.totalPrice);
-        checkoutBtn = findViewById(R.id.checkoutBtn);
+        recyclerView = findViewById(R.id.recyclerViewCart);
+        totalPrice = findViewById(R.id.txtTotalPrice);
+        checkoutBtn = findViewById(R.id.btnCheckout);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         db = FirebaseFirestore.getInstance();
