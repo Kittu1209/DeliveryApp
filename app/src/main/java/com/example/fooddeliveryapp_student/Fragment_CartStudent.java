@@ -1,64 +1,74 @@
 package com.example.fooddeliveryapp_student;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_CartStudent#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Fragment_CartStudent extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView recyclerView;
+    private CartAdapter cartAdapter;
+    private List<CartItem> cartItemList;
+    private FirebaseFirestore db;
+    private TextView totalPriceText;
 
     public Fragment_CartStudent() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_CartStudent.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Fragment_CartStudent newInstance(String param1, String param2) {
-        Fragment_CartStudent fragment = new Fragment_CartStudent();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        // Required empty constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment__cart_student, container, false);
+
+        db = FirebaseFirestore.getInstance();
+        recyclerView = view.findViewById(R.id.recycler_cart);
+        totalPriceText = view.findViewById(R.id.textTotalPrice);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        cartItemList = new ArrayList<>();
+        cartAdapter = new CartAdapter(cartItemList, db, totalPriceText);
+        recyclerView.setAdapter(cartAdapter);
+
+        loadCartItems();
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment__cart_student, container, false);
+    private void loadCartItems() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        CollectionReference cartRef = db.collection("carts").document(userId).collection("items");
+
+        cartRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            cartItemList.clear();
+            double total = 0.0;
+
+            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                CartItem item = doc.toObject(CartItem.class);
+                cartItemList.add(item);
+                total += item.getPrice() * item.getQuantity();
+            }
+
+            totalPriceText.setText("Total: ₹" + total);
+            cartAdapter.notifyDataSetChanged();
+        }).addOnFailureListener(e ->
+                Toast.makeText(getContext(), "Failed to load cart items", Toast.LENGTH_SHORT).show()
+        );
     }
+
 }

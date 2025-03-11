@@ -1,4 +1,5 @@
 package com.example.fooddeliveryapp_student;
+
 public class Product {
     private String id;
     private String name;
@@ -6,25 +7,29 @@ public class Product {
     private double price;
     private String description;
     private String imageUrl;
+    private boolean available;
+    private String shopId;
 
     public Product() {
-        // Empty constructor for Firestore
+        // Empty constructor for Firestore deserialization
     }
 
-    public Product(String id, String name, String category, double price, String description, String imageUrl) {
+    public Product(String id, String name, String category, double price, String description, String imageUrl, boolean available, String shopId) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
+        this.available = available;
+        this.shopId = shopId;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {  // Firestore will assign an ID
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -46,5 +51,13 @@ public class Product {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public String getShopId() {
+        return shopId;
     }
 }

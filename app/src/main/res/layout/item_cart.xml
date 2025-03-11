@@ -3,42 +3,85 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="@android:color/white"
+    android:elevation="4dp"
+    android:layout_margin="8dp">
 
+    <!-- Product Image -->
     <ImageView
-        android:id="@+id/item_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:id="@+id/imageViewCartProduct"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_image_placeholder" />
+        android:src="@drawable/ic_launcher_foreground"/>
 
+    <!-- Product Details -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="10dp">
+        android:paddingStart="10dp">
 
+        <!-- Product Name -->
         <TextView
-            android:id="@+id/item_name"
+            android:id="@+id/textViewCartProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Item Name"
+            android:text="Product Name"
             android:textSize="16sp"
             android:textStyle="bold"/>
 
+        <!-- Product Price -->
         <TextView
-            android:id="@+id/item_price"
+            android:id="@+id/textViewCartProductPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="₹0.00"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_red_dark"/>
 
-        <TextView
-            android:id="@+id/item_quantity"
+        <!-- Quantity Controls -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Qty: 1"
-            android:textSize="14sp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Decrease Button -->
+            <Button
+                android:id="@+id/buttonDecreaseQuantity"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="-" />
+
+            <!-- Quantity Text -->
+            <TextView
+                android:id="@+id/textViewCartProductQuantity"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="1"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <!-- Increase Button -->
+            <Button
+                android:id="@+id/buttonIncreaseQuantity"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:text="+" />
+        </LinearLayout>
+
+        <!-- Remove Button -->
+        <Button
+            android:id="@+id/buttonRemoveItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove"
+            android:textColor="@android:color/white"
+            android:background="@android:color/holo_red_dark"
+            android:padding="8dp"/>
     </LinearLayout>
 
 </LinearLayout>

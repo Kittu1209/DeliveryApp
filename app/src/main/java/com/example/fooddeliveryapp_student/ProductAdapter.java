@@ -38,8 +38,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = productList.get(position);
         holder.textViewName.setText(product.getName());
-        holder.textViewPrice.setText("₹" + product.getPrice());
         holder.textViewCategory.setText(product.getCategory());
+        holder.textViewPrice.setText("₹" + product.getPrice());
+        holder.textViewDescription.setText(product.getDescription());
 
         // Load product image
         Picasso.get().load(product.getImageUrl()).into(holder.imageViewProduct);
@@ -53,14 +54,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewName, textViewPrice, textViewCategory;
+        TextView textViewName, textViewCategory, textViewPrice, textViewDescription;
         ImageView imageViewProduct;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.textViewProductName);
-            textViewPrice = itemView.findViewById(R.id.textViewProductPrice);
             textViewCategory = itemView.findViewById(R.id.textViewProductCategory);
+            textViewPrice = itemView.findViewById(R.id.textViewProductPrice);
+            textViewDescription = itemView.findViewById(R.id.textViewProductDescription);
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
         }
     }
