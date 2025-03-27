@@ -12,5 +12,13 @@
         android:layout_marginTop="30dp"
         android:text="Category"
         />
+    <Button
+        android:id="@+id/shop_address_btn_"
+        android:layout_width="207dp"
+        android:layout_height="252dp"
+        android:layout_marginTop="30dp"
+        android:text="Shop Address"
+        android:layout_marginLeft="220dp"
+        />
 
 </FrameLayout>

@@ -1,5 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class Fragment_ProfileStudent extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, idEditText;
     private Button changePasswordButton, editProfileButton, saveButton;
-    private FirebaseAuth auth;
+    private FirebaseAuth auth,mAuth;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
     private FirebaseUser user;
@@ -36,6 +37,7 @@ public class Fragment_ProfileStudent extends Fragment {
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance();
+        mAuth=FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
@@ -53,6 +55,22 @@ public class Fragment_ProfileStudent extends Fragment {
         editProfileButton = view.findViewById(R.id.edit_profile_button);
         saveButton = view.findViewById(R.id.save_button);
 
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        Button logoutButton = view.findViewById(R.id.logout_button_stu); // Make sure to add this button in your XML
+
+        logoutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+
+            // Ensuring user is signed out before redirecting
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                Intent intent = new Intent(getActivity(), LoginPage.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clears back stack
+                startActivity(intent);
+                Toast.makeText(getActivity(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Logout failed. Try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
         // Disable editing initially
         disableEditing();
 

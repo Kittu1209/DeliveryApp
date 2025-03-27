@@ -138,4 +138,11 @@
             android:layout_marginTop="430dp"/>
     </androidx.cardview.widget.CardView>
 
+    <Button
+        android:id="@+id/log_out__vendor_btn"
+        android:layout_width="387dp"
+        android:layout_height="49dp"
+        android:text="Logout"
+        />
+
 </LinearLayout>

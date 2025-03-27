@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_LogoutStudent">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Text to confirm user is logged in or about to logout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Log-out"
-        android:textSize="36sp"
-        android:gravity="center"
-        android:textColor="@color/white"/>
+        android:id="@+id/logout_message_stu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to logout?"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp" />
 
-</FrameLayout>
+    <!-- Button for logging out -->
+    <Button
+        android:id="@+id/logout_button_stu"
+        android:layout_width="150dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="20dp"
+        android:text="Logout" />
+
+</LinearLayout>

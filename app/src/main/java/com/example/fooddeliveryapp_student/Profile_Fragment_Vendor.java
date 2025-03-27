@@ -27,11 +27,12 @@ import java.util.Map;
 public class Profile_Fragment_Vendor extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, shopEditText;
-    private Button changePasswordButton, editProfileButton, saveButton, addAddressButton;
+    private Button changePasswordButton, editProfileButton, saveButton, addAddressButton,logout;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
     private FirebaseUser user;
+    private FirebaseAuth mAuth;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -56,16 +57,39 @@ public class Profile_Fragment_Vendor extends Fragment {
         editProfileButton = view.findViewById(R.id.edit_profile_btn_v);
         saveButton = view.findViewById(R.id.save_btn_v);
         addAddressButton = view.findViewById(R.id.add_address); // Corrected ID
+        logout=view.findViewById(R.id.log_out__vendor_btn);
 
         // Disable editing initially
         disableEditing();
 
         // Fetch user data from Firestore
         fetchUserData();
+        mAuth = FirebaseAuth.getInstance();
 
         // Edit Profile button click
         editProfileButton.setOnClickListener(v -> enableEditing());
 
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    mAuth.signOut();
+
+                    // Check if the user is logged out successfully
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    if (user == null) {
+                        // If the user is logged out, redirect to login activity
+                        Intent intent = new Intent(getActivity(), LoginPage.class); // Replace with your LoginActivity
+                        startActivity(intent);
+                        getActivity().finish(); // Finish current activity to prevent going back
+                        Toast.makeText(getActivity(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // If there's an error in logout
+                        Toast.makeText(getActivity(), "Logout failed", Toast.LENGTH_SHORT).show();
+                    }}
+
+
+        });
         // Save Profile button click
         saveButton.setOnClickListener(v -> saveUpdatedData());
 
