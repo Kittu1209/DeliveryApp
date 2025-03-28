@@ -7,18 +7,17 @@
 
     <Button
         android:id="@+id/category_btn"
-        android:layout_width="207dp"
-        android:layout_height="252dp"
+        android:layout_width="183dp"
+        android:layout_height="118dp"
         android:layout_marginTop="30dp"
-        android:text="Category"
-        />
+        android:text="Category" />
+
     <Button
         android:id="@+id/shop_address_btn_"
-        android:layout_width="207dp"
-        android:layout_height="252dp"
-        android:layout_marginTop="30dp"
-        android:text="Shop Address"
+        android:layout_width="185dp"
+        android:layout_height="118dp"
         android:layout_marginLeft="220dp"
-        />
+        android:layout_marginTop="30dp"
+        android:text="Shop Address" />
 
 </FrameLayout>

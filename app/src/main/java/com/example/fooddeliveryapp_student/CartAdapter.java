@@ -1,34 +1,32 @@
 package com.example.fooddeliveryapp_student;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
-
     private List<CartItem> cartItems;
     private FirebaseFirestore db;
     private TextView totalPriceText;
+    private Context context;
 
-    public CartAdapter(List<CartItem> cartItems, FirebaseFirestore db, TextView totalPriceText) {
+    public CartAdapter(Context context, List<CartItem> cartItems, FirebaseFirestore db, TextView totalPriceText) {
+        this.context = context;
         this.cartItems = cartItems;
         this.db = db;
         this.totalPriceText = totalPriceText;
@@ -48,41 +46,46 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.productPrice.setText("₹" + item.getPrice());
         holder.productQuantity.setText(String.valueOf(item.getQuantity()));
 
-        // Load image from URL without using Glide
-        new ImageLoader(holder.productImage).execute(item.getImageUrl());
+        // Load image using Glide
+        Glide.with(context).load(item.getImageUrl()).into(holder.productImage);
 
-        // Handle quantity increase
-        holder.increaseQuantity.setOnClickListener(v -> updateQuantity(item, 1));
+        holder.increaseQuantity.setOnClickListener(v -> {
+            if (item.getQuantity() < 5) {
+                updateQuantity(item, 1, position);
+            } else {
+                Toast.makeText(context, "You can only order up to 5 items.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        // Handle quantity decrease
-        holder.decreaseQuantity.setOnClickListener(v -> updateQuantity(item, -1));
-
-        // Handle product removal
-        holder.removeItem.setOnClickListener(v -> removeItem(item));
+        holder.decreaseQuantity.setOnClickListener(v -> updateQuantity(item, -1, position));
+        holder.removeItem.setOnClickListener(v -> removeItem(item, position));
     }
 
-    private void updateQuantity(CartItem item, int change) {
+    private void updateQuantity(CartItem item, int change, int position) {
         int newQuantity = item.getQuantity() + change;
-        if (newQuantity > 0) {
+        if (newQuantity > 0 && newQuantity <= 5) {
             item.setQuantity(newQuantity);
+            notifyItemChanged(position);
             updateFirestore(item);
         }
     }
 
     private void updateFirestore(CartItem item) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DocumentReference itemRef = db.collection("Carts").document(userId).collection("Items").document(item.getId());
+        DocumentReference itemRef = db.collection("carts").document(userId).collection("items").document(item.getDocumentId());
+
         itemRef.update("quantity", item.getQuantity()).addOnSuccessListener(aVoid -> updateTotalPrice());
     }
 
-    private void removeItem(CartItem item) {
+    private void removeItem(CartItem item, int position) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        db.collection("Carts").document(userId).collection("Items").document(item.getId())
-                .delete().addOnSuccessListener(aVoid -> {
-                    cartItems.remove(item);
-                    notifyDataSetChanged();
-                    updateTotalPrice();
-                });
+        DocumentReference itemRef = db.collection("carts").document(userId).collection("items").document(item.getDocumentId());
+
+        itemRef.delete().addOnSuccessListener(aVoid -> {
+            cartItems.remove(position);
+            notifyItemRemoved(position);
+            updateTotalPrice();
+        });
     }
 
     private void updateTotalPrice() {
@@ -112,39 +115,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             increaseQuantity = itemView.findViewById(R.id.buttonIncreaseQuantity);
             decreaseQuantity = itemView.findViewById(R.id.buttonDecreaseQuantity);
             removeItem = itemView.findViewById(R.id.buttonRemoveItem);
-        }
-    }
-
-    // AsyncTask to load image without Glide
-    private static class ImageLoader extends AsyncTask<String, Void, Bitmap> {
-        private ImageView imageView;
-
-        public ImageLoader(ImageView imageView) {
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... urls) {
-            String imageUrl = urls[0];
-            Bitmap bitmap = null;
-            try {
-                URL url = new URL(imageUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                bitmap = BitmapFactory.decodeStream(input);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            if (result != null) {
-                imageView.setImageBitmap(result);
-            }
         }
     }
 }

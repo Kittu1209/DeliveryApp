@@ -56,7 +56,7 @@ public class Fragment_HomeStudent extends Fragment {
     }
 
     private void setupRecyclerView() {
-        productRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        productRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         productList = new ArrayList<>();
         productAdapter = new ProductAdapter(getContext(), productList, product -> {
             // Handle product click - Open Product Detail Page
@@ -71,28 +71,29 @@ public class Fragment_HomeStudent extends Fragment {
         CollectionReference productsRef = db.collection("products");
 
         productsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            Log.d(TAG, "Total Documents Retrieved: " + queryDocumentSnapshots.size());
             if (queryDocumentSnapshots.isEmpty()) {
                 Toast.makeText(getContext(), "No products found", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             productList.clear(); // Clear previous data before adding new items
-            int count = 0; // Debugging: Count fetched products
 
             for (DocumentSnapshot document : queryDocumentSnapshots) {
+                Log.d(TAG, "Document Data: " + document.getData()); // Debugging
+
                 if (document.exists()) {
                     Product product = document.toObject(Product.class);
                     if (product != null) {
                         product.setId(document.getId());
                         productList.add(product);
-                        count++;
-                        Log.d(TAG, "Loaded Product: " + product.getName() + " | ID: " + product.getId());
+                        Log.d(TAG, "Loaded Product: " + product.getName());
                     }
                 }
             }
 
-            Log.d(TAG, "Total products loaded: " + count);
-            productAdapter.notifyDataSetChanged();
+            Log.d(TAG, "Total products loaded: " + productList.size());
+            getActivity().runOnUiThread(() -> productAdapter.notifyDataSetChanged());
 
         }).addOnFailureListener(e -> {
             Toast.makeText(getContext(), "Failed to load products", Toast.LENGTH_SHORT).show();

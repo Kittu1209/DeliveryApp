@@ -1,6 +1,7 @@
 package com.example.fooddeliveryapp_student;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Fragment_CartStudent extends Fragment {
-
     private RecyclerView recyclerView;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItemList;
@@ -42,7 +42,8 @@ public class Fragment_CartStudent extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         cartItemList = new ArrayList<>();
-        cartAdapter = new CartAdapter(cartItemList, db, totalPriceText);
+        cartAdapter = new CartAdapter(getContext(), cartItemList, db, totalPriceText);
+
         recyclerView.setAdapter(cartAdapter);
 
         loadCartItems();
@@ -51,7 +52,13 @@ public class Fragment_CartStudent extends Fragment {
     }
 
     private void loadCartItems() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = auth.getCurrentUser().getUid();
         CollectionReference cartRef = db.collection("carts").document(userId).collection("items");
 
         cartRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
@@ -60,6 +67,13 @@ public class Fragment_CartStudent extends Fragment {
 
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 CartItem item = doc.toObject(CartItem.class);
+                if (doc.getId() != null) {
+                    item.setDocumentId(doc.getId());  // ✅ Ensure document ID is stored
+                } else {
+                    Log.e("Fragment_CartStudent", "Document ID is null for item");
+                    continue;
+                }
+
                 cartItemList.add(item);
                 total += item.getPrice() * item.getQuantity();
             }
@@ -70,5 +84,4 @@ public class Fragment_CartStudent extends Fragment {
                 Toast.makeText(getContext(), "Failed to load cart items", Toast.LENGTH_SHORT).show()
         );
     }
-
 }
