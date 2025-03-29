@@ -1,15 +1,18 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +30,13 @@ public class Fragment_CartStudent extends Fragment {
     private List<CartItem> cartItemList;
     private FirebaseFirestore db;
     private TextView totalPriceText;
+    private Button placeOrderButton;  // ✅ Add button reference
 
     public Fragment_CartStudent() {
         // Required empty constructor
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment__cart_student, container, false);
@@ -39,14 +44,17 @@ public class Fragment_CartStudent extends Fragment {
         db = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.recycler_cart);
         totalPriceText = view.findViewById(R.id.textTotalPrice);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        placeOrderButton = view.findViewById(R.id.order_button); // ✅ Find button
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         cartItemList = new ArrayList<>();
         cartAdapter = new CartAdapter(getContext(), cartItemList, db, totalPriceText);
-
         recyclerView.setAdapter(cartAdapter);
 
         loadCartItems();
+
+        // ✅ Set click listener to navigate to Fragment_DeliveryAddressStudent
+        placeOrderButton.setOnClickListener(v -> openDeliveryAddressFragment());
 
         return view;
     }
@@ -83,5 +91,14 @@ public class Fragment_CartStudent extends Fragment {
         }).addOnFailureListener(e ->
                 Toast.makeText(getContext(), "Failed to load cart items", Toast.LENGTH_SHORT).show()
         );
+    }
+
+    private void openDeliveryAddressFragment() {
+        Fragment_DeliveryAddressStudent deliveryAddressFragment = new Fragment_DeliveryAddressStudent();
+
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, deliveryAddressFragment); // Replace with your fragment container ID
+        transaction.addToBackStack(null); // Allows back navigation
+        transaction.commit();
     }
 }
