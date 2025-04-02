@@ -1,6 +1,7 @@
 package com.example.fooddeliveryapp_student;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +31,8 @@ public class Fragment_CartStudent extends Fragment {
     private List<CartItem> cartItemList;
     private FirebaseFirestore db;
     private TextView totalPriceText;
-    private Button placeOrderButton;  // ✅ Add button reference
+    private Button placeOrderButton;
+    private double totalAmount = 0.0; // ✅ Variable to store total amount
 
     public Fragment_CartStudent() {
         // Required empty constructor
@@ -44,7 +46,7 @@ public class Fragment_CartStudent extends Fragment {
         db = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.recycler_cart);
         totalPriceText = view.findViewById(R.id.textTotalPrice);
-        placeOrderButton = view.findViewById(R.id.order_button); // ✅ Find button
+        placeOrderButton = view.findViewById(R.id.order_button);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         cartItemList = new ArrayList<>();
@@ -53,8 +55,7 @@ public class Fragment_CartStudent extends Fragment {
 
         loadCartItems();
 
-        // ✅ Set click listener to navigate to Fragment_DeliveryAddressStudent
-        placeOrderButton.setOnClickListener(v -> openDeliveryAddressFragment());
+        placeOrderButton.setOnClickListener(v -> openPaymentPage()); // ✅ Open Payment Page
 
         return view;
     }
@@ -71,34 +72,31 @@ public class Fragment_CartStudent extends Fragment {
 
         cartRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             cartItemList.clear();
-            double total = 0.0;
+            totalAmount = 0.0;
 
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 CartItem item = doc.toObject(CartItem.class);
                 if (doc.getId() != null) {
-                    item.setDocumentId(doc.getId());  // ✅ Ensure document ID is stored
+                    item.setDocumentId(doc.getId());
                 } else {
                     Log.e("Fragment_CartStudent", "Document ID is null for item");
                     continue;
                 }
 
                 cartItemList.add(item);
-                total += item.getPrice() * item.getQuantity();
+                totalAmount += item.getPrice() * item.getQuantity();
             }
 
-            totalPriceText.setText("Total: ₹" + total);
+            totalPriceText.setText("Total: ₹" + totalAmount);
             cartAdapter.notifyDataSetChanged();
         }).addOnFailureListener(e ->
                 Toast.makeText(getContext(), "Failed to load cart items", Toast.LENGTH_SHORT).show()
         );
     }
 
-    private void openDeliveryAddressFragment() {
-        Fragment_DeliveryAddressStudent deliveryAddressFragment = new Fragment_DeliveryAddressStudent();
-
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, deliveryAddressFragment); // Replace with your fragment container ID
-        transaction.addToBackStack(null); // Allows back navigation
-        transaction.commit();
+    private void openPaymentPage() {
+        Intent intent = new Intent(getActivity(), PaymentPage.class);
+        intent.putExtra("totalAmount", totalAmount);
+        startActivity(intent);
     }
 }
