@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +27,7 @@ public class Dashboard_Fragment_vendor extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Button shop_add;
+    private Button shop_add,categoryBtn;
 
     public Dashboard_Fragment_vendor() {
         // Required empty public constructor
@@ -73,8 +74,18 @@ public class Dashboard_Fragment_vendor extends Fragment {
                 startActivity(intent);
             }
         });
+        categoryBtn=view.findViewById(R.id.category_btn);
+        categoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), CategoryPage.class);
+                startActivity(intent);
+            }
+        });
 
+        return view;
 
-        return inflater.inflate(R.layout.fragment_dashboard__vendor, container, false);
+       // return inflater.inflate(R.layout.fragment_dashboard__vendor, container, false);
     }
 }

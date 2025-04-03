@@ -114,7 +114,12 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("Vendors").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
-                        navigateTo(HomePageVendor.class, "Welcome Vendor!");
+                       // navigateTo(Home_Fragment_Vendor.class, "Welcome Vendor!");
+                        Intent intent = new Intent(LoginPage.this, HomePageVendor.class);
+                        intent.putExtra("fragment", "vendor_home");
+                        startActivity(intent);
+                        showToast("Welcome Vendor!");
+                        finish();
                     } else {
                         showToast("Access Denied! Role not recognized");
                         authProfile.signOut();

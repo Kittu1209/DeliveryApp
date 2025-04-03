@@ -7,9 +7,10 @@
 
     <Button
         android:id="@+id/category_btn"
-        android:layout_width="183dp"
-        android:layout_height="118dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="203dp"
+        android:layout_height="117dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="70dp"
         android:text="Category" />
 
     <Button
@@ -17,7 +18,7 @@
         android:layout_width="185dp"
         android:layout_height="118dp"
         android:layout_marginLeft="220dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="70dp"
         android:text="Shop Address" />
 
 </FrameLayout>
