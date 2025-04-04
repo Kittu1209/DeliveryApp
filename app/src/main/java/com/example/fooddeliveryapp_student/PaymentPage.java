@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class PaymentPage extends AppCompatActivity implements PaymentResultListener {
 
@@ -30,7 +31,8 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
     private Button btnPayNow;
     private int totalAmountInPaise;
     private FirebaseFirestore db;
-    private double totalAmount = 0.0; // Holds total cart amount
+    private double totalAmount = 0.0;
+    private AddressModel selectedAddress;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -42,7 +44,9 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
         btnPayNow = findViewById(R.id.btnPayNow);
         db = FirebaseFirestore.getInstance();
 
-        fetchTotalCartAmount(); // Fetch total amount from Firestore
+        selectedAddress = (AddressModel) getIntent().getSerializableExtra("selectedAddress");
+
+        fetchTotalCartAmount();
 
         btnPayNow.setOnClickListener(v -> startPayment());
     }
@@ -60,12 +64,14 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     totalAmount = 0.0;
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        double price = doc.getDouble("price");
-                        long quantity = doc.getLong("quantity");
-                        totalAmount += price * quantity;
+                        Double price = doc.getDouble("price");
+                        Long quantity = doc.getLong("quantity");
+                        if (price != null && quantity != null) {
+                            totalAmount += price * quantity;
+                        }
                     }
 
-                    totalAmountInPaise = (int) (totalAmount * 100); // Convert to paise
+                    totalAmountInPaise = (int) (totalAmount * 100);
                     tvTotalAmount.setText("Total Amount: ₹" + totalAmount);
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch cart total", Toast.LENGTH_SHORT).show());
@@ -73,7 +79,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
 
     private void startPayment() {
         Checkout checkout = new Checkout();
-        checkout.setKeyID("rzp_test_9DWCyV2eFgw3N8"); // Replace with actual Razorpay key
+        checkout.setKeyID("rzp_test_9DWCyV2eFgw3N8"); // Replace with actual key
 
         try {
             JSONObject options = new JSONObject();
@@ -97,13 +103,11 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             final String uid = user.getUid();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             db.collection("carts").document(uid).collection("items")
                     .get()
                     .addOnSuccessListener(querySnapshot -> {
                         if (!querySnapshot.isEmpty()) {
-
                             List<Map<String, Object>> itemsList = new ArrayList<>();
                             final double[] finalAmount = {0};
 
@@ -120,26 +124,32 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                                 itemsList.add(item);
                             }
 
+                            String orderId = "order_" + UUID.randomUUID().toString().substring(0, 8);
+                            android.util.Log.d("PaymentPage", "Generated Order ID: " + orderId);
+
                             Map<String, Object> orderData = new HashMap<>();
                             orderData.put("userId", uid);
-                            orderData.put("orderId", razorpayPaymentID);
+                            orderData.put("orderId", orderId);
                             orderData.put("status", "pending");
                             orderData.put("createdAt", new Date());
                             orderData.put("totalAmount", finalAmount[0]);
                             orderData.put("items", itemsList);
 
+                            if (selectedAddress != null) {
+                                Map<String, Object> addressData = new HashMap<>();
+                                addressData.put("name", selectedAddress.getStudentName());
+                                addressData.put("phone", selectedAddress.getPhoneNumber());
+                                addressData.put("hostel", selectedAddress.getHostel());
+                                addressData.put("room", selectedAddress.getRoom());
+
+                                orderData.put("deliveryAddress", addressData);
+                            }
+
                             db.collection("orders")
-                                    .document(razorpayPaymentID)
+                                    .document(orderId)
                                     .set(orderData)
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(PaymentPage.this, "Order placed successfully!", Toast.LENGTH_SHORT).show();
-                                        clearCart();
-
-                                        Intent intent = new Intent(PaymentPage.this, ConfirmOrderActivity.class);
-                                        intent.putExtra("PAYMENT_ID", razorpayPaymentID);
-                                        intent.putExtra("TOTAL_AMOUNT", finalAmount[0]);
-                                        startActivity(intent);
-                                        finish();
+                                        storePaymentDetails(uid, razorpayPaymentID, finalAmount[0], orderId);
                                     })
                                     .addOnFailureListener(e -> Toast.makeText(PaymentPage.this, "Failed to save order", Toast.LENGTH_LONG).show());
                         } else {
@@ -148,6 +158,31 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Error fetching cart items", Toast.LENGTH_LONG).show());
         }
+    }
+
+    private void storePaymentDetails(String userId, String paymentId, double amount, String orderId) {
+        Map<String, Object> paymentData = new HashMap<>();
+        paymentData.put("amount", amount);
+        paymentData.put("createdAt", new Date());
+        paymentData.put("orderId", orderId);
+        paymentData.put("paymentId", paymentId);
+        paymentData.put("status", "success");
+        paymentData.put("userId", userId);
+
+        db.collection("payments")
+                .document(paymentId)
+                .set(paymentData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(PaymentPage.this, "Payment details saved!", Toast.LENGTH_SHORT).show();
+                    clearCart();
+
+                    // ✅ Go to ConfirmOrderActivity with ORDER_ID
+                    Intent intent = new Intent(PaymentPage.this, ConfirmOrderActivity.class);
+                    intent.putExtra("ORDER_ID", orderId);
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(PaymentPage.this, "Failed to save payment details", Toast.LENGTH_LONG).show());
     }
 
     @Override
@@ -162,8 +197,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            FirebaseFirestore.getInstance().collection("carts").document(user.getUid())
-                                    .collection("items").document(document.getId()).delete();
+                            document.getReference().delete();
                         }
                     });
         }

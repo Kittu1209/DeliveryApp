@@ -34,14 +34,19 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         btnGoOrders = findViewById(R.id.btn_go_orders);
         db = FirebaseFirestore.getInstance();
 
-        // Retrieve orderId from Intent
+        // ✅ Get order ID from Intent and log it
         orderId = getIntent().getStringExtra("ORDER_ID");
-
-        if (orderId != null && !orderId.isEmpty()) {
-            fetchOrderTime();
-        } else {
+        if (orderId == null || orderId.trim().isEmpty()) {
+            Toast.makeText(this, "Error: ORDER_ID not passed.", Toast.LENGTH_LONG).show();
             tvEstimatedTime.setText("Error: Order ID not found.");
+            return;
         }
+
+        // ✅ Log for debugging
+        android.util.Log.d("ConfirmOrder", "Received ORDER_ID: " + orderId);
+
+        // ✅ Fetch order from Firestore
+        fetchOrderTime();
 
         btnGoHome.setOnClickListener(v -> {
             startActivity(new Intent(ConfirmOrderActivity.this, HomePage_Student.class));
@@ -49,10 +54,11 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         });
 
         btnGoOrders.setOnClickListener(v -> {
-            startActivity(new Intent(ConfirmOrderActivity.this, Fragment_myorderStudent.class));
+            startActivity(new Intent(ConfirmOrderActivity.this, HomePage_Student.class));
+            // Should be HomePage_Student (not fragment)
             finish();
         });
-    }
+}
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -65,17 +71,18 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
 
     private void fetchOrderTime() {
-        DocumentReference orderRef = db.collection("Orders").document(orderId);
+        DocumentReference orderRef = db.collection("orders").document(orderId);
+
+        android.util.Log.d("ConfirmOrder", "Fetching order: " + orderId);
+
         orderRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 Timestamp createdAt = documentSnapshot.getTimestamp("createdAt");
                 if (createdAt != null) {
-                    // Calculate estimated delivery time (1 hour later)
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(createdAt.toDate());
                     calendar.add(Calendar.HOUR, 1);
 
-                    // Format time
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a, dd MMM yyyy", Locale.getDefault());
                     String estimatedTime = sdf.format(calendar.getTime());
 
@@ -84,11 +91,14 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                     tvEstimatedTime.setText("Error: Order time not found.");
                 }
             } else {
+                android.util.Log.e("ConfirmOrder", "Order not found in Firestore");
                 tvEstimatedTime.setText("Error: Order not found.");
             }
         }).addOnFailureListener(e -> {
+            android.util.Log.e("ConfirmOrder", "Firestore error: " + e.getMessage());
             tvEstimatedTime.setText("Error fetching order time.");
             Toast.makeText(ConfirmOrderActivity.this, "Failed to fetch order details.", Toast.LENGTH_SHORT).show();
         });
     }
+
 }
