@@ -35,7 +35,7 @@ public class Orders_Fragment_Vendor extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         orderItemList = new ArrayList<>();
-        ordersAdapter = new OrderAdapter(orderItemList);
+    //    ordersAdapter = new OrderAdapter(orderItemList);
         recyclerView.setAdapter(ordersAdapter);
 
         fetchOrders();
@@ -63,10 +63,10 @@ public class Orders_Fragment_Vendor extends Fragment {
                         long updatedAt = document.getLong("updatedAt");
 
                         double totalPrice = document.getDouble("totalPrice"); // Retrieve total price
-                        OrderModel orderItem = new OrderModel(orderId, userId, studentName, phoneNumber,
-                                hostel, room, items, paymentStatus, orderStatus, razorpayPaymentId, createdAt, updatedAt, totalPrice);
+                     //   OrderModel orderItem = new OrderModel(orderId, userId, studentName, phoneNumber,
+                         //       hostel, room, items, paymentStatus, orderStatus, razorpayPaymentId, createdAt, updatedAt, totalPrice);
 
-                        orderItemList.add(orderItem);
+                       // orderItemList.add(orderItem);
                     }
                     ordersAdapter.notifyDataSetChanged();
                 })

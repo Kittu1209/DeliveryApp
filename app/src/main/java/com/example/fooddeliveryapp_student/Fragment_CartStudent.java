@@ -1,7 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,10 +31,10 @@ public class Fragment_CartStudent extends Fragment {
     private FirebaseFirestore db;
     private TextView totalPriceText;
     private Button placeOrderButton;
-    private double totalAmount = 0.0; // ✅ Variable to store total amount
+    private double totalAmount = 0.0;
 
     public Fragment_CartStudent() {
-        // Required empty constructor
+        // Required empty public constructor
     }
 
     @SuppressLint("MissingInflatedId")
@@ -55,7 +54,7 @@ public class Fragment_CartStudent extends Fragment {
 
         loadCartItems();
 
-        placeOrderButton.setOnClickListener(v -> openPaymentPage()); // ✅ Open Payment Page
+        placeOrderButton.setOnClickListener(v -> openPaymentPage());
 
         return view;
     }
@@ -95,8 +94,17 @@ public class Fragment_CartStudent extends Fragment {
     }
 
     private void openPaymentPage() {
-        Intent intent = new Intent(getActivity(), PaymentPage.class);
-        intent.putExtra("totalAmount", totalAmount);
-        startActivity(intent);
+        Fragment_DeliveryAddressStudent addressFragment = new Fragment_DeliveryAddressStudent();
+
+        // Pass total amount using Bundle
+        Bundle bundle = new Bundle();
+        bundle.putDouble("totalAmount", totalAmount);
+        addressFragment.setArguments(bundle);
+
+        // Replace current fragment with Fragment_DeliveryAddressStudent
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, addressFragment); // Replace with your actual FrameLayout ID
+        transaction.addToBackStack(null); // Allows user to return to cart
+        transaction.commit();
     }
 }
