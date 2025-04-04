@@ -15,6 +15,9 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".ConfirmOrderActivity"
+            android:exported="false" />
+        <activity
             android:name=".PaymentPage"
             android:exported="false" />
         <activity

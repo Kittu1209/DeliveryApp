@@ -65,11 +65,14 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
     public void onPaymentSuccess(String razorpayPaymentID) {
         Toast.makeText(this, "Payment Successful! ID: " + razorpayPaymentID, Toast.LENGTH_LONG).show();
 
-        // Set total amount to 0 in the UI
-        tvTotalAmount.setText("Total Amount: ₹0");
-
-        // Clear the cart
+        // Clear cart
         clearCart();
+
+        // Move to ConfirmOrder Page
+        Intent intent = new Intent(PaymentPage.this, ConfirmOrderActivity.class);
+        intent.putExtra("PAYMENT_ID", razorpayPaymentID); // Pass payment ID if needed
+        startActivity(intent);
+        finish(); // Close PaymentPage
     }
 
     @Override
@@ -87,19 +90,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                             FirebaseFirestore.getInstance().collection("carts").document(user.getUid())
                                     .collection("items").document(document.getId()).delete();
                         }
-                        // After clearing the cart, go back to HomeFragment/HomeActivity
-                        goToHome();
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Failed to clear cart", Toast.LENGTH_SHORT).show()
-                    );
+                    });
         }
-    }
-
-    private void goToHome() {
-        Intent intent = new Intent(this, HomePage_Student.class); // Replace with your main activity
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish(); // Close payment activity
     }
 }
