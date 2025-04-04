@@ -11,23 +11,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Orders_Fragment_Vendor extends Fragment {
 
     private RecyclerView recyclerView;
-    private OrderAdapter ordersAdapter;
-    private List<OrderModel> orderItemList;
+    private order_adapter_vendor ordersAdapter;
+    private List<order_model_vendor> orderItemList;
     private FirebaseFirestore db;
 
-    public Orders_Fragment_Vendor() {
-        // Required empty public constructor
-    }
+    public Orders_Fragment_Vendor() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_orders___vendor, container, false);
 
         db = FirebaseFirestore.getInstance();
@@ -35,11 +34,10 @@ public class Orders_Fragment_Vendor extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         orderItemList = new ArrayList<>();
-    //    ordersAdapter = new OrderAdapter(orderItemList);
+        ordersAdapter = new order_adapter_vendor(orderItemList);
         recyclerView.setAdapter(ordersAdapter);
 
         fetchOrders();
-
         return view;
     }
 
@@ -48,29 +46,25 @@ public class Orders_Fragment_Vendor extends Fragment {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     orderItemList.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String orderId = document.getId();
-                        String userId = document.getString("userId");
-                        String studentName = document.getString("studentName");
-                        String phoneNumber = document.getString("phoneNumber");
-                        String hostel = document.getString("hostel");
-                        String room = document.getString("room");
-                        List<CartItem> items = (List<CartItem>) document.get("items");
-                        String paymentStatus = document.getString("paymentStatus");
-                        String orderStatus = document.getString("orderStatus");
-                        String razorpayPaymentId = document.getString("razorpayPaymentId");
-                        long createdAt = document.getLong("createdAt");
-                        long updatedAt = document.getLong("updatedAt");
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String orderId = doc.getString("orderId");
+                        String name = doc.getString("name");
+                        String phone = doc.getString("phone");
+                        String hostel = doc.getString("hostel");
+                        String room = doc.getString("room");
+                        String status = doc.getString("status");
+                        double totalAmount = doc.getDouble("totalAmount") != null ? doc.getDouble("totalAmount") : 0.0;
+                        Timestamp createdAt = doc.getTimestamp("createdAt");
+                        String userId = doc.getString("userId");
+                        List<Object> items = (List<Object>) doc.get("items");
 
-                        double totalPrice = document.getDouble("totalPrice"); // Retrieve total price
-                     //   OrderModel orderItem = new OrderModel(orderId, userId, studentName, phoneNumber,
-                         //       hostel, room, items, paymentStatus, orderStatus, razorpayPaymentId, createdAt, updatedAt, totalPrice);
-
-                       // orderItemList.add(orderItem);
+                        order_model_vendor order = new order_model_vendor(orderId, name, phone, hostel, room, status, totalAmount, createdAt, userId, items);
+                        orderItemList.add(order);
                     }
                     ordersAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show()
+                );
     }
 }

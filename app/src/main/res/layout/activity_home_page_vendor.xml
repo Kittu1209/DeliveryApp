@@ -8,59 +8,43 @@
     android:layout_height="match_parent"
     tools:context=".HomePageVendor">
 
+    <!-- Main content area -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/purple_200">
 
-        <!-- FrameLayout to Stack Image over Toolbar -->
-        <FrameLayout
-            android:id="@+id/fragment_container"
+        <!-- Toolbar at the top -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_vendor"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            tools:ignore="InvalidId">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:navigationIcon="@drawable/ic_menu"
+            app:navigationIconTint="@color/purple"
+            android:contentInsetStart="16dp"/>
 
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:id="@+id/toolbar_vendor"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/white"
-                android:elevation="4dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:navigationIcon="@drawable/ic_menu"
-                app:navigationIconTint="@color/purple"
-                android:contentInsetStart="16dp"/>
-
-            <!-- ImageView Overlapping Toolbar
-            <ImageView
-                android:id="@+id/top_image"
-                android:layout_width="200dp"
-                android:layout_height="100dp"
-                android:src="@drawable/fdalogo"
-                android:scaleType="fitCenter"
-                android:layout_marginStart="40dp"
-                android:layout_centerHorizontal="true"
-                android:adjustViewBounds="true"
-                android:layout_alignTop="@id/toolbar_vendor"/>  -->
-        </FrameLayout>
-
+        <!-- Fragment container below the toolbar -->
         <FrameLayout
+            android:id="@+id/fragment_container_vendor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/fragment_container_vendor"
-            android:layout_below="@id/toolbar_vendor"
-            tools:ignore="NotSibling" />
+            android:layout_below="@id/toolbar_vendor" />
 
+        <!-- Bottom bar and FAB -->
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
 
+            <!-- BottomAppBar with embedded BottomNavigationView -->
             <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/bottomAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/bottomAppBar"
                 android:layout_gravity="bottom"
                 android:backgroundTint="@color/white"
                 app:fabCradleMargin="10dp"
@@ -68,28 +52,31 @@
                 app:fabCradleRoundedCornerRadius="50dp">
 
                 <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottom_navigation_vendor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/bottom_navigation_vendor"
-                    app:labelVisibilityMode="labeled"
+                    android:background="@android:color/transparent"
                     app:menu="@menu/bottom_nevigation_menu_vendor"
-                    android:background="@android:color/transparent"/>
+                    app:labelVisibilityMode="labeled"/>
             </com.google.android.material.bottomappbar.BottomAppBar>
 
+            <!-- Floating Action Button -->
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
+                android:layout_gravity="center"
                 android:src="@drawable/baseline_add_24"
+                android:contentDescription="Add new item"
+                android:backgroundTint="@color/white"
                 android:tint="@color/purple"
                 app:layout_anchor="@id/bottomAppBar"
                 app:layout_anchorGravity="center"
-                app:maxImageSize="44dp"
-                android:contentDescription="Add new item"/>
+                app:maxImageSize="44dp" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </RelativeLayout>
 
+    <!-- Navigation drawer (side menu) -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_drawer_vendor"
         android:layout_width="wrap_content"
