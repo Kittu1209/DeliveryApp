@@ -117,7 +117,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                                 item.put("name", doc.getString("name"));
                                 item.put("price", doc.getDouble("price"));
                                 item.put("quantity", doc.getLong("quantity"));
-                                item.put("shopId", doc.getString("shopId"));
+                                item.put("shopId", doc.getString("shopId")); // ✅ Shop ID added
                                 item.put("imageUrl", doc.getString("imageUrl"));
 
                                 finalAmount[0] += doc.getDouble("price") * doc.getLong("quantity");
@@ -131,7 +131,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                             orderData.put("userId", uid);
                             orderData.put("orderId", orderId);
                             orderData.put("status", "pending");
-                            orderData.put("createdAt", new Date());
+                            orderData.put("createdAt", new Date()); // ✅ CreatedAt time added
                             orderData.put("totalAmount", finalAmount[0]);
                             orderData.put("items", itemsList);
 
@@ -176,7 +176,6 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                     Toast.makeText(PaymentPage.this, "Payment details saved!", Toast.LENGTH_SHORT).show();
                     clearCart();
 
-                    // ✅ Go to ConfirmOrderActivity with ORDER_ID
                     Intent intent = new Intent(PaymentPage.this, ConfirmOrderActivity.class);
                     intent.putExtra("ORDER_ID", orderId);
                     startActivity(intent);

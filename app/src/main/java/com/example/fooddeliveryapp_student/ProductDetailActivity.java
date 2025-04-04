@@ -1,6 +1,5 @@
 package com.example.fooddeliveryapp_student;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -101,21 +101,22 @@ public class ProductDetailActivity extends AppCompatActivity {
                 String name = documentSnapshot.getString("name");
                 Double price = documentSnapshot.getDouble("price");
                 String imageUrl = documentSnapshot.getString("imageUrl");
+                String shopId = documentSnapshot.getString("shopId");
 
                 Map<String, Object> cartItem = new HashMap<>();
                 cartItem.put("productId", productId);
                 cartItem.put("name", name);
                 cartItem.put("price", price);
                 cartItem.put("imageUrl", imageUrl);
+                cartItem.put("shopId", shopId);
                 cartItem.put("quantity", 1);
+                cartItem.put("updatedAt", FieldValue.serverTimestamp()); // ✅ New line
 
-                // Fixing the Firestore Path
                 db.collection("carts").document(userId).collection("items").document(productId)
                         .set(cartItem)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(this, "Added to Cart", Toast.LENGTH_SHORT).show();
-                            openCartFragment();
-                        })
+                        .addOnSuccessListener(aVoid ->
+                                Toast.makeText(this, "Added to Cart", Toast.LENGTH_SHORT).show()
+                        )
                         .addOnFailureListener(e ->
                                 Toast.makeText(this, "Failed to add to cart", Toast.LENGTH_SHORT).show()
                         );
@@ -126,18 +127,4 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error retrieving product", Toast.LENGTH_SHORT).show()
         );
     }
-
-
-    // Function to open Fragment_CartStudent
-    private void openCartFragment() {
-        Fragment_CartStudent cartFragment = new Fragment_CartStudent();
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, cartFragment)  // Replaces current content with the fragment
-                .addToBackStack(null)  // Allows going back to previous activity
-                .commit();
-    }
-
-
-
 }

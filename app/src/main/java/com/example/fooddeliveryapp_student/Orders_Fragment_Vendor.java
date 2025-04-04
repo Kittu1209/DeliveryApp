@@ -5,18 +5,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Orders_Fragment_Vendor extends Fragment {
 
@@ -40,37 +44,73 @@ public class Orders_Fragment_Vendor extends Fragment {
         recyclerView.setAdapter(adapter);
 
         db = FirebaseFirestore.getInstance();
-        fetchOrders();
+
+        String currentVendorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Step 1: Get shopIds where ownerId == currentVendorId
+        db.collection("Shops").whereEqualTo("ownerId", currentVendorId).get().addOnSuccessListener(shopSnapshots -> {
+            Set<String> vendorShopIds = new HashSet<>();
+            for (QueryDocumentSnapshot shopDoc : shopSnapshots) {
+                String shopId = shopDoc.getId(); // assuming doc ID is shopId
+                vendorShopIds.add(shopId);
+            }
+
+            if (vendorShopIds.isEmpty()) {
+                Toast.makeText(getContext(), "No shops found for this vendor", Toast.LENGTH_SHORT).show();
+            } else {
+                fetchOrdersForShops(vendorShopIds);
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Failed to fetch shop data", Toast.LENGTH_SHORT).show();
+        });
 
         return view;
     }
 
-    private void fetchOrders() {
+    private void fetchOrdersForShops(Set<String> vendorShopIds) {
         db.collection("orders").get().addOnSuccessListener(queryDocumentSnapshots -> {
             orderList.clear();
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                String orderId = doc.getString("orderId");
-                String userId = doc.getString("userId");
-                String name = doc.getString("name");
-                String phone = doc.getString("phone");
-                String hostel = doc.getString("hostel");
-                String room = doc.getString("room");
-                String status = doc.getString("status");
-                double totalAmount = doc.getDouble("totalAmount") != null ? doc.getDouble("totalAmount") : 0;
-                Timestamp createdAt = doc.getTimestamp("createdAt");
-
-                List<ItemModel> itemList = new ArrayList<>();
                 List<Map<String, Object>> itemsRaw = (List<Map<String, Object>>) doc.get("items");
+
+                boolean isOrderForVendor = false;
+                List<ItemModel> vendorItems = new ArrayList<>();
+
                 if (itemsRaw != null) {
                     for (Map<String, Object> itemMap : itemsRaw) {
-                        String itemName = (String) itemMap.get("name");
-                        double price = itemMap.get("price") instanceof Number ? ((Number) itemMap.get("price")).doubleValue() : 0;
-                        int qty = itemMap.get("quantity") instanceof Number ? ((Number) itemMap.get("quantity")).intValue() : 0;
-                        itemList.add(new ItemModel(itemName, price, qty));
+                        String itemShopId = (String) itemMap.get("shopId");
+                        if (vendorShopIds.contains(itemShopId)) {
+                            isOrderForVendor = true;
+
+                            String itemName = (String) itemMap.get("name");
+                            double price = itemMap.get("price") instanceof Number ? ((Number) itemMap.get("price")).doubleValue() : 0;
+                            int qty = itemMap.get("quantity") instanceof Number ? ((Number) itemMap.get("quantity")).intValue() : 0;
+
+                            vendorItems.add(new ItemModel(itemName, price, qty));
+                        }
                     }
                 }
 
-                orderList.add(new order_model_vendor(orderId, userId, name, phone, hostel, room, status, totalAmount, createdAt, itemList));
+                if (isOrderForVendor) {
+                    String orderId = doc.getString("orderId");
+                    String userId = doc.getString("userId");
+                    String status = doc.getString("status");
+                    double totalAmount = doc.getDouble("totalAmount") != null ? doc.getDouble("totalAmount") : 0;
+                    Timestamp createdAt = doc.getTimestamp("createdAt");
+
+                    // Fetch address
+                    Map<String, Object> addressMap = (Map<String, Object>) doc.get("deliveryAddress");
+                    String name = "", phone = "", hostel = "", room = "";
+                    if (addressMap != null) {
+                        name = (String) addressMap.get("name");
+                        phone = (String) addressMap.get("phone");
+                        hostel = (String) addressMap.get("hostel");
+                        room = (String) addressMap.get("room");
+                    }
+
+                    order_model_vendor orderModel = new order_model_vendor(orderId, userId, name, phone, hostel, room, status, totalAmount, createdAt, vendorItems);
+                    orderList.add(orderModel);
+                }
             }
             adapter.notifyDataSetChanged();
         }).addOnFailureListener(e -> {
