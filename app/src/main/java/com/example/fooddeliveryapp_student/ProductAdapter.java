@@ -1,14 +1,18 @@
 package com.example.fooddeliveryapp_student;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
@@ -42,8 +46,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.textViewPrice.setText("₹" + product.getPrice());
         holder.textViewDescription.setText(product.getDescription());
 
-        // Load product image
-        Picasso.get().load(product.getImageUrl()).into(holder.imageViewProduct);
+        // Decode Base64 image and set to ImageView
+        try {
+            String base64Image = product.getImageUrl(); // contains Base64 string
+            if (base64Image != null && !base64Image.isEmpty()) {
+                byte[] decodedBytes = Base64.decode(base64Image, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                holder.imageViewProduct.setImageBitmap(bitmap);
+            } else {
+                // Optional: Set a placeholder image
+                holder.imageViewProduct.setImageResource(android.R.drawable.ic_menu_report_image);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            holder.imageViewProduct.setImageResource(android.R.drawable.ic_menu_report_image);
+//holder.imageViewProduct.setImageResource(R.drawable.placeholder_image);
+        }
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(product));
     }

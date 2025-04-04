@@ -1,5 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,7 +13,7 @@ import android.widget.Button;
 
 public class Home_Fragment_Vendor extends Fragment {
 
-    private Button btnAddProduct,shop_add,categoryBtn; // Declare button
+    private Button btnAddProduct,shop_add,categoryBtn,editProd; // Declare button
 
     public Home_Fragment_Vendor() {
         // Required empty public constructor
@@ -32,6 +33,7 @@ public class Home_Fragment_Vendor extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -55,6 +57,15 @@ public class Home_Fragment_Vendor extends Fragment {
         });
         categoryBtn=view.findViewById(R.id.category_btn);
         categoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), CategoryPage.class);
+                startActivity(intent);
+            }
+        });
+        editProd=view.findViewById(R.id.btneditProduct);
+        editProd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
