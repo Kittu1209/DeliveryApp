@@ -4,17 +4,18 @@ import com.google.firebase.Timestamp;
 import java.util.List;
 
 public class order_model_vendor {
-    private String orderId, name, phone, hostel, room, status, userId;
+    private String orderId, userId, name, phone, hostel, room, status;
     private double totalAmount;
     private Timestamp createdAt;
-    private List<Object> items;
+    private List<ItemModel> items;
 
     public order_model_vendor() {}
 
-    public order_model_vendor(String orderId, String name, String phone, String hostel, String room,
-                              String status, double totalAmount, Timestamp createdAt, String userId,
-                              List<Object> items) {
+    public order_model_vendor(String orderId, String userId, String name, String phone,
+                              String hostel, String room, String status, double totalAmount,
+                              Timestamp createdAt, List<ItemModel> items) {
         this.orderId = orderId;
+        this.userId = userId;
         this.name = name;
         this.phone = phone;
         this.hostel = hostel;
@@ -22,11 +23,11 @@ public class order_model_vendor {
         this.status = status;
         this.totalAmount = totalAmount;
         this.createdAt = createdAt;
-        this.userId = userId;
         this.items = items;
     }
 
     public String getOrderId() { return orderId; }
+    public String getUserId() { return userId; }
     public String getName() { return name; }
     public String getPhone() { return phone; }
     public String getHostel() { return hostel; }
@@ -34,6 +35,5 @@ public class order_model_vendor {
     public String getStatus() { return status; }
     public double getTotalAmount() { return totalAmount; }
     public Timestamp getCreatedAt() { return createdAt; }
-    public String getUserId() { return userId; }
-    public List<Object> getItems() { return items; }
+    public List<ItemModel> getItems() { return items; }
 }

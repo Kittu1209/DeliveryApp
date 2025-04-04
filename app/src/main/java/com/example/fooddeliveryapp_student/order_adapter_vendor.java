@@ -4,17 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.Timestamp;
-
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class order_adapter_vendor extends RecyclerView.Adapter<order_adapter_vendor.OrderViewHolder> {
+public class order_adapter_vendor extends RecyclerView.Adapter<order_adapter_vendor.ViewHolder> {
 
     private List<order_model_vendor> orderList;
 
@@ -24,31 +20,38 @@ public class order_adapter_vendor extends RecyclerView.Adapter<order_adapter_ven
 
     @NonNull
     @Override
-    public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_order_vendor, parent, false);
-        return new OrderViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         order_model_vendor order = orderList.get(position);
 
         holder.textOrderId.setText("Order ID: " + order.getOrderId());
         holder.textName.setText("Name: " + order.getName());
         holder.textPhone.setText("Phone: " + order.getPhone());
-        holder.textAddress.setText("Address: " + order.getHostel() + ", Room " + order.getRoom());
+        holder.textAddress.setText("Address: " + order.getHostel() + ", Room: " + order.getRoom());
         holder.textAmount.setText("Total: ₹" + order.getTotalAmount());
         holder.textStatus.setText("Status: " + order.getStatus());
 
-        Timestamp timestamp = order.getCreatedAt();
-        if (timestamp != null) {
-            Date date = timestamp.toDate();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
-            holder.textDate.setText("Date: " + sdf.format(date));
-        } else {
-            holder.textDate.setText("Date: N/A");
+        if (order.getCreatedAt() != null) {
+            String formattedDate = new SimpleDateFormat("dd MMM yyyy hh:mm a", Locale.getDefault())
+                    .format(order.getCreatedAt().toDate());
+            holder.textDate.setText("Date: " + formattedDate);
         }
+
+        // Show items
+        StringBuilder itemDetails = new StringBuilder("Items:\n");
+        for (ItemModel item : order.getItems()) {
+            itemDetails.append("- ")
+                    .append(item.getName())
+                    .append(" (Qty: ").append(item.getQuantity())
+                    .append(", ₹").append(item.getPrice()).append(")\n");
+        }
+        holder.textItems.setText(itemDetails.toString().trim());
     }
 
     @Override
@@ -56,10 +59,10 @@ public class order_adapter_vendor extends RecyclerView.Adapter<order_adapter_ven
         return orderList.size();
     }
 
-    public static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView textOrderId, textName, textPhone, textAddress, textAmount, textStatus, textDate;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView textOrderId, textName, textPhone, textAddress, textAmount, textStatus, textDate, textItems;
 
-        public OrderViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textOrderId = itemView.findViewById(R.id.text_order_id);
             textName = itemView.findViewById(R.id.text_name);
@@ -68,6 +71,7 @@ public class order_adapter_vendor extends RecyclerView.Adapter<order_adapter_ven
             textAmount = itemView.findViewById(R.id.text_amount);
             textStatus = itemView.findViewById(R.id.text_status);
             textDate = itemView.findViewById(R.id.text_date);
+            textItems = itemView.findViewById(R.id.text_items);
         }
     }
 }

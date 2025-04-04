@@ -13,40 +13,59 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <TextView android:id="@+id/text_order_id"
+        <TextView
+            android:id="@+id/text_order_id"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:text="Order ID"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingBottom="4dp" />
 
-        <TextView android:id="@+id/text_name"
+        <TextView
+            android:id="@+id/text_name"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:text="Name" />
 
-        <TextView android:id="@+id/text_phone"
+        <TextView
+            android:id="@+id/text_phone"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:text="Phone" />
 
-        <TextView android:id="@+id/text_address"
+        <TextView
+            android:id="@+id/text_address"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:text="Address" />
 
-        <TextView android:id="@+id/text_amount"
+        <TextView
+            android:id="@+id/text_amount"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Amount" />
+            android:layout_height="wrap_content"
+            android:text="Total Amount" />
 
-        <TextView android:id="@+id/text_status"
+        <TextView
+            android:id="@+id/text_status"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Status" />
+            android:layout_height="wrap_content"
+            android:text="Order Status" />
 
-        <TextView android:id="@+id/text_date"
+        <TextView
+            android:id="@+id/text_date"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="Date" />
+            android:layout_height="wrap_content"
+            android:text="Order Date" />
+
+        <TextView
+            android:id="@+id/text_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Items"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:paddingTop="8dp" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>
