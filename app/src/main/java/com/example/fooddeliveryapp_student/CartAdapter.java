@@ -1,4 +1,6 @@
 package com.example.fooddeliveryapp_student;
+import com.example.fooddeliveryapp_student.CartItem;
+
 
 import android.content.Context;
 import android.view.LayoutInflater;

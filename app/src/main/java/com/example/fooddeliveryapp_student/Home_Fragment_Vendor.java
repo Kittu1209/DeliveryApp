@@ -12,7 +12,7 @@ import android.widget.Button;
 
 public class Home_Fragment_Vendor extends Fragment {
 
-    private Button btnAddProduct; // Declare button
+    private Button btnAddProduct,shop_add,categoryBtn; // Declare button
 
     public Home_Fragment_Vendor() {
         // Required empty public constructor
@@ -44,6 +44,23 @@ public class Home_Fragment_Vendor extends Fragment {
         btnAddProduct.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), AddProductActivity.class);
             startActivity(intent);
+        });
+        shop_add=view.findViewById(R.id.shop_address_btn_);
+        shop_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), Shops_Address.class);
+                startActivity(intent);
+            }
+        });
+        categoryBtn=view.findViewById(R.id.category_btn);
+        categoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), CategoryPage.class);
+                startActivity(intent);
+            }
         });
 
         return view;
