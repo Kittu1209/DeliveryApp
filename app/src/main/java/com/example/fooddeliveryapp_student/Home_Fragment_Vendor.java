@@ -13,7 +13,7 @@ import android.widget.Button;
 
 public class Home_Fragment_Vendor extends Fragment {
 
-    private Button btnAddProduct,shop_add,categoryBtn,editProd; // Declare button
+    private Button btnAddProduct,shop_add,categoryBtn,editProd,editCat; // Declare button
 
     public Home_Fragment_Vendor() {
         // Required empty public constructor
@@ -73,7 +73,15 @@ public class Home_Fragment_Vendor extends Fragment {
                 startActivity(intent);
             }
         });
-
+        editCat=view.findViewById(R.id.btnAddCategory);
+        editCat.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), AddCategoryActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 }

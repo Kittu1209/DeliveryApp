@@ -6,7 +6,7 @@ public class CategoryModel {
         private String name;
         private String slug;
         private String description;
-        private String imageUrl;
+        private String image;
         private String color;
         private boolean isActive;
 
@@ -42,12 +42,12 @@ public class CategoryModel {
         this.description = description;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrl(String image) {
+        this.image = image;
     }
 
     public String getColor() {
@@ -69,12 +69,12 @@ public class CategoryModel {
     // Required Empty Constructor for Firebase
         public CategoryModel() {}
 
-        public CategoryModel(String categoryId, String name, String slug, String description, String imageUrl, String color, boolean isActive) {
+        public CategoryModel(String categoryId, String name, String slug, String description, String image, String color, boolean isActive) {
             this.categoryId = categoryId;
             this.name = name;
             this.slug = slug;
             this.description = description;
-            this.imageUrl = imageUrl;
+            this.image = image;
             this.color = color;
             this.isActive = isActive;
         }
