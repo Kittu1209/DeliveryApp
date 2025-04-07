@@ -1,6 +1,7 @@
 package com.example.fooddeliveryapp_student;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,75 +47,90 @@ public class Orders_Fragment_Vendor extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         String currentVendorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.d("VendorUID", "Current Vendor UID: " + currentVendorId);
 
-        // Step 1: Get shopIds where ownerId == currentVendorId
-        db.collection("Shops").whereEqualTo("ownerId", currentVendorId).get().addOnSuccessListener(shopSnapshots -> {
-            Set<String> vendorShopIds = new HashSet<>();
-            for (QueryDocumentSnapshot shopDoc : shopSnapshots) {
-                String shopId = shopDoc.getId(); // assuming doc ID is shopId
-                vendorShopIds.add(shopId);
-            }
-
-            if (vendorShopIds.isEmpty()) {
-                Toast.makeText(getContext(), "No shops found for this vendor", Toast.LENGTH_SHORT).show();
-            } else {
-                fetchOrdersForShops(vendorShopIds);
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(getContext(), "Failed to fetch shop data", Toast.LENGTH_SHORT).show();
-        });
+        fetchVendorShops(currentVendorId);
 
         return view;
     }
 
+    private void fetchVendorShops(String vendorId) {
+        db.collection("shops")
+                .whereEqualTo("ownerId", vendorId)
+                .get()
+                .addOnSuccessListener(shopSnapshots -> {
+                    Set<String> vendorShopIds = new HashSet<>();
+
+                    for (QueryDocumentSnapshot shopDoc : shopSnapshots) {
+                        Log.d("ShopFetch", "Found Shop: " + shopDoc.getId());
+                        vendorShopIds.add(shopDoc.getId());
+                    }
+
+                    if (vendorShopIds.isEmpty()) {
+                        Toast.makeText(getContext(), "No shops found for this vendor", Toast.LENGTH_SHORT).show();
+                    } else {
+                        fetchOrdersForShops(vendorShopIds);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to fetch shop data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("FirestoreError", "Error fetching shops", e);
+                });
+    }
+
     private void fetchOrdersForShops(Set<String> vendorShopIds) {
-        db.collection("orders").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            orderList.clear();
-            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                List<Map<String, Object>> itemsRaw = (List<Map<String, Object>>) doc.get("items");
+        db.collection("orders").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    orderList.clear();
 
-                boolean isOrderForVendor = false;
-                List<ItemModel> vendorItems = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        List<Map<String, Object>> itemsRaw = (List<Map<String, Object>>) doc.get("items");
 
-                if (itemsRaw != null) {
-                    for (Map<String, Object> itemMap : itemsRaw) {
-                        String itemShopId = (String) itemMap.get("shopId");
-                        if (vendorShopIds.contains(itemShopId)) {
-                            isOrderForVendor = true;
+                        boolean isOrderForVendor = false;
+                        List<ItemModel> vendorItems = new ArrayList<>();
 
-                            String itemName = (String) itemMap.get("name");
-                            double price = itemMap.get("price") instanceof Number ? ((Number) itemMap.get("price")).doubleValue() : 0;
-                            int qty = itemMap.get("quantity") instanceof Number ? ((Number) itemMap.get("quantity")).intValue() : 0;
+                        if (itemsRaw != null) {
+                            for (Map<String, Object> itemMap : itemsRaw) {
+                                String itemShopId = (String) itemMap.get("shopId");
+                                if (vendorShopIds.contains(itemShopId)) {
+                                    isOrderForVendor = true;
 
-                            vendorItems.add(new ItemModel(itemName, price, qty));
+                                    String itemName = (String) itemMap.get("name");
+                                    double price = itemMap.get("price") instanceof Number ? ((Number) itemMap.get("price")).doubleValue() : 0;
+                                    int qty = itemMap.get("quantity") instanceof Number ? ((Number) itemMap.get("quantity")).intValue() : 0;
+
+                                    vendorItems.add(new ItemModel(itemName, price, qty));
+                                }
+                            }
+                        }
+
+                        if (isOrderForVendor) {
+                            String orderId = doc.getString("orderId");
+                            String userId = doc.getString("userId");
+                            String status = doc.getString("status");
+                            double totalAmount = doc.getDouble("totalAmount") != null ? doc.getDouble("totalAmount") : 0;
+                            Timestamp createdAt = doc.getTimestamp("createdAt");
+
+                            Map<String, Object> addressMap = (Map<String, Object>) doc.get("deliveryAddress");
+                            String name = "", phone = "", hostel = "", room = "";
+                            if (addressMap != null) {
+                                name = (String) addressMap.get("name");
+                                phone = (String) addressMap.get("phone");
+                                hostel = (String) addressMap.get("hostel");
+                                room = (String) addressMap.get("room");
+                            }
+
+                            order_model_vendor orderModel = new order_model_vendor(orderId, userId, name, phone, hostel, room, status, totalAmount, createdAt, vendorItems);
+                            orderList.add(orderModel);
                         }
                     }
-                }
 
-                if (isOrderForVendor) {
-                    String orderId = doc.getString("orderId");
-                    String userId = doc.getString("userId");
-                    String status = doc.getString("status");
-                    double totalAmount = doc.getDouble("totalAmount") != null ? doc.getDouble("totalAmount") : 0;
-                    Timestamp createdAt = doc.getTimestamp("createdAt");
-
-                    // Fetch address
-                    Map<String, Object> addressMap = (Map<String, Object>) doc.get("deliveryAddress");
-                    String name = "", phone = "", hostel = "", room = "";
-                    if (addressMap != null) {
-                        name = (String) addressMap.get("name");
-                        phone = (String) addressMap.get("phone");
-                        hostel = (String) addressMap.get("hostel");
-                        room = (String) addressMap.get("room");
-                    }
-
-                    order_model_vendor orderModel = new order_model_vendor(orderId, userId, name, phone, hostel, room, status, totalAmount, createdAt, vendorItems);
-                    orderList.add(orderModel);
-                }
-            }
-            adapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(getContext(), "Failed to fetch orders", Toast.LENGTH_SHORT).show();
-        });
+                    adapter.notifyDataSetChanged();
+                    Log.d("OrderFetch", "Orders found for vendor: " + orderList.size());
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to fetch orders: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("OrderFetchError", "Error fetching orders", e);
+                });
     }
 }

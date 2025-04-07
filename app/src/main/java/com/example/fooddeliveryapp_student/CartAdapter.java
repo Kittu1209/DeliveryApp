@@ -1,9 +1,9 @@
 package com.example.fooddeliveryapp_student;
-import com.example.fooddeliveryapp_student.CartItem;
-import com.example.fooddeliveryapp_student.R;
-
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -49,8 +48,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.productPrice.setText("₹" + item.getPrice());
         holder.productQuantity.setText(String.valueOf(item.getQuantity()));
 
-        // Load image using Glide
-        Glide.with(context).load(item.getImageUrl()).into(holder.productImage);
+        // Load image from base64 string
+        try {
+            byte[] decodedString = Base64.decode(item.getImageUrl(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            holder.productImage.setImageBitmap(decodedByte);
+        } catch (Exception e) {
+            Toast.makeText(context, "Failed to load image", Toast.LENGTH_SHORT).show();
+        }
 
         holder.increaseQuantity.setOnClickListener(v -> {
             if (item.getQuantity() < 5) {
