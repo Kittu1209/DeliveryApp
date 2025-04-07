@@ -15,6 +15,21 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".Admin_AccountDetail"
+            android:exported="false" />
+        <activity
+            android:name=".Admin_Dashboard"
+            android:exported="false" />
+        <activity
+            android:name=".Admin_DeliveryDetails"
+            android:exported="false" />
+        <activity
+            android:name=".Admin_VendorDetails"
+            android:exported="false" />
+        <activity
+            android:name=".Admin_StudentDetails"
+            android:exported="false" />
+        <activity
             android:name=".HomePage_deliveryMan"
             android:exported="false" />
         <activity
