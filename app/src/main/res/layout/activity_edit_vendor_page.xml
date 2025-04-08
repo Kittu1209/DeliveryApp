@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editVendorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Vendor Name"
+            android:textColor="@color/black"
+            android:inputType="textPersonName"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/editVendorId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Vendor ID"
+            android:textColor="@color/black"
+            android:inputType="textPersonName"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/editVendorEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Vendor Email"
+            android:textColor="@color/black"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/editVendorPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Vendor Phone"
+            android:inputType="phone"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/editVendorShop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Shop Name"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/btnSaveVendor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textSize="16sp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</ScrollView>

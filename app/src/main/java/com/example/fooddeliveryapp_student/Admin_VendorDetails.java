@@ -22,7 +22,35 @@ public class Admin_VendorDetails extends AppCompatActivity {
             return insets;
         });
 
-        // Open AddCategoryActivity
+        // View Vendor Profile
+        CardView cardViewVendorProfile = findViewById(R.id.cardViewVendorProfile);
+        cardViewVendorProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_VendorDetails.this, Admin_viewVendor.class);
+            startActivity(intent);
+        });
+
+        // Edit Vendor Profile
+        CardView cardEditVendorProfile = findViewById(R.id.cardEditVendorProfile);
+        cardEditVendorProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_VendorDetails.this, Admin_editVendor.class);
+            startActivity(intent);
+        });
+
+        // View Products
+        CardView cardViewProducts = findViewById(R.id.cardViewProducts);
+        cardViewProducts.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_VendorDetails.this, Admin_viewProducts.class);
+            startActivity(intent);
+        });
+
+        // View Orders
+        CardView cardViewOrders = findViewById(R.id.cardViewOrders);
+        cardViewOrders.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_VendorDetails.this, Admin_ViewOrders.class);
+            startActivity(intent);
+        });
+
+        // Add Category
         CardView cardAddCategory = findViewById(R.id.cardAddCategory);
         cardAddCategory.setOnClickListener(v -> {
             Intent intent = new Intent(Admin_VendorDetails.this, AddCategoryActivity.class);
