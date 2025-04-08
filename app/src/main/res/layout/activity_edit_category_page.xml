@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F5F5F5"
+    tools:context=".EditCategoryPage">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Category"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#333"
+            android:layout_marginBottom="16dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="16dp"
+            card_view:cardElevation="6dp"
+            android:layout_marginBottom="20dp"
+            card_view:cardUseCompatPadding="true"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center_horizontal">
+
+                <!-- Category Image -->
+                <ImageView
+                    android:id="@+id/imageCategoryEdit"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginBottom="12dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/image_border" />
+
+                <Button
+                    android:id="@+id/btnUploadImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change Image"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#3F51B5"
+                    android:paddingHorizontal="20dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/button_rounded"/>
+
+                <!-- Category Name -->
+                <EditText
+                    android:id="@+id/editCategoryName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Category Name"
+                    android:inputType="textPersonName"
+                    android:textSize="16sp"
+                    android:backgroundTint="#999"
+                    android:drawableStart="@android:drawable/ic_menu_edit"
+                    android:drawablePadding="10dp"
+                    android:layout_marginTop="8dp"/>
+
+                <!-- Slug -->
+                <EditText
+                    android:id="@+id/editCategorySlug"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Slug"
+                    android:inputType="text"
+                    android:textSize="16sp"
+                    android:backgroundTint="#999"
+                    android:drawableStart="@android:drawable/ic_input_add"
+                    android:drawablePadding="10dp"
+                    android:layout_marginTop="8dp"/>
+
+                <!-- Description -->
+                <EditText
+                    android:id="@+id/editCategoryDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:maxLines="5"
+                    android:textSize="16sp"
+                    android:backgroundTint="#999"
+                    android:drawableStart="@android:drawable/ic_menu_info_details"
+                    android:drawablePadding="10dp"
+                    android:layout_marginTop="8dp"/>
+
+                <!-- Color -->
+                <EditText
+                    android:id="@+id/editCategoryColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Hex Color (e.g. #FF4B2B)"
+                    android:inputType="text"
+                    android:textSize="16sp"
+                    android:backgroundTint="#999"
+                    android:drawableStart="@android:drawable/ic_menu_manage"
+                    android:drawablePadding="10dp"
+                    android:layout_marginTop="8dp"/>
+
+                <!-- Active Checkbox -->
+                <CheckBox
+                    android:id="@+id/checkboxIsActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Is Active?"
+                    android:textColor="#333"
+                    android:layout_marginTop="12dp"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btnSaveCategoryChanges"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Changes"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:backgroundTint="#4CAF50"
+            android:padding="12dp"
+            android:background="@drawable/button_rounded"/>
+    </LinearLayout>
+</ScrollView>
