@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    android:cardElevation="8dp"
-    android:cardCornerRadius="20dp"
-    android:backgroundTint="@android:color/white"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:backgroundTint="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,18 +17,19 @@
         android:padding="18dp"
         android:background="?android:attr/selectableItemBackground">
 
-        <!-- Header: Name & Status -->
+        <!-- Header Row: Name and Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/staffName"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:hint="Name: KKR"
+                android:text="Name: KKR"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#2C3E50" />
@@ -40,7 +42,8 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/holo_green_dark"
-                android:padding="4dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
                 android:background="@drawable/status_background" />
         </LinearLayout>
 
@@ -48,15 +51,15 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#CCCCCC"
-            android:layout_marginVertical="8dp" />
+            android:layout_marginVertical="8dp"
+            android:background="#CCCCCC" />
 
         <!-- Detail Rows -->
         <TextView
             android:id="@+id/staffEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email: example@gmail.com"
+            android:text="Email: example@gmail.com"
             android:textColor="#555555"
             android:textSize="15sp"
             android:layout_marginBottom="4dp" />
@@ -65,7 +68,7 @@
             android:id="@+id/staffPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Phone: 9876543210"
+            android:text="Phone: 9876543210"
             android:textColor="#555555"
             android:textSize="15sp"
             android:layout_marginBottom="4dp" />
@@ -74,7 +77,7 @@
             android:id="@+id/staffID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Staff ID: UID12345"
+            android:text="Staff ID: UID12345"
             android:textColor="#555555"
             android:textSize="15sp"
             android:layout_marginBottom="4dp" />
@@ -83,7 +86,7 @@
             android:id="@+id/currentDuty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Current Duty: Not Available"
+            android:text="Current Duty: Not Available"
             android:textColor="#FF9800"
             android:textSize="15sp"
             android:layout_marginBottom="4dp" />
@@ -92,9 +95,9 @@
             android:id="@+id/licenseNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="License No: XYZ123456"
+            android:text="License No: XYZ123456"
             android:textColor="#555555"
             android:textSize="15sp" />
-    </LinearLayout>
 
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

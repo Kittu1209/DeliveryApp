@@ -1,6 +1,9 @@
 package com.example.fooddeliveryapp_student;
 
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +20,6 @@ public class Admin_ViewOrders extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<AdminOrderModel> orderList;
     private AdminOrderAdapter adapter;
-    private final String currentVendorId = "1cVFS6yP7MgL1kJtESQhE0CVeVp1"; // Replace with actual vendor ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +32,10 @@ public class Admin_ViewOrders extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        fetchVendorOrders();
+        fetchAllOrders();
     }
 
-    private void fetchVendorOrders() {
+    private void fetchAllOrders() {
         FirebaseFirestore.getInstance().collection("orders")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -42,30 +44,43 @@ public class Admin_ViewOrders extends AppCompatActivity {
                         List<Map<String, Object>> items = (List<Map<String, Object>>) doc.get("items");
                         if (items != null) {
                             for (Map<String, Object> item : items) {
-                                String shopId = (String) item.get("shopId");
-                                if (shopId != null && shopId.equals(currentVendorId)) {
+                                try {
+                                    String itemName = item.get("name") != null ? item.get("name").toString() : "Unnamed Item";
+                                    double price = item.get("price") instanceof Number ? ((Number) item.get("price")).doubleValue() : 0.0;
+                                    int quantity = item.get("quantity") instanceof Number ? ((Number) item.get("quantity")).intValue() : 1;
 
-                                    String itemName = (String) item.get("name");
-                                    double price = ((Number) item.get("price")).doubleValue();
-                                    int quantity = ((Number) item.get("quantity")).intValue();
-                                    String imageUrl = (String) item.get("imageUrl");
+                                    // Decode Base64 imageUrl
+                                    String base64Image = item.get("imageUrl") != null ? item.get("imageUrl").toString() : "";
+                                    String decodedImage = "";
+                                    if (!base64Image.isEmpty()) {
+                                        // Remove data:image/... if present
+                                        if (base64Image.contains(",")) {
+                                            base64Image = base64Image.split(",")[1];
+                                        }
+                                        decodedImage = base64Image; // Just pass raw base64; adapter will decode
+                                    }
 
                                     Map<String, Object> address = (Map<String, Object>) doc.get("deliveryAddress");
-                                    String studentName = (String) address.get("name");
-                                    String hostel = (String) address.get("hostel");
-                                    String room = (String) address.get("room");
+                                    String studentName = address != null && address.get("name") != null ? address.get("name").toString() : "Unknown";
+                                    String hostel = address != null && address.get("hostel") != null ? address.get("hostel").toString() : "N/A";
+                                    String room = address != null && address.get("room") != null ? address.get("room").toString() : "N/A";
                                     String deliveryAddress = hostel + ", Room " + room;
 
-                                    String orderId = (String) doc.get("orderId");
-                                    String status = (String) doc.get("status");
+                                    String orderId = doc.get("orderId") != null ? doc.get("orderId").toString() : "No ID";
+                                    String status = doc.get("status") != null ? doc.get("status").toString() : "Pending";
 
-                                    AdminOrderModel order = new AdminOrderModel(orderId, itemName, price, quantity, studentName, deliveryAddress, status, imageUrl);
+                                    AdminOrderModel order = new AdminOrderModel(orderId, itemName, price, quantity, studentName, deliveryAddress, status, decodedImage);
                                     orderList.add(order);
+                                } catch (Exception e) {
+                                    Log.e("Admin_ViewOrders", "Error parsing order item: " + e.getMessage());
                                 }
                             }
                         }
                     }
                     adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Admin_ViewOrders", "Error fetching orders: " + e.getMessage());
                 });
     }
 }
