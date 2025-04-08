@@ -19,9 +19,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.firestore.DocumentSnapshot;
 public class LoginPage extends AppCompatActivity {
 
     private EditText email_lg, pass_lg;
@@ -114,11 +113,24 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("Vendors").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
-                       // navigateTo(Home_Fragment_Vendor.class, "Welcome Vendor!");
                         Intent intent = new Intent(LoginPage.this, HomePageVendor.class);
                         intent.putExtra("fragment", "vendor_home");
                         startActivity(intent);
                         showToast("Welcome Vendor!");
+                        finish();
+                    } else {
+                        checkDeliveryManRole(userId);
+                    }
+                });
+    }
+
+    private void checkDeliveryManRole(String userId) {
+        firestoreDB.collection("delivery_man").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
+                        startActivity(intent);
+                        showToast("Welcome Delivery Man!");
                         finish();
                     } else {
                         showToast("Access Denied! Role not recognized");

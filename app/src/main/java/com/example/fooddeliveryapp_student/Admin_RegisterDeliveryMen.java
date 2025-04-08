@@ -94,12 +94,23 @@ public class Admin_RegisterDeliveryMen extends AppCompatActivity {
     }
 
     private void sendEmailToDeliveryMan(String email, String name, String password) {
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-        emailIntent.setData(Uri.parse("mailto:" + email));
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("message/rfc822"); // only email apps are shown
+
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your Delivery Account Details");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello " + name + ",\n\nYour delivery partner account has been created.\n\n" +
-                "Login Details:\nEmail: " + email + "\nPassword: " + password +
-                "\n\nPlease login and complete your profile.\n\n- Admin");
-        startActivity(Intent.createChooser(emailIntent, "Send account details email..."));
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello " + name + ",\n\n" +
+                "Your delivery partner account has been created.\n\n" +
+                "Login Details:\n" +
+                "Email: " + email + "\n" +
+                "Password: " + password + "\n\n" +
+                "Please login and complete your profile.\n\n- Admin\n DoorStep-Campus Delivery app.");
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send account details email..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "No email clients installed on device.", Toast.LENGTH_SHORT).show();
+        }
     }
+
 }
