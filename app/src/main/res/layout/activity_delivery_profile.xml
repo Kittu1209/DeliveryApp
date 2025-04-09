@@ -21,35 +21,44 @@
         <EditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:layout_height="48dp"
+            android:textColor="@color/black"
             android:enabled="false" />
 
 
         <EditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:hint="phone"
+            android:layout_height="48dp"
             android:enabled="false" />
 
 
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:textColor="@color/black"
+            android:layout_height="48dp"
             android:enabled="false" />
 
 
         <EditText
             android:id="@+id/etDuty"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:hint="Duty"
+            android:layout_height="48dp"
             android:enabled="false" />
 
 
         <EditText
             android:id="@+id/etLicense"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="48dp"
             android:hint="Enter driving license number" />
 
         <Button
@@ -59,4 +68,5 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"/>
     </LinearLayout>
+
 </ScrollView>

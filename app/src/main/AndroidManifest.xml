@@ -16,6 +16,15 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".Delivery_OTP"
+            android:exported="false" />
+        <activity
+            android:name=".DeliveryDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AssignedDeliveriesActivity"
+            android:exported="false" />
+        <activity
             android:name=".DeliveryProfileActivity"
             android:exported="false" />
         <activity

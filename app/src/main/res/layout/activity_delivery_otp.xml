@@ -1,0 +1,35 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvPhoneNumber"
+        android:text="Phone Number: "
+        android:layout_width="wrap_content"
+        android:layout_height="48dp" />
+
+    <Button
+        android:id="@+id/btnSendOtp"
+        android:text="Send OTP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/etOtp"
+        android:hint="Enter OTP"
+        android:layout_marginTop="30dp"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"/>
+
+    <Button
+        android:id="@+id/btnVerifyOtp"
+        android:text="Verify OTP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
