@@ -45,6 +45,12 @@
             android:layout_height="wrap_content"
             android:text="Start Delivery"
             android:layout_marginTop="24dp" />
+        <CheckBox
+            android:id="@+id/checkboxPicked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All Items Picked"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/btnMarkDelivered"

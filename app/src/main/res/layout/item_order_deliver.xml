@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="125dp"
         android:orientation="vertical">
 
         <TextView
@@ -23,15 +23,15 @@
             android:id="@+id/textDeliveryAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Delivery Address"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnViewDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View Details"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:text="View Details" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

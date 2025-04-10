@@ -1,9 +1,13 @@
 package com.example.fooddeliveryapp_student;
 
+import android.os.Parcelable;
+
 import com.google.firebase.Timestamp;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class order_model_vendor {
+public class order_model_vendor implements Serializable {
     private String orderId, userId, name, phone, hostel, room, status;
     private double totalAmount;
     private Timestamp createdAt;

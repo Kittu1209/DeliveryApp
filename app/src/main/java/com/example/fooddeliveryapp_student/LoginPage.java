@@ -128,6 +128,17 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("delivery_man").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
+                        DocumentSnapshot document = task.getResult();
+                        String delManId = document.getString("del_man_id");
+
+                        if (delManId != null) {
+                            // Store del_man_id in SharedPreferences
+                            getSharedPreferences("DelManPrefs", MODE_PRIVATE)
+                                    .edit()
+                                    .putString("del_man_id", delManId)
+                                    .apply();
+                        }
+
                         Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
                         startActivity(intent);
                         showToast("Welcome Delivery Man!");
@@ -138,6 +149,7 @@ public class LoginPage extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void handleLoginError(@NonNull Task<AuthResult> task) {
         if (task.getException() instanceof FirebaseAuthInvalidUserException) {

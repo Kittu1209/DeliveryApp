@@ -2,7 +2,9 @@ package com.example.fooddeliveryapp_student;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.razorpay.Checkout;
@@ -29,9 +32,9 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
 
     private TextView tvTotalAmount;
     private Button btnPayNow;
-    private int totalAmountInPaise;
     private FirebaseFirestore db;
     private double totalAmount = 0.0;
+    private int totalAmountInPaise;
     private AddressModel selectedAddress;
 
     @SuppressLint("MissingInflatedId")
@@ -79,7 +82,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
 
     private void startPayment() {
         Checkout checkout = new Checkout();
-        checkout.setKeyID("rzp_test_9DWCyV2eFgw3N8"); // Replace with actual key
+        checkout.setKeyID("rzp_test_9DWCyV2eFgw3N8"); // Replace with your Razorpay key
 
         try {
             JSONObject options = new JSONObject();
@@ -106,34 +109,40 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
 
             db.collection("carts").document(uid).collection("items")
                     .get()
-                    .addOnSuccessListener(querySnapshot -> {
-                        if (!querySnapshot.isEmpty()) {
+                    .addOnSuccessListener(snapshot -> {
+                        if (!snapshot.isEmpty()) {
                             List<Map<String, Object>> itemsList = new ArrayList<>();
-                            final double[] finalAmount = {0};
+                            final double[] finalAmount = {0.0};
 
-                            for (QueryDocumentSnapshot doc : querySnapshot) {
+                            for (QueryDocumentSnapshot doc : snapshot) {
                                 Map<String, Object> item = new HashMap<>();
+                                Double price = doc.getDouble("price");
+                                Long quantity = doc.getLong("quantity");
+
                                 item.put("productId", doc.getString("productId"));
                                 item.put("name", doc.getString("name"));
-                                item.put("price", doc.getDouble("price"));
-                                item.put("quantity", doc.getLong("quantity"));
-                                item.put("shopId", doc.getString("shopId")); // ✅ Shop ID added
+                                item.put("price", price);
+                                item.put("quantity", quantity);
+                                item.put("shopId", doc.getString("shopId"));
                                 item.put("imageUrl", doc.getString("imageUrl"));
 
-                                finalAmount[0] += doc.getDouble("price") * doc.getLong("quantity");
+                                if (price != null && quantity != null) {
+                                    finalAmount[0] += price * quantity;
+                                }
+
                                 itemsList.add(item);
                             }
 
                             String orderId = "order_" + UUID.randomUUID().toString().substring(0, 8);
-                            android.util.Log.d("PaymentPage", "Generated Order ID: " + orderId);
 
                             Map<String, Object> orderData = new HashMap<>();
                             orderData.put("userId", uid);
                             orderData.put("orderId", orderId);
                             orderData.put("status", "pending");
-                            orderData.put("createdAt", new Date()); // ✅ CreatedAt time added
+                            orderData.put("createdAt", new Date());
                             orderData.put("totalAmount", finalAmount[0]);
                             orderData.put("items", itemsList);
+                            orderData.put("assignedDeliveryManId", null); // Assigned later
 
                             if (selectedAddress != null) {
                                 Map<String, Object> addressData = new HashMap<>();
@@ -141,15 +150,14 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                                 addressData.put("phone", selectedAddress.getPhoneNumber());
                                 addressData.put("hostel", selectedAddress.getHostel());
                                 addressData.put("room", selectedAddress.getRoom());
-
                                 orderData.put("deliveryAddress", addressData);
                             }
 
-                            db.collection("orders")
-                                    .document(orderId)
+                            db.collection("orders").document(orderId)
                                     .set(orderData)
                                     .addOnSuccessListener(aVoid -> {
                                         storePaymentDetails(uid, razorpayPaymentID, finalAmount[0], orderId);
+                                        assignOrderToDeliveryMan(orderId);
                                     })
                                     .addOnFailureListener(e -> Toast.makeText(PaymentPage.this, "Failed to save order", Toast.LENGTH_LONG).show());
                         } else {
@@ -158,6 +166,58 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "Error fetching cart items", Toast.LENGTH_LONG).show());
         }
+    }
+
+    private void assignOrderToDeliveryMan(String orderId) {
+        db.collection("delivery_man")
+                .whereEqualTo("admin_control", "active")
+                .whereEqualTo("current_duty", "Available")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<DocumentSnapshot> deliveryMen = queryDocumentSnapshots.getDocuments();
+
+                    if (deliveryMen.isEmpty()) {
+                        Log.d("DeliveryAssign", "No delivery men available");
+                        Toast.makeText(this, "No available delivery men", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    SharedPreferences prefs = getSharedPreferences("RoundRobinPrefs", MODE_PRIVATE);
+                    int lastIndex = prefs.getInt("lastIndex", -1);
+                    int nextIndex = (lastIndex + 1) % deliveryMen.size();
+
+                    DocumentSnapshot selectedDeliveryMan = deliveryMen.get(nextIndex);
+                    String deliveryDocId = selectedDeliveryMan.getId();  // document ID
+                    String delManId = selectedDeliveryMan.getString("del_man_id"); // Firestore field
+
+                    Log.d("DeliveryAssign", "Selected delivery docId: " + deliveryDocId);
+                    Log.d("DeliveryAssign", "Selected del_man_id field: " + delManId);
+
+                    if (delManId == null || delManId.trim().isEmpty()) {
+                        Toast.makeText(this, "Delivery man ID not found in Firestore field", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    // Update the order with correct delivery man ID
+                    db.collection("orders").document(orderId)
+                            .update("assignedDeliveryManId", delManId)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("DeliveryAssign", "Assigned to delivery man: " + delManId);
+                                Toast.makeText(this, "Assigned to: " + delManId, Toast.LENGTH_SHORT).show();
+
+                                // Mark him as on delivery
+                                db.collection("delivery_man").document(deliveryDocId)
+                                        .update("current_duty", "On Delivery");
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("DeliveryAssign", "Failed to assign delivery man", e);
+                            });
+
+                    prefs.edit().putInt("lastIndex", nextIndex).apply();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DeliveryAssign", "Failed to fetch delivery men", e);
+                });
     }
 
     private void storePaymentDetails(String userId, String paymentId, double amount, String orderId) {

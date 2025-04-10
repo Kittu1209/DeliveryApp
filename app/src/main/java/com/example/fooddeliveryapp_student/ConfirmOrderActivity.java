@@ -3,6 +3,7 @@ package com.example.fooddeliveryapp_student;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,13 +14,16 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class ConfirmOrderActivity extends AppCompatActivity {
 
-    private TextView tvEstimatedTime;
+    private TextView tvEstimatedTime, tvOtp;
     private Button btnGoHome, btnGoOrders;
     private FirebaseFirestore db;
     private String orderId;
@@ -30,11 +34,11 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirm_order);
 
         tvEstimatedTime = findViewById(R.id.tv_estimated_time);
+        tvOtp = findViewById(R.id.tv_otp); // 🔴 New TextView for OTP
         btnGoHome = findViewById(R.id.btn_go_home);
         btnGoOrders = findViewById(R.id.btn_go_orders);
         db = FirebaseFirestore.getInstance();
 
-        // ✅ Get order ID from Intent and log it
         orderId = getIntent().getStringExtra("ORDER_ID");
         if (orderId == null || orderId.trim().isEmpty()) {
             Toast.makeText(this, "Error: ORDER_ID not passed.", Toast.LENGTH_LONG).show();
@@ -42,11 +46,11 @@ public class ConfirmOrderActivity extends AppCompatActivity {
             return;
         }
 
-        // ✅ Log for debugging
-        android.util.Log.d("ConfirmOrder", "Received ORDER_ID: " + orderId);
+        Log.d("ConfirmOrder", "Received ORDER_ID: " + orderId);
 
-        // ✅ Fetch order from Firestore
         fetchOrderTime();
+        generateAndStoreOtp(orderId);      // 🔴 Generate and save OTP
+        fetchOtpFromFirestore(orderId);    // 🔴 Display OTP to student
 
         btnGoHome.setOnClickListener(v -> {
             startActivity(new Intent(ConfirmOrderActivity.this, HomePage_Student.class));
@@ -55,25 +59,23 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
         btnGoOrders.setOnClickListener(v -> {
             startActivity(new Intent(ConfirmOrderActivity.this, HomePage_Student.class));
-            // Should be HomePage_Student (not fragment)
             finish();
         });
-}
+    }
 
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, HomePage_Student.class); // Change if needed
+        Intent intent = new Intent(this, HomePage_Student.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish(); // Close current activity
+        finish();
     }
-
 
     private void fetchOrderTime() {
         DocumentReference orderRef = db.collection("orders").document(orderId);
 
-        android.util.Log.d("ConfirmOrder", "Fetching order: " + orderId);
+        Log.d("ConfirmOrder", "Fetching order: " + orderId);
 
         orderRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -91,14 +93,47 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                     tvEstimatedTime.setText("Error: Order time not found.");
                 }
             } else {
-                android.util.Log.e("ConfirmOrder", "Order not found in Firestore");
+                Log.e("ConfirmOrder", "Order not found in Firestore");
                 tvEstimatedTime.setText("Error: Order not found.");
             }
         }).addOnFailureListener(e -> {
-            android.util.Log.e("ConfirmOrder", "Firestore error: " + e.getMessage());
+            Log.e("ConfirmOrder", "Firestore error: " + e.getMessage());
             tvEstimatedTime.setText("Error fetching order time.");
             Toast.makeText(ConfirmOrderActivity.this, "Failed to fetch order details.", Toast.LENGTH_SHORT).show();
         });
     }
 
+    private void generateAndStoreOtp(String orderId) {
+        String otp = String.valueOf(new SecureRandom().nextInt(9000) + 1000); // 4-digit OTP
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("otp", otp);
+        data.put("timestamp", Timestamp.now());
+
+        db.collection("delivery_otp").document(orderId)
+                .set(data)
+                .addOnSuccessListener(aVoid -> Log.d("ConfirmOrder", "OTP stored: " + otp))
+                .addOnFailureListener(e -> Log.e("ConfirmOrder", "Failed to store OTP: " + e.getMessage()));
+    }
+
+    private void fetchOtpFromFirestore(String orderId) {
+        db.collection("delivery_otp").document(orderId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String otp = documentSnapshot.getString("otp");
+                        if (otp != null) {
+                            tvOtp.setText("OTP for Delivery: " + otp);
+                        } else {
+                            tvOtp.setText("OTP: Not available.");
+                        }
+                    } else {
+                        tvOtp.setText("OTP: Not found.");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    tvOtp.setText("Failed to load OTP.");
+                    Log.e("ConfirmOrder", "Failed to fetch OTP: " + e.getMessage());
+                });
+    }
 }
