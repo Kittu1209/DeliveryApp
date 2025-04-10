@@ -12,6 +12,10 @@
     <color name="dark_gray">#6C757D</color>
     <color name="green">#28A745</color>
     <color name="red">#DC3545</color>
+    <color name="yellow">#F6DE75</color>
+    <color name="light_yellow">#F6F6D3</color>
+    <color name="dark_orange">#EB4D22</color>
+    <color name="dark_brown">#3D1F00</color>
 
 
 </resources>
