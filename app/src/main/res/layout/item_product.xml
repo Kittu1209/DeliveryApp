@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/light_yellow"
     app:cardCornerRadius="8dp"
     app:cardElevation="3dp"
     android:layout_margin="4dp">
@@ -22,6 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Product Name"
+            android:textColor="@color/dark_brown"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -29,6 +31,7 @@
             android:id="@+id/textViewProductCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Category"
             android:textSize="16sp" />
 
@@ -36,6 +39,7 @@
             android:id="@+id/textViewProductPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Price"
             android:textSize="16sp" />
 
@@ -44,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"
+            android:textColor="@color/dark_brown"
             android:textSize="14sp" />
 
         <ImageView

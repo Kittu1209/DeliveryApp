@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="10dp"
+    android:backgroundTint="@color/light_yellow"
     android:background="@android:color/white"
     android:elevation="4dp"
     android:layout_margin="8dp">
@@ -28,6 +29,7 @@
             android:id="@+id/textViewCartProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Product Name"
             android:textSize="16sp"
             android:textStyle="bold"/>
@@ -53,7 +55,9 @@
                 android:id="@+id/buttonDecreaseQuantity"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:text="-" />
+                android:text="-"
+                android:textSize="22sp"
+                android:textColor="@color/white"/>
 
             <!-- Quantity Text -->
             <TextView
@@ -61,8 +65,9 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textColor="@color/dark_brown"
                 android:text="1"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"/>
 
             <!-- Increase Button -->
@@ -70,7 +75,10 @@
                 android:id="@+id/buttonIncreaseQuantity"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:text="+" />
+                android:text="+"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
         <!-- Remove Button -->
@@ -80,7 +88,7 @@
             android:layout_height="wrap_content"
             android:text="Remove"
             android:textColor="@android:color/white"
-            android:background="@android:color/holo_red_dark"
+            android:backgroundTint="@color/dark_orange"
             android:padding="8dp"/>
     </LinearLayout>
 

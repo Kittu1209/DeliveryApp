@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/purple_200">
+    android:background="@color/yellow">
 
     <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Settings"
-        android:textSize="24sp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:layout_marginBottom="20dp"/>
 
     <!-- Account Settings -->
@@ -33,19 +34,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/dark_orange"
             android:padding="16dp">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/baseline_app_settings_alt_24"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Account Settings"
                 android:textSize="18sp"
+                android:textColor="@color/white"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -65,19 +68,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/dark_orange"
             android:padding="16dp">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/baseline_circle_notifications_24"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Notifications"
                 android:textSize="18sp"
+                android:textColor="@color/white"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -97,19 +102,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/dark_orange"
             android:padding="16dp">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/baseline_admin_panel_settings_24"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Privacy And Security"
                 android:textSize="18sp"
+                android:textColor="@color/white"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -129,19 +136,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/dark_orange"
             android:padding="16dp">
 
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/baseline_contact_support_24"
-                app:tint="@color/black" />
+                app:tint="@color/white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Help and Support"
                 android:textSize="18sp"
+                android:textColor="@color/white"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -162,6 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/dark_brown"
             android:padding="16dp">
 
             <ImageView

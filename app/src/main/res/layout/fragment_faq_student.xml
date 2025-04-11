@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     tools:context=".Fragment_faqStudent">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,15 +12,19 @@
         android:layout_height="match_parent"
         android:text="FAQs"
         android:textSize="36sp"
-        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
         android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/faqbtn"
-        android:layout_width="149dp"
+        android:layout_width="261dp"
         android:layout_height="90dp"
         android:layout_gravity="center"
+        android:textSize="22sp"
         android:layout_marginTop="27dp"
-        android:text="FAQ" />
+        android:backgroundTint="@color/dark_orange"
+        android:text="FAQ"
+        android:textColor="@color/white" />
 
 </FrameLayout>

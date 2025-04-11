@@ -1,0 +1,9 @@
+<!-- res/drawable/bg_poprec.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/light_yellow" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/dark_orange" />
+    <corners android:radius="12dp"/>
+</shape>

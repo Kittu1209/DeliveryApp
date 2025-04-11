@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/yellow"
     android:padding="16dp">
 
     <!-- Text to confirm user is logged in or about to logout -->
@@ -12,7 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Are you sure you want to logout?"
-        android:textSize="18sp"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_brown"
         android:layout_marginBottom="20dp" />
 
     <!-- Button for logging out -->
@@ -21,6 +24,9 @@
         android:layout_width="150dp"
         android:layout_height="59dp"
         android:layout_marginTop="20dp"
+        android:backgroundTint="@color/dark_orange"
+        android:textSize="22sp"
+        android:textStyle="bold"
         android:text="Logout" />
 
 </LinearLayout>

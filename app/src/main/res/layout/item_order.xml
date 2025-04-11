@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@color/light_yellow"
         android:padding="16dp">
 
         <TextView
             android:id="@+id/tv_order_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Order ID: #12345"
             android:textStyle="bold"
             android:textSize="16sp"/>
@@ -24,6 +26,7 @@
         <TextView
             android:id="@+id/tv_order_date"
             android:layout_width="wrap_content"
+            android:textColor="@color/dark_brown"
             android:layout_height="wrap_content"
             android:text="Order Date: 12 Mar 2025"
             android:textSize="14sp"
@@ -34,6 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total: ₹740"
+            android:textColor="@color/dark_brown"
             android:textSize="14sp"
             android:textStyle="bold"
             android:paddingTop="4dp"/>
@@ -51,6 +55,7 @@
             android:id="@+id/tv_order_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Items:"
             android:textSize="14sp"
             android:textStyle="bold"

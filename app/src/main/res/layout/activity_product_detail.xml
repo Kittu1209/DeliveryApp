@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
+        android:background="@color/yellow"
         android:gravity="center">
 
         <ImageView
@@ -27,6 +28,7 @@
             android:layout_height="wrap_content"
             android:text="Product Name"
             android:textSize="22sp"
+            android:textColor="@color/dark_brown"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
 
@@ -36,13 +38,14 @@
             android:layout_height="wrap_content"
             android:text="₹100"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/dark_brown"
             android:layout_marginTop="5dp"/>
 
         <TextView
             android:id="@+id/textViewProductDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Description of the product..."
             android:textSize="16sp"
             android:layout_marginTop="10dp"/>
@@ -52,15 +55,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add to Cart"
+            android:textColor="@color/white"
             android:textSize="18sp"
+            android:backgroundTint="@color/dark_orange"
             android:layout_marginTop="20dp"/>
     </LinearLayout>
-
-    <!-- Fragment Container for Cart -->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
 </FrameLayout>

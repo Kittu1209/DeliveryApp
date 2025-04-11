@@ -5,24 +5,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@drawable/contactusbg">
+    android:background="@color/yellow">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Contact Us"
         android:textSize="26sp"
-        android:layout_marginTop="240dp"
+        android:textColor="@color/white"
+        android:layout_marginTop="40dp"
         android:textStyle="bold"
         android:gravity="center"
         android:paddingBottom="10dp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="match_parent"
         android:layout_margin="10dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
+        app:cardElevation="16dp"
         android:padding="16dp">
 
         <LinearLayout
@@ -39,7 +40,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:padding="10dp"
-                android:background="@android:drawable/editbox_background" />
+                android:layout_marginTop="10dp"
+                android:background="@color/light_yellow" />
 
             <EditText
                 android:id="@+id/etEmail"
@@ -47,31 +49,34 @@
                 android:layout_height="48dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
                 android:hint="Your Email"
                 android:inputType="textEmailAddress"
                 android:padding="10dp"
-                android:background="@android:drawable/editbox_background" />
+                android:background="@color/light_yellow" />
 
             <EditText
                 android:id="@+id/etSubject"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:hint="Subject"
+                android:layout_marginTop="10dp"
                 android:padding="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:background="@android:drawable/editbox_background" />
+                android:background="@color/light_yellow" />
 
             <EditText
                 android:id="@+id/etMessage"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
+                android:layout_marginTop="10dp"
                 android:hint="Your Message"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:gravity="top"
                 android:padding="10dp"
-                android:background="@android:drawable/editbox_background"
+                android:background="@color/light_yellow"
                 android:inputType="textMultiLine" />
 
             <Button
@@ -81,12 +86,12 @@
                 android:text="Submit"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
-                android:backgroundTint="@color/purple"
-                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/dark_orange"
+                android:textColor="@color/white"
                 android:padding="10dp"
                 android:textSize="22sp"
                 style="@style/TextAppearance.Material3.BodyLarge"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="40dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

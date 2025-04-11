@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp"
-    android:background="@android:color/darker_gray"
+    android:background="@color/light_yellow"
     android:layout_margin="5dp">
 
     <TextView
@@ -12,28 +12,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="Name: " />
+        android:text="Name: "
+        android:textColor="@color/dark_brown"/>
 
     <TextView
         android:id="@+id/tvPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="Phone: " />
+        android:text="Phone: "
+        android:textColor="@color/dark_brown"/>
 
     <TextView
         android:id="@+id/tvHostel"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content"
-        android:text="Hostel: " />
+        android:text="Hostel: "
+        android:textColor="@color/dark_brown"/>
 
     <TextView
         android:id="@+id/tvRoom"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
         android:layout_height="wrap_content"
-        android:text="Room: " />
+        android:text="Room: "
+        android:textColor="@color/dark_brown"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,6 +49,7 @@
             android:id="@+id/btnEditAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/dark_orange"
             android:text="Edit" />
 
         <Button
@@ -52,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete"
+            android:backgroundTint="@color/dark_orange"
             android:layout_marginStart="10dp"/>
 
         <Button
@@ -59,6 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select"
+            android:backgroundTint="@color/dark_orange"
             android:layout_marginStart="10dp"/>
     </LinearLayout>
 </LinearLayout>

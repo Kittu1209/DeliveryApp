@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment_HomeStudent">
 
     <LinearLayout
@@ -17,10 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="3dp"
+            android:shadowColor="@color/white"
+            android:textColor="@color/dark_brown"
+            android:textColorHint="@color/dark_brown"
             android:layout_margin="8dp"
             android:drawableLeft="@drawable/baseline_contentsearch_24"
             android:padding="13dp"
             android:hint="Search Your Item Here...."
+            app:drawableTint="@color/dark_orange"
             android:drawablePadding="5dp"/>
 
         <!-- Popular Products Section -->
@@ -42,7 +47,12 @@
             android:id="@+id/pop_rec"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:padding="12dp"
+            android:text="Popular Item"
+            android:textColor="@color/dark_brown"
+            android:gravity="center"/>
+
     </LinearLayout>
 
 </ScrollView>

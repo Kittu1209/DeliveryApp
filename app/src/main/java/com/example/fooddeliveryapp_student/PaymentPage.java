@@ -30,10 +30,10 @@ import java.util.UUID;
 
 public class PaymentPage extends AppCompatActivity implements PaymentResultListener {
 
-    private TextView tvTotalAmount;
+    private TextView tvTotalAmount, tvoderamount;
     private Button btnPayNow;
     private FirebaseFirestore db;
-    private double totalAmount = 0.0;
+    private double totalAmount = 0.0, orderamount=0.0;
     private int totalAmountInPaise;
     private AddressModel selectedAddress;
 
@@ -44,6 +44,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
         setContentView(R.layout.activity_payment_page);
 
         tvTotalAmount = findViewById(R.id.tvTotalAmount);
+        tvoderamount=findViewById(R.id.tvOrderPrice);
         btnPayNow = findViewById(R.id.btnPayNow);
         db = FirebaseFirestore.getInstance();
 
@@ -70,12 +71,16 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                         Double price = doc.getDouble("price");
                         Long quantity = doc.getLong("quantity");
                         if (price != null && quantity != null) {
-                            totalAmount += price * quantity;
+                            orderamount += price * quantity;
+                        }
+                        if (price != null && quantity != null) {
+                            totalAmount += price * quantity+20;
                         }
                     }
 
                     totalAmountInPaise = (int) (totalAmount * 100);
                     tvTotalAmount.setText("Total Amount: ₹" + totalAmount);
+                    tvoderamount.setText("Order Amount: ₹"+ orderamount);
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch cart total", Toast.LENGTH_SHORT).show());
     }
