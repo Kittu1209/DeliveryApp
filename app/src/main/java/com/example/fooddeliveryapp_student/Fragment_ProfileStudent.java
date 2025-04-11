@@ -7,8 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,7 +26,7 @@ public class Fragment_ProfileStudent extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, idEditText;
     private Button changePasswordButton, editProfileButton, saveButton;
-    private FirebaseAuth auth,mAuth;
+    private FirebaseAuth auth, mAuth;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
     private FirebaseUser user;
@@ -37,12 +38,11 @@ public class Fragment_ProfileStudent extends Fragment {
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance();
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
         if (user != null) {
-            // Get reference to the student's document in Firestore
             userRef = firestore.collection("Students").document(user.getUid());
         }
 
@@ -55,22 +55,22 @@ public class Fragment_ProfileStudent extends Fragment {
         editProfileButton = view.findViewById(R.id.edit_profile_button);
         saveButton = view.findViewById(R.id.save_button);
 
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        Button logoutButton = view.findViewById(R.id.logout_button_stu); // Make sure to add this button in your XML
+        // ✅ FIXED: Cast as ImageButton instead of Button
+        ImageButton logoutButton = view.findViewById(R.id.logout_button_stu);
 
         logoutButton.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
 
-            // Ensuring user is signed out before redirecting
             if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                 Intent intent = new Intent(getActivity(), LoginPage.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clears back stack
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 Toast.makeText(getActivity(), "Logged out successfully", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), "Logout failed. Try again.", Toast.LENGTH_SHORT).show();
             }
         });
+
         // Disable editing initially
         disableEditing();
 
@@ -92,7 +92,6 @@ public class Fragment_ProfileStudent extends Fragment {
         return view;
     }
 
-    // Fetch user data from Firestore
     private void fetchUserData() {
         if (userRef != null) {
             userRef.get()
@@ -100,17 +99,12 @@ public class Fragment_ProfileStudent extends Fragment {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             if (documentSnapshot.exists()) {
-                                // Retrieve data from Firestore and set it in the EditTexts
                                 String name = documentSnapshot.getString("stuname");
                                 String email = documentSnapshot.getString("stuemail");
                                 String phone = documentSnapshot.getString("stuphno");
                                 String studentId = documentSnapshot.getString("stuid");
-                                String userType = documentSnapshot.getString("userType");
 
-                                // Logging for debugging
-                                Log.d("Firestore", "Name: " + name + ", Email: " + email + ", Phone: " + phone + ", ID: " + studentId + ", UserType: " + userType);
-
-                                // Set the data into the EditTexts
+                                Log.d("Firestore", "Fetched: " + name + ", " + email + ", " + phone + ", " + studentId);
                                 nameEditText.setText(name);
                                 emailEditText.setText(email);
                                 phoneEditText.setText(phone);
@@ -123,7 +117,6 @@ public class Fragment_ProfileStudent extends Fragment {
         }
     }
 
-    // Enable editing
     private void enableEditing() {
         nameEditText.setFocusableInTouchMode(true);
         idEditText.setFocusableInTouchMode(true);
@@ -132,16 +125,13 @@ public class Fragment_ProfileStudent extends Fragment {
         saveButton.setVisibility(View.VISIBLE);
     }
 
-    // Save updated data to Firestore
     private void saveUpdatedData() {
         if (userRef != null) {
-            // Get values from the EditTexts
             String name = nameEditText.getText().toString();
             String email = emailEditText.getText().toString();
             String phone = phoneEditText.getText().toString();
             String studentId = idEditText.getText().toString();
 
-            // Create a map of the updated data
             if (!name.isEmpty() && !email.isEmpty() && !phone.isEmpty() && !studentId.isEmpty()) {
                 RegisterModelStudent updatedStudent = new RegisterModelStudent(name, studentId, email, phone, "Student");
 
@@ -149,7 +139,6 @@ public class Fragment_ProfileStudent extends Fragment {
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
-                                // Disable editing and hide save button
                                 disableEditing();
                             } else {
                                 Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
@@ -161,7 +150,6 @@ public class Fragment_ProfileStudent extends Fragment {
         }
     }
 
-    // Disable editing initially
     private void disableEditing() {
         nameEditText.setFocusable(false);
         emailEditText.setFocusable(false);
