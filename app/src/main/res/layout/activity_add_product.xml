@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:hint="Product Name"
+        android:textColor="@color/dark_brown"
         android:padding="12dp"
         android:textSize="18sp" />
 
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:hint="Price"
+        android:textColor="@color/dark_brown"
         android:padding="12dp"
         android:inputType="number"
         android:textSize="18sp" />
@@ -42,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:hint="Description"
+        android:textColor="@color/dark_brown"
         android:padding="12dp"
         android:textSize="18sp" />
 
@@ -69,6 +72,7 @@
         android:id="@+id/spinnerCategory"
         android:layout_width="373dp"
         android:layout_height="38dp"
+        android:textColor="@color/dark_brown"
         android:layout_marginTop="10dp"
         android:scrollbarSize="30sp"
         tools:ignore="TouchTargetSizeCheck" />
