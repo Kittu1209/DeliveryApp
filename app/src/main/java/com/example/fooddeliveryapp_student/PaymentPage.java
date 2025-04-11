@@ -74,7 +74,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                             orderamount += price * quantity;
                         }
                         if (price != null && quantity != null) {
-                            totalAmount += price * quantity+20;
+                            totalAmount += (price * quantity) + 20;
                         }
                     }
 
