@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/yellow"
     tools:context=".Admin_Profilepage">
 
     <LinearLayout
@@ -19,10 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Admin Profile"
-            android:textSize="24sp"
+            android:textSize="30sp"
+            android:layout_marginTop="50dp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:textColor="#333333" />
+            android:textColor="@color/white" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -35,68 +36,82 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="350dp"
                 android:orientation="vertical"
                 android:padding="16dp">
 
                 <EditText
                     android:id="@+id/adminName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="300dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_gravity="center"
+                    android:layout_height="50dp"
                     android:hint="Admin Name"
                     android:textColorHint="@color/black"
                     android:enabled="false"
-                    android:textColor="#000"
+                    android:textColor="@color/dark_brown"
+                    android:layout_marginTop="20dp"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:background="@color/light_yellow"
                     android:inputType="textPersonName"
                     android:drawableStart="@android:drawable/ic_menu_edit"
                     android:drawablePadding="10dp" />
 
                 <EditText
                     android:id="@+id/adminEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="300dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_gravity="center"
+                    android:layout_height="50dp"
                     android:hint="Email"
+                    android:layout_marginTop="20dp"
                     android:enabled="false"
                     android:textColorHint="@color/black"
-                    android:textColor="#000"
+                    android:textColor="@color/dark_brown"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:background="@color/light_yellow"
                     android:inputType="textEmailAddress"
                     android:drawableStart="@android:drawable/ic_dialog_email"
                     android:drawablePadding="10dp"
-                    android:layout_marginTop="12dp" />
+                     />
 
                 <EditText
                     android:id="@+id/adminPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="300dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_gravity="center"
+                    android:layout_height="50dp"
                     android:hint="Phone Number"
                     android:enabled="false"
-                    android:textColor="#000"
+                    android:textColor="@color/dark_brown"
                     android:textColorHint="@color/black"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:background="@color/light_yellow"
                     android:inputType="phone"
                     android:drawableStart="@android:drawable/ic_menu_call"
                     android:drawablePadding="10dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="20dp" />
 
                 <EditText
                     android:id="@+id/adminId"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_width="300dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_gravity="center"
+                    android:layout_height="50dp"
                     android:hint="Admin ID"
                     android:enabled="false"
-                    android:textColor="#000"
+                    android:textColor="@color/dark_brown"
                     android:textColorHint="@color/black"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:background="@color/light_yellow"
                     android:inputType="text"
                     android:drawableStart="@android:drawable/ic_lock_idle_lock"
                     android:drawablePadding="10dp"
-                    android:layout_marginTop="12dp" />
+                    android:layout_marginTop="20dp" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -108,10 +123,9 @@
             android:text="Update Profile"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#3F51B5"
             android:layout_marginBottom="12dp"
             android:padding="12dp"
-            android:background="@drawable/button_rounded" />
+            android:backgroundTint="@color/dark_orange" />
 
         <Button
             android:id="@+id/btnSaveProfile"
@@ -120,7 +134,7 @@
             android:text="Save Changes"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#4CAF50"
+            android:backgroundTint="@color/dark_orange"
             android:visibility="gone"
             android:padding="12dp"
             android:background="@drawable/button_rounded" />

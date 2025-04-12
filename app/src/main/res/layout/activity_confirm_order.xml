@@ -6,69 +6,105 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     tools:context=".ConfirmOrderActivity">
 
     <TextView
-        android:id="@+id/tv_order_confirmed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
-        android:paddingTop="50dp"
-        android:text="Order Confirmed!"
-        android:textColor="@android:color/holo_green_dark"
-        android:textSize="24sp"
+        android:id="@+id/tvoc"
+        android:layout_width="293dp"
+        android:layout_height="96dp"
+        android:gravity="center"
+        android:text="Order Confirmed Page"
+        android:textColor="@color/white"
+        android:textSize="30sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/card_order_confirmation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_estimated_time"
-        android:layout_width="wrap_content"
+    <!-- CardView for Order Confirmation Details -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_order_confirmation"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Estimated Delivery Time: Calculating..."
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_order_confirmed"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingTop="20dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="285dp"
+            android:background="@color/light_yellow"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/tv_order_confirmed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Order Confirmed!"
+                android:textColor="@android:color/holo_green_dark"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_estimated_time"
+                android:layout_width="335dp"
+                android:layout_height="54dp"
+                android:layout_marginTop="50dp"
+                android:text="Estimated Delivery Time: Calculating..."
+                android:textColor="@color/dark_brown"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_otp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:text="OTP: Loading..."
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Buttons at bottom -->
 
     <Button
         android:id="@+id/btn_go_home"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="268dp"
+        android:layout_height="59dp"
         android:layout_margin="16dp"
-        android:layout_marginTop="128dp"
+        android:backgroundTint="@color/dark_orange"
         android:text="Go to Home"
-        app:layout_constraintEnd_toStartOf="@id/btn_go_orders"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_estimated_time" />
+        app:layout_constraintTop_toBottomOf="@id/card_order_confirmation"
+        app:layout_constraintVertical_bias="0.109" />
 
     <Button
         android:id="@+id/btn_go_orders"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="273dp"
+        android:layout_height="54dp"
         android:layout_margin="16dp"
-        android:layout_marginTop="128dp"
+        android:backgroundTint="@color/dark_orange"
         android:text="Go to My Orders"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btn_go_home"
-        app:layout_constraintTop_toBottomOf="@id/tv_estimated_time" />
-
-    <TextView
-        android:id="@+id/tv_otp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:paddingTop="20dp"
-        android:text="OTP: Loading..."
-        android:textColor="@android:color/holo_red_dark"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.528"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_estimated_time" />
+        app:layout_constraintTop_toBottomOf="@id/card_order_confirmation"
+        app:layout_constraintVertical_bias="0.644" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
