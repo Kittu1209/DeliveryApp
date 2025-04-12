@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/yellow">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,9 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vendor Details Panel"
-            android:textSize="24sp"
+            android:textSize="32sp"
+            android:layout_gravity="center_horizontal"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:layout_marginTop="50dp"
+            android:textColor="@color/white"
             android:layout_marginBottom="20dp"/>
 
         <!-- View Vendor Profile -->
@@ -30,6 +32,7 @@
             android:layout_marginBottom="12dp"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="50dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="5dp">
 
