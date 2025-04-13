@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Register Delivery Men"
+                    android:text="Approve Delivery Men"
                     android:textSize="18sp"
                     android:layout_marginStart="12dp"/>
             </LinearLayout>

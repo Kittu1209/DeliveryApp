@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -32,6 +33,7 @@ public class RegistrationPage extends AppCompatActivity {
     private ProgressBar progressBar;
     private EditText email, name, phone, password, userId, shopNameInput;
     private RadioGroup userTypeGroup;
+    private TextView reg_del_men_text;
     private RadioButton radioStudent, radioVendor;
     private Button regButton, loginButton;
 
@@ -64,6 +66,16 @@ public class RegistrationPage extends AppCompatActivity {
         regButton = findViewById(R.id.RRegisterButton);
         loginButton = findViewById(R.id.RLoginButton);
         progressBar = findViewById(R.id.progressBar);
+reg_del_men_text=findViewById(R.id.register_del_men_text);
+reg_del_men_text.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent intent=new Intent(RegistrationPage.this,Admin_RegisterDeliveryMen.class);
+        startActivity(intent);
+    }
+});
+
+
 
         loginButton.setOnClickListener(view -> startActivity(new Intent(RegistrationPage.this, LoginPage.class)));
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="@drawable/recycler_item_bg"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/txtDelManName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/txtDelManEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"/>
+
+    <TextView
+        android:id="@+id/txtDelManPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone"/>
+
+    <TextView
+        android:id="@+id/txtDelManAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address"/>
+
+    <TextView
+        android:id="@+id/txtLicenseNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="License No"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnActivate"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Activate"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnRemove"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Remove"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>

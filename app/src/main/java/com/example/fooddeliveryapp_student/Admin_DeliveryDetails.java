@@ -35,7 +35,7 @@ public class Admin_DeliveryDetails extends AppCompatActivity {
 
         // Set click listeners
         cardRegisterDeliveryMen.setOnClickListener(view -> {
-            startActivity(new Intent(Admin_DeliveryDetails.this, Admin_RegisterDeliveryMen.class));
+            startActivity(new Intent(Admin_DeliveryDetails.this, Admin_ActiveDelMan.class));
         });
 
         cardDeliveryStaffDetails.setOnClickListener(view -> {

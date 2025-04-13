@@ -91,6 +91,8 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("Admins").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
+                        email_lg.setText("");
+                        pass_lg.setText("");
                         navigateTo(HomePageAdmin.class, "Welcome Admin!");
                     } else {
                         checkStudentRole(userId);
@@ -124,15 +126,42 @@ public class LoginPage extends AppCompatActivity {
                 });
     }
 
-    private void checkDeliveryManRole(String userId) {
-        firestoreDB.collection("delivery_man").document(userId).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult().exists()) {
-                        DocumentSnapshot document = task.getResult();
-                        String delManId = document.getString("del_man_id");
+//    private void checkDeliveryManRole(String userId) {
+//        firestoreDB.collection("delivery_man").document(userId).get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful() && task.getResult().exists()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        String delManId = document.getString("del_man_id");
+//
+//                        if (delManId != null) {
+//                            // Store del_man_id in SharedPreferences
+//                            getSharedPreferences("DelManPrefs", MODE_PRIVATE)
+//                                    .edit()
+//                                    .putString("del_man_id", delManId)
+//                                    .apply();
+//                        }
+//
+//                        Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
+//                        startActivity(intent);
+//                        showToast("Welcome Delivery Man!");
+//                        finish();
+//                    } else {
+//                        showToast("Access Denied! Role not recognized");
+//                        authProfile.signOut();
+//                    }
+//                });
+//    }
+private void checkDeliveryManRole(String userId) {
+    firestoreDB.collection("delivery_man").document(userId).get()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult().exists()) {
+                    DocumentSnapshot document = task.getResult();
+                    String delManId = document.getString("del_man_id");
+                    String adminControl = document.getString("admin_control");
 
+                    if ("active".equalsIgnoreCase(adminControl)) {
+                        // Store del_man_id in SharedPreferences
                         if (delManId != null) {
-                            // Store del_man_id in SharedPreferences
                             getSharedPreferences("DelManPrefs", MODE_PRIVATE)
                                     .edit()
                                     .putString("del_man_id", delManId)
@@ -141,13 +170,27 @@ public class LoginPage extends AppCompatActivity {
 
                         Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
                         startActivity(intent);
-                        showToast("Welcome Delivery Man!");
+                        showToast("Welcome Delivery Personnel!");
                         finish();
                     } else {
-                        showToast("Access Denied! Role not recognized");
+                        showAccountNotApprovedDialog();
                         authProfile.signOut();
                     }
-                });
+                } else {
+                    showToast("Access Denied! Role not recognized");
+                    authProfile.signOut();
+                }
+            });
+}
+    private void showAccountNotApprovedDialog() {
+        email_lg.setText("");
+        pass_lg.setText("");
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Access Restricted")
+                .setMessage("Your account is currently under review and has not yet been approved by the administrator. Please try again later.")
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 
 

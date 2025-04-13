@@ -107,6 +107,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         String otp = String.valueOf(new SecureRandom().nextInt(9000) + 1000); // 4-digit OTP
 
         Map<String, Object> data = new HashMap<>();
+        data.put("orderId", orderId);
         data.put("otp", otp);
         data.put("timestamp", Timestamp.now());
 

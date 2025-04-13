@@ -1,9 +1,7 @@
 package com.example.fooddeliveryapp_student;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,12 +17,11 @@ import java.util.Map;
 
 public class Admin_RegisterDeliveryMen extends AppCompatActivity {
 
-    EditText etName, etPhone, etEmail, etPassword;
+    EditText etName, etPhone, etEmail, etPassword, etDL, etAddress;
     Button btnRegister;
     FirebaseFirestore db;
     FirebaseAuth auth;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +31,8 @@ public class Admin_RegisterDeliveryMen extends AppCompatActivity {
         etPhone = findViewById(R.id.et_phone);
         etEmail = findViewById(R.id.et_email);
         etPassword = findViewById(R.id.et_password);
+        etDL = findViewById(R.id.et_driving_license);
+        etAddress = findViewById(R.id.text_address);
         btnRegister = findViewById(R.id.btn_register);
 
         db = FirebaseFirestore.getInstance();
@@ -47,14 +46,36 @@ public class Admin_RegisterDeliveryMen extends AppCompatActivity {
         String phone = etPhone.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String dl = etDL.getText().toString().trim().toUpperCase();
+        String address = etAddress.getText().toString().trim();
 
-        if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        if (!isValidName(name)) {
+            showToast("Enter a valid name (only letters, min 3 chars)");
+            return;
+        }
+
+        if (!isValidPhone(phone)) {
+            showToast("Enter valid 10-digit phone starting with 6/7/8/9");
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showToast("Enter valid email address");
             return;
         }
 
         if (password.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            showToast("Password must be at least 6 characters");
+            return;
+        }
+
+        if (address.length() < 4) {
+            showToast("Address must be at least 4 characters");
+            return;
+        }
+
+        if (!isValidDL(dl)) {
+            showToast("Enter valid 16-character Driving License No.");
             return;
         }
 
@@ -67,23 +88,37 @@ public class Admin_RegisterDeliveryMen extends AppCompatActivity {
                     deliveryMan.put("phone", phone);
                     deliveryMan.put("email", email);
                     deliveryMan.put("del_man_id", delManId);
+                    deliveryMan.put("del_men_address", address);
                     deliveryMan.put("current_duty", "Not Available");
-                    deliveryMan.put("driving_license_no", ""); // Empty initially
-                    deliveryMan.put("admin_control", "active");
+                    deliveryMan.put("driving_license_no", dl);
+                    deliveryMan.put("admin_control", "block");
                     deliveryMan.put("created_at", Timestamp.now());
                     deliveryMan.put("updated_at", Timestamp.now());
 
-                    db.collection("delivery_man")
-                            .document(delManId)
-                            .set(deliveryMan)
+                    db.collection("delivery_man").document(delManId).set(deliveryMan)
                             .addOnSuccessListener(unused -> {
-                                sendEmailToDeliveryMan(email, name, password);
-                                Toast.makeText(this, "Registered & Email Sent!", Toast.LENGTH_SHORT).show();
+                                showToast("Registered Successfully");
                                 clearFields();
                             })
-                            .addOnFailureListener(e -> Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                            .addOnFailureListener(e -> showToast("Firestore Error: " + e.getMessage()));
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Auth Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> showToast("Auth Error: " + e.getMessage()));
+    }
+
+    private boolean isValidName(String name) {
+        return name.matches("^[A-Za-z ]{3,}$");
+    }
+
+    private boolean isValidPhone(String phone) {
+        return phone.matches("^[6-9]\\d{9}$");
+    }
+
+    private boolean isValidDL(String dl) {
+        return dl.matches("^[A-Z]{2}[0-9]{2}[0-9]{11}$");
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void clearFields() {
@@ -91,26 +126,7 @@ public class Admin_RegisterDeliveryMen extends AppCompatActivity {
         etPhone.setText("");
         etEmail.setText("");
         etPassword.setText("");
+        etAddress.setText("");
+        etDL.setText("");
     }
-
-    private void sendEmailToDeliveryMan(String email, String name, String password) {
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("message/rfc822"); // only email apps are shown
-
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your Delivery Account Details");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello " + name + ",\n\n" +
-                "Your delivery partner account has been created.\n\n" +
-                "Login Details:\n" +
-                "Email: " + email + "\n" +
-                "Password: " + password + "\n\n" +
-                "Please login and complete your profile.\n\n- Admin\n DoorStep-Campus Delivery app.");
-
-        try {
-            startActivity(Intent.createChooser(emailIntent, "Send account details email..."));
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(this, "No email clients installed on device.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 }

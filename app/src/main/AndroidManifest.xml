@@ -16,6 +16,9 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".Admin_ActiveDelMan"
+            android:exported="false" />
+        <activity
             android:name=".Delivery_OTP"
             android:exported="false" />
         <activity
