@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F5F5"
+    android:background="@color/yellow"
     tools:context=".EditCategoryPage">
 
     <LinearLayout
@@ -20,9 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit Category"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="#333"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"/>
 
         <androidx.cardview.widget.CardView
@@ -55,21 +55,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Change Image"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="#3F51B5"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:backgroundTint="@color/dark_orange"
                     android:paddingHorizontal="20dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/button_rounded"/>
+                    android:layout_marginBottom="16dp" />
 
                 <!-- Category Name -->
                 <EditText
                     android:id="@+id/editCategoryName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:hint="Category Name"
                     android:inputType="textPersonName"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:textColor="@color/dark_brown"
+                    android:background="@color/light_yellow"
                     android:drawableStart="@android:drawable/ic_menu_edit"
                     android:drawablePadding="10dp"
                     android:layout_marginTop="8dp"/>
@@ -78,42 +79,45 @@
                 <EditText
                     android:id="@+id/editCategorySlug"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:hint="Slug"
                     android:inputType="text"
+                    android:textColor="@color/dark_brown"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:background="@color/light_yellow"
                     android:drawableStart="@android:drawable/ic_input_add"
                     android:drawablePadding="10dp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="12dp"/>
 
                 <!-- Description -->
                 <EditText
                     android:id="@+id/editCategoryDescription"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="80dp"
                     android:hint="Description"
                     android:inputType="textMultiLine"
                     android:minLines="3"
+                    android:textColor="@color/dark_brown"
                     android:maxLines="5"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:background="@color/light_yellow"
                     android:drawableStart="@android:drawable/ic_menu_info_details"
                     android:drawablePadding="10dp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="12dp"/>
 
                 <!-- Color -->
                 <EditText
                     android:id="@+id/editCategoryColor"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:hint="Hex Color (e.g. #FF4B2B)"
                     android:inputType="text"
                     android:textSize="16sp"
-                    android:backgroundTint="#999"
+                    android:textColor="@color/dark_brown"
+                    android:background="@color/light_yellow"
                     android:drawableStart="@android:drawable/ic_menu_manage"
                     android:drawablePadding="10dp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="12dp"/>
 
                 <!-- Active Checkbox -->
                 <CheckBox
@@ -121,7 +125,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Is Active?"
-                    android:textColor="#333"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/dark_brown"
                     android:layout_marginTop="12dp"/>
 
             </LinearLayout>
@@ -135,9 +141,9 @@
             android:text="Save Changes"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
+            android:textSize="18sp"
             android:textAllCaps="false"
-            android:backgroundTint="#4CAF50"
-            android:padding="12dp"
-            android:background="@drawable/button_rounded"/>
+            android:backgroundTint="@color/dark_orange"
+            android:padding="12dp" />
     </LinearLayout>
 </ScrollView>

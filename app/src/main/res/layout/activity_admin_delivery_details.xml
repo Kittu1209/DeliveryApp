@@ -4,11 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/purple_200">
+    android:background="@color/yellow">
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_height="wrap_content"
+        android:background=""
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -17,9 +19,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delivery Panel"
-            android:textSize="24sp"
+            android:textSize="32sp"
+            android:layout_gravity="center_horizontal"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginBottom="20dp"/>
 
         <!-- Register Delivery Men -->
@@ -30,6 +33,7 @@
             android:layout_marginBottom="12dp"
             android:clickable="true"
             android:focusable="true"
+            android:layout_marginTop="50dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="5dp">
 
@@ -60,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:layout_marginTop="50dp"
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="12dp"
@@ -93,6 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:clickable="true"
+            android:layout_marginTop="50dp"
             android:focusable="true"
             app:cardCornerRadius="12dp"
             app:cardElevation="5dp">

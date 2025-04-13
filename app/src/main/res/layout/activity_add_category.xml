@@ -1,51 +1,113 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     android:padding="16dp">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!-- Top Heading -->
 
-        <EditText
-            android:id="@+id/etName"
+    <!-- Scrollable form -->
+
+    <TextView
+        android:id="@+id/tvAddCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Category"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.072" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAddCategory"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Category Name" />
+            android:layout_height="600dp"
+            android:background="@color/white"
+            android:layout_marginTop="50dp">
 
-        <EditText
-            android:id="@+id/etDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description" />
+            <EditText
+                android:id="@+id/etName"
+                android:layout_width="330dp"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:textColor="@color/dark_brown"
+                android:layout_marginTop="10dp"
+                android:background="@color/light_yellow"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:hint="Category Name" />
 
-        <Switch
-            android:id="@+id/switchActive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Is Active?" />
+            <EditText
+                android:id="@+id/etDescription"
+                android:layout_width="330dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="@color/light_yellow"
+                android:textSize="20sp"
+                android:textColor="@color/dark_brown"
+                android:layout_marginTop="10dp"
+                android:hint="Description" />
 
-        <ImageView
-            android:id="@+id/imgCategory"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="8dp"
-            android:background="#ddd" />
+            <Switch
+                android:id="@+id/switchActive"
+                android:layout_width="330dp"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:textColor="@color/dark_brown"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Is Active?" />
 
-        <Button
-            android:id="@+id/btnSelectImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select Image from Gallery"
-            android:layout_marginTop="8dp"/>
+            <ImageView
+                android:id="@+id/imgCategory"
+                android:layout_width="330dp"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:background="#ddd" />
 
-        <Button
-            android:id="@+id/btnAddCategory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Category"
-            android:layout_marginTop="16dp"/>
-    </LinearLayout>
-</ScrollView>
+            <Button
+                android:id="@+id/btnSelectImage"
+                android:layout_width="330dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="30dp"
+                android:backgroundTint="@color/dark_orange"
+                android:layout_marginEnd="30dp"
+                android:textSize="20sp"
+                android:text="Select Image from Gallery" />
+
+            <Button
+                android:id="@+id/btnAddCategory"
+                android:layout_width="330dp"
+                android:layout_height="50dp"
+                android:textSize="20sp"
+                android:backgroundTint="@color/dark_orange"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="Add Category"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
