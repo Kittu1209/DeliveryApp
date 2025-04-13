@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/light_yellow"
     android:padding="16dp">
 
     <TextView
@@ -10,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Order ID:"
+        android:textColor="@color/dark_brown"
         android:textSize="18sp"
         android:textStyle="bold" />
 

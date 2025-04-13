@@ -1,57 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     android:padding="16dp"
-    android:orientation="vertical"
     tools:context=".ProductEditActivity">
 
-    <EditText
-        android:id="@+id/editTextProductName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Product Name"
-        android:minHeight="48dp"
-        android:padding="10dp"/>
+    <!-- CardView -->
 
-    <EditText
-        android:id="@+id/editTextProductCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Category"
-        android:minHeight="48dp"
-        android:padding="10dp"/>
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:gravity="center_horizontal"
+        android:text="Edit Product"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cardProductEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.307" />
 
-    <EditText
-        android:id="@+id/editTextProductPrice"
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardProductEdit"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Price"
-        android:minHeight="48dp"
-        android:inputType="numberDecimal"
-        android:padding="10dp"/>
+        android:layout_marginTop="32dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <EditText
-        android:id="@+id/editTextProductDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Description"
-        android:minHeight="48dp"
-        android:padding="10dp"/>
+        <!-- Inner layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <ImageView
-        android:id="@+id/imageViewProduct"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"/>
+            <EditText
+                android:id="@+id/editTextProductName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Product Name"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:background="@color/light_yellow"/>
 
-    <Button
-        android:id="@+id/buttonUpdateProduct"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Update Product"
-        android:minHeight="48dp"
-        android:padding="10dp"/>
-</LinearLayout>
+            <EditText
+                android:id="@+id/editTextProductCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Category"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:background="@color/light_yellow"
+                android:layout_marginTop="12dp"/>
+
+            <EditText
+                android:id="@+id/editTextProductPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Price"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:inputType="numberDecimal"
+                android:background="@color/light_yellow"
+                android:layout_marginTop="12dp"/>
+
+            <EditText
+                android:id="@+id/editTextProductDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:background="@color/light_yellow"
+                android:layout_marginTop="12dp"/>
+
+            <ImageView
+                android:id="@+id/imageViewProduct"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:background="@color/light_yellow"/>
+
+            <Button
+                android:id="@+id/buttonUpdateProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Update Product"
+                android:minHeight="48dp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/dark_orange"
+                android:layout_marginTop="20dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

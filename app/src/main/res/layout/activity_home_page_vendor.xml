@@ -24,7 +24,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:navigationIcon="@drawable/ic_menu"
-            app:navigationIconTint="@color/purple"
+            app:navigationIconTint="@color/dark_orange"
             android:contentInsetStart="16dp"/>
 
         <!-- Fragment container below the toolbar -->
@@ -32,6 +32,7 @@
             android:id="@+id/fragment_container_vendor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/yellow"
             android:layout_below="@id/toolbar_vendor" />
 
         <!-- Bottom bar and FAB -->
@@ -46,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/dark_orange"
                 app:fabCradleMargin="10dp"
                 app:fabAlignmentMode="center"
                 app:fabCradleRoundedCornerRadius="50dp">
@@ -55,7 +56,8 @@
                     android:id="@+id/bottom_navigation_vendor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
+                    android:background="@color/dark_orange"
+                    app:itemIconTint="@color/white"
                     app:menu="@menu/bottom_nevigation_menu_vendor"
                     app:labelVisibilityMode="labeled"/>
             </com.google.android.material.bottomappbar.BottomAppBar>

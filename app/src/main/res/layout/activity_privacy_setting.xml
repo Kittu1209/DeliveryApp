@@ -6,16 +6,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/white">
+    android:background="@color/yellow">
 
     <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Privacy And Security"
-        android:textSize="24sp"
+        android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:layout_gravity="center"
         android:layout_marginBottom="20dp" />
 
@@ -120,8 +120,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back"
-        android:textSize="16sp"
-        android:backgroundTint="@color/teal_700"
+        android:textSize="18sp"
+        android:backgroundTint="@color/dark_orange"
         android:textColor="@color/white"
         android:layout_marginTop="20dp"
         android:id="@+id/btnBack" />
