@@ -20,10 +20,17 @@ public class AdminActiveDelManAdapter extends RecyclerView.Adapter<AdminActiveDe
     private Context context;
     private List<AdminActiveDelManModel> list;
     private FirebaseFirestore db;
+    private OnDeliveryManActivatedListener listener;
 
-    public AdminActiveDelManAdapter(Context context, List<AdminActiveDelManModel> list) {
+    // Interface for sending email after activation
+    public interface OnDeliveryManActivatedListener {
+        void onActivated(String email, String name);
+    }
+
+    public AdminActiveDelManAdapter(Context context, List<AdminActiveDelManModel> list, OnDeliveryManActivatedListener listener) {
         this.context = context;
         this.list = list;
+        this.listener = listener;
         db = FirebaseFirestore.getInstance();
     }
 
@@ -49,6 +56,11 @@ public class AdminActiveDelManAdapter extends RecyclerView.Adapter<AdminActiveDe
                     .update("admin_control", "active")
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(context, "Delivery Man Activated", Toast.LENGTH_SHORT).show();
+
+                        if (listener != null) {
+                            listener.onActivated(model.getEmail(), model.getName());
+                        }
+
                         list.remove(holder.getAdapterPosition());
                         notifyItemRemoved(holder.getAdapterPosition());
                     });

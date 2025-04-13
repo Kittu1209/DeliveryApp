@@ -1,5 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -33,12 +34,36 @@ public class Admin_ActiveDelMan extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         list = new ArrayList<>();
-        adapter = new AdminActiveDelManAdapter(this, list);
+        adapter = new AdminActiveDelManAdapter(this, list, (email, name) -> sendEmailToDeliveryMan(email, name));
         recyclerView.setAdapter(adapter);
+
 
         db = FirebaseFirestore.getInstance();
 
         fetchDeliveryMen();
+    }
+    private void sendEmailToDeliveryMan(String email, String name) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("message/rfc822"); // only email apps are shown
+
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your Delivery Account is Now Active");
+
+        emailIntent.putExtra(Intent.EXTRA_TEXT,
+                "Dear " + name + ",\n\n" +
+                        "We are pleased to inform you that your delivery partner account has been successfully activated in the 'DoorStep-Campus Delivery App'.\n\n" +
+                        "To begin accepting delivery tasks, please open the app and tap the 'Available' button to set your duty status accordingly.\n\n" +
+                        "If you have any questions or need assistance, feel free to reach out to our support team.\n\n" +
+                        "Thank you for being a part of our team.\n\n" +
+                        "Best regards,\n" +
+                        "Admin Team\n" +
+                        "DoorStep-Campus Delivery App");
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send activation email..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "No email clients installed on device.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void fetchDeliveryMen() {
