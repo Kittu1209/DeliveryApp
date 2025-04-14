@@ -12,23 +12,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeliveryHomeActivity extends AppCompatActivity {
 
     private Button toggleStatusButton;
-    private Button completeOrderButton;
     private TextView statusText;
     private TextView orderDetailsText;
     private ImageView profileImage;
     private ImageButton account;
+    private RecyclerView ordersRecyclerView;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private String currentDutyStatus = "Not Available";
-    private String assignedOrderId = "";  // Variable to store the assigned order ID
+    private List<Order> orderList = new ArrayList<>();
+    private OrderDeliveryHomeAdapter orderAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -49,22 +55,26 @@ public class DeliveryHomeActivity extends AppCompatActivity {
 
         // Find views by their IDs
         toggleStatusButton = findViewById(R.id.toggleStatusButton);
-        completeOrderButton = findViewById(R.id.completeOrderButton);
         statusText = findViewById(R.id.statusText); // Text to show status
         orderDetailsText = findViewById(R.id.orderDetailsText); // Text to show order id and status
         profileImage = findViewById(R.id.profileImage); // Profile image to open profile page
-        account=findViewById(R.id.accountbtn);
+        account = findViewById(R.id.accountbtn);
 
         db = FirebaseFirestore.getInstance();
 
-        account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DeliveryHomeActivity.this, SettingPageDelivery.class);
-                startActivity(intent);
-            }
-        });
+        // Initialize RecyclerView
+        ordersRecyclerView = findViewById(R.id.ordersRecyclerView);
+        ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+       // orderAdapter = new OrderDeliveryHomeAdapter(orderList);
+        orderAdapter = new OrderDeliveryHomeAdapter(orderList, DeliveryHomeActivity.this);
 
+        ordersRecyclerView.setAdapter(orderAdapter);
+
+        // Open settings page on account button click
+        account.setOnClickListener(v -> {
+            Intent intent = new Intent(DeliveryHomeActivity.this, SettingPageDelivery.class);
+            startActivity(intent);
+        });
 
         // Set click listener for the profile image to open the profile page
         profileImage.setOnClickListener(v -> {
@@ -77,51 +87,44 @@ public class DeliveryHomeActivity extends AppCompatActivity {
             if (currentDutyStatus.equals("Not Available")) {
                 currentDutyStatus = "Available";
                 statusText.setText("Current Status: Available");
-                fetchAssignedOrder();  // Fetch the assigned order when status is available
+                fetchAssignedOrders();  // Fetch the assigned orders when status is available
             } else {
                 currentDutyStatus = "Not Available";
                 statusText.setText("Current Status: Not Available");
                 orderDetailsText.setText("Order ID: - \nStatus: -");
-                assignedOrderId = "";  // Reset assigned order ID when not available
-            }
-        });
-
-        // Set click listener for the complete order button
-        completeOrderButton.setOnClickListener(v -> {
-            if (!assignedOrderId.isEmpty()) {
-                Intent intent = new Intent(DeliveryHomeActivity.this, DeliveryDetailsActivity.class);
-                intent.putExtra("orderId", assignedOrderId); // Pass the correct orderId to details page
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "No order assigned", Toast.LENGTH_SHORT).show();
+                orderList.clear();  // Clear the order list when not available
+                orderAdapter.notifyDataSetChanged();
             }
         });
 
         // Initial data fetch when the activity is created
-        fetchAssignedOrder();
+        fetchAssignedOrders();
     }
 
-    private void fetchAssignedOrder() {
+    private void fetchAssignedOrders() {
         // Get the logged-in delivery man ID (using Firebase UID)
         String loggedInDeliveryManId = mAuth.getCurrentUser().getUid();
 
         db.collection("orders")
                 .whereEqualTo("assignedDeliveryManId", loggedInDeliveryManId)
-                .limit(1) // Fetching the first assigned order
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    orderList.clear(); // Clear previous data
+
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        // Get the first order document
-                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                        String orderId = doc.getString("orderId");
-                        String status = doc.getString("status");
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            String status = doc.getString("status");
+                            if (status != null && !status.equalsIgnoreCase("delivered")) {
+                                String orderId = doc.getString("orderId");
 
-                        // Set order details in the TextView
-                        assignedOrderId = orderId;  // Store the assigned order ID
-                        orderDetailsText.setText("Order ID: " + orderId + "\nStatus: " + status);
-
+                                // Create an Order object and add to the list
+                                Order assignedOrder = new Order(orderId, status, loggedInDeliveryManId);
+                                orderList.add(assignedOrder);
+                            }
+                        }
+                        orderAdapter.notifyDataSetChanged(); // Update the RecyclerView
                     } else {
-                        orderDetailsText.setText("Order ID: - \nStatus: No orders assigned");
+                        Toast.makeText(this, "No active orders assigned", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
