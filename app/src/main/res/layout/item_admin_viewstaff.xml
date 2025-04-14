@@ -8,7 +8,7 @@
     app:cardElevation="8dp"
     android:clickable="true"
     android:focusable="true"
-    android:backgroundTint="@android:color/white">
+    android:backgroundTint="@color/light_yellow">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                 android:text="Name: KKR"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#2C3E50" />
+                android:textColor="@color/dark_brown" />
 
             <TextView
                 android:id="@+id/status"
@@ -60,8 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email: example@gmail.com"
-            android:textColor="#555555"
-            android:textSize="15sp"
+            android:textColor="@color/dark_brown"
+            android:textSize="17sp"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -69,8 +69,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Phone: 9876543210"
-            android:textColor="#555555"
-            android:textSize="15sp"
+            android:textColor="@color/dark_brown"
+            android:textSize="17sp"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -78,8 +78,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Staff ID: UID12345"
-            android:textColor="#555555"
-            android:textSize="15sp"
+            android:textColor="@color/dark_brown"
+            android:textSize="17sp"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:text="Current Duty: Not Available"
             android:textColor="#FF9800"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:layout_marginBottom="4dp" />
 
         <TextView
@@ -96,8 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="License No: XYZ123456"
-            android:textColor="#555555"
-            android:textSize="15sp" />
+            android:textColor="@color/dark_brown"
+            android:textSize="17sp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

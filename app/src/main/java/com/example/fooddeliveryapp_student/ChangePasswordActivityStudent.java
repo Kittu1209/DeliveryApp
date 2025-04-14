@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ChangePasswordActivityStudent extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class ChangePasswordActivityStudent extends AppCompatActivity {
     private Button changePasswordButton;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private FirebaseFirestore firestore;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -25,17 +27,15 @@ public class ChangePasswordActivityStudent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password_student);
 
-        // Initialize Firebase
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
 
-        // UI Elements
         oldPasswordEditText = findViewById(R.id.old_password);
         newPasswordEditText = findViewById(R.id.new_password);
         confirmPasswordEditText = findViewById(R.id.confirm_password);
         changePasswordButton = findViewById(R.id.change_password_button);
 
-        // Change Password Functionality
         changePasswordButton.setOnClickListener(v -> changePassword());
     }
 
@@ -44,7 +44,6 @@ public class ChangePasswordActivityStudent extends AppCompatActivity {
         String newPassword = newPasswordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
 
-        // Validation
         if (TextUtils.isEmpty(oldPassword) || TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmPassword)) {
             showToast("Please enter all fields");
             return;
@@ -65,17 +64,67 @@ public class ChangePasswordActivityStudent extends AppCompatActivity {
             return;
         }
 
-        // Update password in Firebase
         if (user != null) {
             user.updatePassword(newPassword).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    showToast("Password Updated Successfully");
-                    finish(); // Close activity
+                    updatePasswordInFirestore(newPassword); // Update in Firestore table
                 } else {
                     showToast("Error updating password");
                 }
             });
         }
+    }
+
+    private void updatePasswordInFirestore(String newPassword) {
+        String userEmail = user.getEmail();
+
+        // Check user type in Students
+        firestore.collection("Students").whereEqualTo("email", userEmail).get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        firestore.collection("Students").document(docId)
+                                .update("password", newPassword)
+                                .addOnSuccessListener(aVoid -> {
+                                    showToast("Password updated successfully for Student");
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> showToast("Firestore update failed for Student"));
+                    } else {
+                        // Check Vendors
+                        firestore.collection("Vendors").whereEqualTo("vendorEmail", userEmail).get()
+                                .addOnSuccessListener(query -> {
+                                    if (!query.isEmpty()) {
+                                        String docId = query.getDocuments().get(0).getId();
+                                        firestore.collection("Vendors").document(docId)
+                                                .update("password", newPassword)
+                                                .addOnSuccessListener(aVoid -> {
+                                                    showToast("Password updated successfully for Vendor");
+                                                    finish();
+                                                })
+                                                .addOnFailureListener(e -> showToast("Firestore update failed for Vendor"));
+                                    } else {
+                                        // Check DeliveryMen
+                                        firestore.collection("delivery_man").whereEqualTo("email", userEmail).get()
+                                                .addOnSuccessListener(query2 -> {
+                                                    if (!query2.isEmpty()) {
+                                                        String docId = query2.getDocuments().get(0).getId();
+                                                        firestore.collection("delivery_man").document(docId)
+                                                                .update("password", newPassword)
+                                                                .addOnSuccessListener(aVoid -> {
+                                                                    showToast("Password updated successfully for Delivery Man");
+                                                                    finish();
+                                                                })
+                                                                .addOnFailureListener(e -> showToast("Firestore update failed for Delivery Man"));
+                                                    } else {
+                                                        showToast("User not found in any collection");
+                                                    }
+                                                });
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> showToast("Failed to fetch user data"));
     }
 
     private boolean isValidPassword(String password) {

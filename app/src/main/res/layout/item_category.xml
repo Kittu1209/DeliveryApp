@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:backgroundTint="@color/light_yellow"
     app:cardCornerRadius="10dp"
     app:cardElevation="4dp">
 
@@ -26,6 +27,7 @@
             android:layout_height="wrap_content"
             android:text="Category Name"
             android:textSize="18sp"
+            android:textColor="@color/dark_brown"
             android:textStyle="bold"
             android:gravity="center"
             android:paddingTop="8dp"/>

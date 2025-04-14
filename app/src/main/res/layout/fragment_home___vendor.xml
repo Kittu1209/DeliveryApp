@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/yellow"
     tools:context=".Home_Fragment_Vendor">
 
     <com.google.android.material.button.MaterialButton
@@ -16,8 +17,8 @@
         android:paddingVertical="12dp"
         android:text="Add Product"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@color/purple"
+        android:textSize="18sp"
+        app:backgroundTint="@color/dark_orange"
         app:cornerRadius="12dp"
         android:layout_marginTop="60dp"/>
     <com.google.android.material.button.MaterialButton
@@ -30,8 +31,8 @@
         android:text="Add Category"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:backgroundTint="@color/purple"
-        app:cornerRadius="12dp"
+        app:backgroundTint="@color/dark_orange"
+        app:cornerRadius="18dp"
         android:layout_marginTop="120dp"/>
 
     <com.google.android.material.button.MaterialButton
@@ -44,8 +45,8 @@
         android:paddingVertical="12dp"
         android:text="View Category"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@color/purple"
+        android:textSize="18sp"
+        app:backgroundTint="@color/dark_orange"
         app:cornerRadius="12dp" />
 
     <com.google.android.material.button.MaterialButton
@@ -58,8 +59,8 @@
         android:paddingVertical="12dp"
         android:text="Shop Address"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@color/purple"
+        android:textSize="18sp"
+        app:backgroundTint="@color/dark_orange"
         app:cornerRadius="12dp" />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btneditProduct"
@@ -70,8 +71,8 @@
         android:paddingVertical="12dp"
         android:text="Edit Product"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
-        app:backgroundTint="@color/purple"
+        android:textSize="18sp"
+        app:backgroundTint="@color/dark_orange"
         app:cornerRadius="12dp"
         android:layout_marginTop="300dp"/>
 

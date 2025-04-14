@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:backgroundTint="@color/light_yellow"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="4dp">
 
@@ -18,20 +19,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Order ID"
+            android:textColor="@color/dark_brown"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:paddingBottom="4dp" />
 
         <TextView
             android:id="@+id/text_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Name" />
 
         <TextView
             android:id="@+id/text_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Phone" />
 
         <TextView
@@ -44,24 +48,28 @@
             android:id="@+id/text_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Total Amount" />
 
         <TextView
             android:id="@+id/text_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Order Status" />
 
         <TextView
             android:id="@+id/text_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Order Date" />
 
         <TextView
             android:id="@+id/text_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Items"
             android:textStyle="bold"
             android:textSize="15sp"

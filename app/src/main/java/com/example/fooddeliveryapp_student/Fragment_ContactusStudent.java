@@ -13,8 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,8 @@ public class Fragment_ContactusStudent extends Fragment {
 
     private EditText etName, etEmail, etSubject, etMessage;
     private Button btnSubmit;
-    private DatabaseReference databaseReference;
+
+    private FirebaseFirestore firestore;
 
     public Fragment_ContactusStudent() {
         // Required empty public constructor
@@ -41,18 +43,13 @@ public class Fragment_ContactusStudent extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            // Retrieve any passed parameters if needed
-        }
+        firestore = FirebaseFirestore.getInstance(); // Initialize Firestore
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment__contactus_student, container, false);
-
-        // Initialize Firebase Realtime Database
-        databaseReference = FirebaseDatabase.getInstance().getReference("contact_us");
 
         // Initialize UI elements
         etName = view.findViewById(R.id.etName);
@@ -73,17 +70,13 @@ public class Fragment_ContactusStudent extends Fragment {
         String subject = etSubject.getText().toString().trim();
         String message = etMessage.getText().toString().trim();
 
-        // Validate inputs
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(email) ||
                 TextUtils.isEmpty(subject) || TextUtils.isEmpty(message)) {
             Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Generate unique ID for each message
-        String messageId = databaseReference.push().getKey();
-
-        // Create a data object
+        // Create feedback data
         Map<String, Object> contactData = new HashMap<>();
         contactData.put("name", name);
         contactData.put("email", email);
@@ -91,10 +84,12 @@ public class Fragment_ContactusStudent extends Fragment {
         contactData.put("message", message);
         contactData.put("timestamp", System.currentTimeMillis());
 
-        // Save data to Firebase Realtime Database
-        assert messageId != null;
-        databaseReference.child(messageId).setValue(contactData)
-                .addOnSuccessListener(aVoid ->
+        // Store in Feedback collection → subcollection Student_Feedback
+        DocumentReference feedbackRef = firestore.collection("Feedback").document(); // Auto-ID
+        CollectionReference studentFeedbackRef = feedbackRef.collection("Student_Feedback");
+
+        studentFeedbackRef.add(contactData)
+                .addOnSuccessListener(documentReference ->
                         Toast.makeText(getContext(), "Message Sent!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());

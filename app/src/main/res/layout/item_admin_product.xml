@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="6dp"
+    android:backgroundTint="@color/light_yellow"
     android:padding="12dp">
 
     <LinearLayout
@@ -28,14 +29,14 @@
                 android:id="@+id/adminProductName"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
+                android:textColor="@color/dark_brown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/adminProductPrice"
                 android:textSize="16sp"
-                android:textColor="@color/black"
+                android:textColor="@color/dark_brown"
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -43,7 +44,7 @@
             <TextView
                 android:id="@+id/adminProductCategory"
                 android:textSize="14sp"
-                android:textColor="@color/black"
+                android:textColor="@color/dark_brown"
                 android:layout_marginTop="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

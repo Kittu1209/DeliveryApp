@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:backgroundTint="@color/light_yellow"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="4dp">
 
@@ -20,11 +21,13 @@
             android:layout_height="wrap_content"
             android:text="Order ID: #"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textColor="@color/dark_brown"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/tvCustomerName"
             android:layout_width="wrap_content"
+            android:textColor="@color/dark_brown"
             android:layout_height="wrap_content"
             android:text="Customer Name"/>
 
@@ -32,6 +35,7 @@
             android:id="@+id/tvDeliveryAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Delivery Address"/>
 
         <TextView
@@ -40,12 +44,14 @@
             android:layout_height="wrap_content"
             android:text="Shop: "
             android:textStyle="bold"
+            android:textColor="@color/dark_brown"
             android:layout_marginTop="8dp"/>
 
         <TextView
             android:id="@+id/tvProductDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
             android:text="Products: "
             android:layout_marginTop="4dp"/>
 

@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
+    android:backgroundTint="@color/light_yellow"
     app:cardElevation="6dp">
 
     <LinearLayout
@@ -18,41 +19,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vendor Name"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#000000" />
+            android:textColor="@color/dark_brown" />
 
         <TextView
             android:id="@+id/textVendorEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vendor Email"
-            android:textSize="14sp"
-            android:textColor="#333333" />
+            android:textSize="18sp"
+            android:textColor="@color/dark_brown" />
 
         <TextView
             android:id="@+id/textVendorPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vendor Phone"
-            android:textSize="14sp"
-            android:textColor="#333333" />
+            android:textSize="18sp"
+            android:textColor="@color/dark_brown" />
 
         <TextView
             android:id="@+id/textVendorId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Vendor ID"
-            android:textSize="14sp"
-            android:textColor="#333333" />
+            android:textSize="18sp"
+            android:textColor="@color/dark_brown" />
 
         <TextView
             android:id="@+id/textShopName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Shop Name"
-            android:textSize="14sp"
-            android:textColor="#333333" />
+            android:textSize="18sp"
+            android:textColor="@color/dark_brown" />
 
         <LinearLayout
             android:layout_width="match_parent"

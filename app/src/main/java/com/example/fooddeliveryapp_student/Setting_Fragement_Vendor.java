@@ -1,64 +1,80 @@
 package com.example.fooddeliveryapp_student;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Setting_Fragement_Vendor#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.auth.FirebaseAuth;
+
+import androidx.cardview.widget.CardView;
+
 public class Setting_Fragement_Vendor extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private CardView cardMyProfile, cardChangePassword, cardFAQ, cardLogout;
 
     public Setting_Fragement_Vendor() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Setting_Fragement_Vendor.
-     */
-    // TODO: Rename and change types and number of parameters
     public static Setting_Fragement_Vendor newInstance(String param1, String param2) {
         Setting_Fragement_Vendor fragment = new Setting_Fragement_Vendor();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting__fragement__vendor, container, false);
+        View view = inflater.inflate(R.layout.fragment_setting__fragement__vendor, container, false);
+
+        // Initialize CardViews
+        cardMyProfile = view.findViewById(R.id.cardmyprofile);
+        cardChangePassword = view.findViewById(R.id.cardchnagepassword);
+        cardFAQ = view.findViewById(R.id.cardfaq);
+        cardLogout = view.findViewById(R.id.cardlogout);
+
+        // My Profile → Open Profile_Fragment_Vendor
+        cardMyProfile.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container_vendor, new Profile_Fragment_Vendor());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+
+        // Change Password → Start ChangePasswordActivityStudent
+        cardChangePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivityStudent.class);
+            startActivity(intent);
+        });
+
+        // FAQ → Open FAQs_Fragment_Vendor
+        cardFAQ.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container_vendor, new FAQs_Fragment_Vendor());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+
+        // Logout
+        cardLogout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut(); // Logout from Firebase
+
+            Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(getActivity(), LoginPage.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Prevent going back
+            startActivity(intent);
+        });
+
+        return view;
     }
 }

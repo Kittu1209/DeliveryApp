@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
+    android:backgroundTint="@color/light_yellow"
     app:cardElevation="8dp">
 
     <LinearLayout
@@ -32,14 +33,14 @@
                 android:id="@+id/tvCategoryName"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#333"
+                android:textColor="@color/dark_brown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/tvCategoryDescription"
                 android:textSize="14sp"
-                android:textColor="#777"
+                android:textColor="@color/dark_brown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

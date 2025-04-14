@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,8 @@ import java.util.Map;
 public class Profile_Fragment_Vendor extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, shopEditText;
-    private Button changePasswordButton, editProfileButton, saveButton, addAddressButton,logout;
+    private Button changePasswordButton, editProfileButton, saveButton, addAddressButton;
+    private ImageButton logout;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
@@ -57,7 +59,7 @@ public class Profile_Fragment_Vendor extends Fragment {
         editProfileButton = view.findViewById(R.id.edit_profile_btn_v);
         saveButton = view.findViewById(R.id.save_btn_v);
         addAddressButton = view.findViewById(R.id.add_address); // Corrected ID
-        logout=view.findViewById(R.id.log_out__vendor_btn);
+        logout=view.findViewById(R.id.logout_button_vendor);
 
         // Disable editing initially
         disableEditing();

@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     card_view:cardCornerRadius="12dp"
+    android:backgroundTint="@color/light_yellow"
     card_view:cardElevation="6dp">
 
     <LinearLayout
@@ -20,20 +21,25 @@
             android:layout_height="wrap_content"
             android:text="Order ID: #12345"
             android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="#000000" />
+            android:textSize="18sp"
+            android:textColor="@color/dark_brown"
+        />
 
         <TextView
             android:id="@+id/tvCustomerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Customer: John Doe"
+            android:textColor="@color/dark_brown"
+            android:textSize="16sp"
             android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/tvAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:textSize="16sp"
             android:text="Address: 123 Main Street"
             android:layout_marginTop="2dp" />
 
@@ -41,6 +47,8 @@
             android:id="@+id/tvItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:textSize="16sp"
             android:text="Item: Grocery Box"
             android:layout_marginTop="2dp" />
 
@@ -58,7 +66,7 @@
             android:layout_height="wrap_content"
             android:text="View Details"
             android:layout_marginTop="10dp"
-            android:backgroundTint="#3F51B5"
+            android:backgroundTint="@color/dark_orange"
             android:textColor="#FFFFFF"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

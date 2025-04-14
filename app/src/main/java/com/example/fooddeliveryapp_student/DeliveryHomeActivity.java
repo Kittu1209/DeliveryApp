@@ -1,9 +1,12 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +24,13 @@ public class DeliveryHomeActivity extends AppCompatActivity {
     private TextView statusText;
     private TextView orderDetailsText;
     private ImageView profileImage;
+    private ImageButton account;
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private String currentDutyStatus = "Not Available";
     private String assignedOrderId = "";  // Variable to store the assigned order ID
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +53,18 @@ public class DeliveryHomeActivity extends AppCompatActivity {
         statusText = findViewById(R.id.statusText); // Text to show status
         orderDetailsText = findViewById(R.id.orderDetailsText); // Text to show order id and status
         profileImage = findViewById(R.id.profileImage); // Profile image to open profile page
+        account=findViewById(R.id.accountbtn);
 
         db = FirebaseFirestore.getInstance();
+
+        account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DeliveryHomeActivity.this, SettingPageDelivery.class);
+                startActivity(intent);
+            }
+        });
+
 
         // Set click listener for the profile image to open the profile page
         profileImage.setOnClickListener(v -> {

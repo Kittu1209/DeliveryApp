@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp"
-    android:background="@drawable/recycler_item_bg"
+    android:background="@color/light_yellow"
     android:layout_marginBottom="10dp">
 
     <TextView
@@ -13,23 +13,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Name"
+        android:textColor="@color/dark_brown"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/txtDelManEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/dark_brown"
         android:text="Email"/>
 
     <TextView
         android:id="@+id/txtDelManPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/dark_brown"
         android:text="Phone"/>
 
     <TextView
         android:id="@+id/txtDelManAddress"
         android:layout_width="wrap_content"
+        android:textColor="@color/dark_brown"
         android:layout_height="wrap_content"
         android:text="Address"/>
 
@@ -37,11 +41,13 @@
         android:id="@+id/txtLicenseNo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/dark_brown"
         android:text="License No"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/dark_brown"
         android:orientation="horizontal"
         android:layout_marginTop="8dp">
 
@@ -50,11 +56,13 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="Activate"
+            android:backgroundTint="@color/dark_orange"
             android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnRemove"
             android:layout_width="0dp"
+            android:backgroundTint="@color/dark_orange"
             android:layout_weight="1"
             android:text="Remove"
             android:layout_height="wrap_content"/>

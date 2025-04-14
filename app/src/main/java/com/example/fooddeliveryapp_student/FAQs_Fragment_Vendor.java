@@ -1,64 +1,49 @@
 package com.example.fooddeliveryapp_student;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FAQs_Fragment_Vendor#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class FAQs_Fragment_Vendor extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView recyclerView;
+    private FAQAdapter adapter;
+    private List<FAQ> faqList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public FAQs_Fragment_Vendor() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FAQs_Fragment_Vendor.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FAQs_Fragment_Vendor newInstance(String param1, String param2) {
-        FAQs_Fragment_Vendor fragment = new FAQs_Fragment_Vendor();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public FAQs_Fragment_Vendor() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_f_a_qs___vendor, container, false);
+        View view = inflater.inflate(R.layout.fragment_f_a_qs___vendor, container, false);
+
+        recyclerView = view.findViewById(R.id.recyclerViewVendorFAQ);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        faqList = new ArrayList<>();
+        faqList.add(new FAQ("How to add a product?", "Go to home, click 'Add Product' button."));
+        faqList.add(new FAQ("Can I edit a product later?", "Yes, go to Product List and click Edit."));
+        faqList.add(new FAQ("How to check new orders?", "Go to Orders tab in Home Page."));
+        faqList.add(new FAQ("How to mark an order as delivered?", "It can only be done by Delivery man."));
+        faqList.add(new FAQ("How to change shop details?", "Go to Profile and edit shop information."));
+        faqList.add(new FAQ("How to contact the delivery person?", "You can see assigned delivery person's contact in the order details."));
+        faqList.add(new FAQ("What if a customer cancels an order?", "Our app don't have any cancel order policy."));
+        faqList.add(new FAQ("Can I add discounts to my products?", "Currently, you can edit product prices manually to reflect discounts."));
+        faqList.add(new FAQ("How to view my total sales?", "Go to the Sales Report section in the vendor dashboard."));
+        faqList.add(new FAQ("Can I change my vendor email?", "Go to My Profile page and update it"));
+        faqList.add(new FAQ("How often does the order list refresh?", "It refreshes in real-time, no need to manually reload."));
+
+        adapter = new FAQAdapter(faqList);
+        recyclerView.setAdapter(adapter);
+
+        return view;
     }
 }

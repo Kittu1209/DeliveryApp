@@ -6,8 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
+    android:id="@+id/deliverycontactus"
     android:background="@color/yellow"
-    tools:context=".Fragment_ContactusStudent">
+    tools:context=".DeliveryContactus">
 
     <TextView
         android:layout_width="match_parent"
