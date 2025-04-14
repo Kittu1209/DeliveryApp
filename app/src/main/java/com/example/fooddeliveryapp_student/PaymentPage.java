@@ -74,10 +74,10 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
                             orderamount += price * quantity;
                         }
                         if (price != null && quantity != null) {
-                            totalAmount += (price * quantity) + 20;
+                            totalAmount += (price * quantity);
                         }
                     }
-
+                    totalAmount += 20.0;
                     totalAmountInPaise = (int) (totalAmount * 100);
                     tvTotalAmount.setText("Total Amount: ₹" + totalAmount);
                     tvoderamount.setText("Order Amount: ₹"+ orderamount);
@@ -174,58 +174,55 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
     }
 
     private void assignOrderToDeliveryMan(String orderId) {
-        db.collection("delivery_man")
-                .whereEqualTo("admin_control", "active")
-                .whereEqualTo("current_duty", "Available")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+        db.collection("delivery_man").whereEqualTo("admin_control", "active").whereEqualTo("current_duty", "Available").get().addOnSuccessListener(queryDocumentSnapshots -> {
                     List<DocumentSnapshot> deliveryMen = queryDocumentSnapshots.getDocuments();
-
                     if (deliveryMen.isEmpty()) {
                         Log.d("DeliveryAssign", "No delivery men available");
-                        Toast.makeText(this, "No available delivery men", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No available delivery men. Order cannot be placed.", Toast.LENGTH_LONG).show();
                         return;
                     }
 
+                    // Round Robin selection using SharedPreferences
                     SharedPreferences prefs = getSharedPreferences("RoundRobinPrefs", MODE_PRIVATE);
                     int lastIndex = prefs.getInt("lastIndex", -1);
                     int nextIndex = (lastIndex + 1) % deliveryMen.size();
 
                     DocumentSnapshot selectedDeliveryMan = deliveryMen.get(nextIndex);
-                    String deliveryDocId = selectedDeliveryMan.getId();  // document ID
-                    String delManId = selectedDeliveryMan.getString("del_man_id"); // Firestore field
-
-                    Log.d("DeliveryAssign", "Selected delivery docId: " + deliveryDocId);
-                    Log.d("DeliveryAssign", "Selected del_man_id field: " + delManId);
+                    String delManId = selectedDeliveryMan.getString("del_man_id");
 
                     if (delManId == null || delManId.trim().isEmpty()) {
-                        Toast.makeText(this, "Delivery man ID not found in Firestore field", Toast.LENGTH_LONG).show();
+                        Log.e("DeliveryAssign", "Selected delivery man has no 'del_man_id' field");
+                        Toast.makeText(this, "Invalid delivery man data. Try again.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    // Update the order with correct delivery man ID
-                    db.collection("orders").document(orderId)
-                            .update("assignedDeliveryManId", delManId)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("DeliveryAssign", "Assigned to delivery man: " + delManId);
-                                Toast.makeText(this, "Assigned to: " + delManId, Toast.LENGTH_SHORT).show();
+                    // Prepare updates for the order
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("assignedDeliveryManId", delManId);
+                    updates.put("status", "Delivery Man Assigned");
 
-                                // Mark him as on delivery
-                                db.collection("delivery_man").document(deliveryDocId)
-                                        .update("current_duty", "On Delivery");
+                    db.collection("orders").document(orderId)
+                            .update(updates)
+                            .addOnSuccessListener(unused -> {
+                                Log.d("DeliveryAssign", "Order assigned to delivery man: " + delManId);
+                                Toast.makeText(this, "Order assigned to: " + delManId, Toast.LENGTH_SHORT).show();
+
+                                // Save updated round robin index
+                                prefs.edit().putInt("lastIndex", nextIndex).apply();
                             })
                             .addOnFailureListener(e -> {
-                                Log.e("DeliveryAssign", "Failed to assign delivery man", e);
+                                Log.e("DeliveryAssign", "Failed to assign order", e);
+                                Toast.makeText(this, "Failed to assign delivery man. Try again.", Toast.LENGTH_SHORT).show();
                             });
 
-                    prefs.edit().putInt("lastIndex", nextIndex).apply();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("DeliveryAssign", "Failed to fetch delivery men", e);
+                    Log.e("DeliveryAssign", "Error fetching delivery men", e);
+                    Toast.makeText(this, "Error fetching delivery men. Please check your connection.", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void storePaymentDetails(String userId, String paymentId, double amount, String orderId) {
+        private void storePaymentDetails(String userId, String paymentId, double amount, String orderId) {
         Map<String, Object> paymentData = new HashMap<>();
         paymentData.put("amount", amount);
         paymentData.put("createdAt", new Date());

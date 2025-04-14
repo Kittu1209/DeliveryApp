@@ -7,20 +7,18 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tvPhoneNumber"
-        android:text="Phone Number: "
-        android:layout_width="wrap_content"
-        android:layout_height="48dp" />
-
-    <Button
-        android:id="@+id/btnSendOtp"
-        android:text="Send OTP"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="PIN VERIFICATION"
+        android:textSize="34sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/etOtp"
-        android:hint="Enter OTP"
+        android:hint="Enter PIN"
         android:layout_marginTop="30dp"
         android:inputType="number"
         android:layout_width="match_parent"
@@ -28,8 +26,10 @@
 
     <Button
         android:id="@+id/btnVerifyOtp"
-        android:text="Verify OTP"
+        android:text="Verify PIN"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+
 
 </LinearLayout>
