@@ -57,6 +57,8 @@ public class Delivery_OTP extends AppCompatActivity {
                                 db.collection("orders").document(orderId)
                                         .update("status", "Delivered")
                                         .addOnSuccessListener(unused -> {
+                                            PaymentDistributor distributor = new PaymentDistributor();
+                                            distributor.distributePayments(orderId);
                                             Toast.makeText(this, "Delivery Done", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(this, DeliveryHomeActivity.class));
                                             finish();

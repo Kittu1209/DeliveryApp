@@ -83,19 +83,48 @@ public class DeliveryHomeActivity extends AppCompatActivity {
         });
 
         // Set click listener for the toggle status button
+//        toggleStatusButton.setOnClickListener(v -> {
+//            if (currentDutyStatus.equals("Not Available")) {
+//                currentDutyStatus = "Available";
+//                statusText.setText("Current Status: Available");
+//                fetchAssignedOrders();  // Fetch the assigned orders when status is available
+//            } else {
+//                currentDutyStatus = "Not Available";
+//                statusText.setText("Current Status: Not Available");
+//                orderDetailsText.setText("Order ID: - \nStatus: -");
+//                orderList.clear();  // Clear the order list when not available
+//                orderAdapter.notifyDataSetChanged();
+//            }
+//        });
         toggleStatusButton.setOnClickListener(v -> {
             if (currentDutyStatus.equals("Not Available")) {
                 currentDutyStatus = "Available";
-                statusText.setText("Current Status: Available");
+
+                if (statusText != null) {
+                    statusText.setText("Current Status: Available");
+                } else {
+                    Log.e("DeliveryHomeActivity", "statusText is null!");
+                }
+
                 fetchAssignedOrders();  // Fetch the assigned orders when status is available
             } else {
                 currentDutyStatus = "Not Available";
-                statusText.setText("Current Status: Not Available");
-                orderDetailsText.setText("Order ID: - \nStatus: -");
+
+                if (statusText != null) {
+                    statusText.setText("Current Status: Not Available");
+                } else {
+                    Log.e("DeliveryHomeActivity", "statusText is null!");
+                }
+
+                if (orderDetailsText != null) {
+                    orderDetailsText.setText("Order ID: - \nStatus: -");
+                }
+
                 orderList.clear();  // Clear the order list when not available
                 orderAdapter.notifyDataSetChanged();
             }
         });
+
 
         // Initial data fetch when the activity is created
         fetchAssignedOrders();

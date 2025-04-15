@@ -140,8 +140,8 @@ public class DeliveryDetailsActivity extends AppCompatActivity {
                                         .get()
                                         .addOnSuccessListener(shopDoc -> {
                                             if (shopDoc.exists()) {
-                                                String shopName = shopDoc.getString("shopName");
-                                                String shopAddress = shopDoc.getString("shopAddress");
+                                                String shopName = shopDoc.getString("name");
+                                                String shopAddress = shopDoc.getString("address");
                                                 itemDetails.append("\n   from: ").append(shopName)
                                                         .append("\n   at: ").append(shopAddress).append("\n\n");
 
