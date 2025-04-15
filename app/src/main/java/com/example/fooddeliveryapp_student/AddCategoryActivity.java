@@ -50,8 +50,33 @@ public class AddCategoryActivity extends AppCompatActivity {
             String description = etDescription.getText().toString().trim();
             boolean isActive = switchActive.isChecked();
 
-            if (name.isEmpty() || base64Image.isEmpty()) {
-                Toast.makeText(this, "Name and image required", Toast.LENGTH_SHORT).show();
+            // Input validations
+            if (name.isEmpty()) {
+                etName.setError("Category name is required");
+                etName.requestFocus();
+                return;
+            }
+
+            if (name.length() < 3) {
+                etName.setError("Name should be at least 3 characters");
+                etName.requestFocus();
+                return;
+            }
+
+            if (description.isEmpty()) {
+                etDescription.setError("Description is required");
+                etDescription.requestFocus();
+                return;
+            }
+
+            if (description.length() < 10) {
+                etDescription.setError("Description should be at least 10 characters");
+                etDescription.requestFocus();
+                return;
+            }
+
+            if (base64Image.isEmpty()) {
+                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -75,7 +100,9 @@ public class AddCategoryActivity extends AppCompatActivity {
                         Toast.makeText(this, "Category Added", Toast.LENGTH_SHORT).show();
                         finish();
                     })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
         });
     }
 
@@ -98,6 +125,7 @@ public class AddCategoryActivity extends AppCompatActivity {
                 base64Image = encodeImageToBase64(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(this, "Image selection failed", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -65,10 +66,7 @@ public class AddProductActivity extends AppCompatActivity {
         btnUploadImage.setOnClickListener(v -> selectImage());
 
         btnAddProduct.setOnClickListener(v -> {
-            if (selectedBitmap == null) {
-                Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            if (!validateInputs()) return;
             if (shopId == null) {
                 Toast.makeText(this, "Shop not linked yet. Try again shortly.", Toast.LENGTH_SHORT).show();
                 return;
@@ -77,25 +75,57 @@ public class AddProductActivity extends AppCompatActivity {
         });
     }
 
-    private void saveProductToFirestore() {
-        String productName = etProductName.getText().toString().trim();
-        String productPriceStr = etProductPrice.getText().toString().trim();
-        String productDescription = etProductDescription.getText().toString().trim();
-        String selectedCategory = (spinnerCategory.getSelectedItem() != null) ?
+    private boolean validateInputs() {
+        String name = etProductName.getText().toString().trim();
+        String priceStr = etProductPrice.getText().toString().trim();
+        String description = etProductDescription.getText().toString().trim();
+        String category = (spinnerCategory.getSelectedItem() != null) ?
                 spinnerCategory.getSelectedItem().toString() : "";
 
-        if (productName.isEmpty() || productPriceStr.isEmpty() || productDescription.isEmpty() || selectedCategory.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return;
+        if (TextUtils.isEmpty(name)) {
+            etProductName.setError("Product name is required");
+            return false;
         }
 
-        double price;
-        try {
-            price = Double.parseDouble(productPriceStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid price format", Toast.LENGTH_SHORT).show();
-            return;
+        if (TextUtils.isEmpty(priceStr)) {
+            etProductPrice.setError("Price is required");
+            return false;
         }
+
+        try {
+            double price = Double.parseDouble(priceStr);
+            if (price <= 0) {
+                etProductPrice.setError("Price must be greater than zero");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            etProductPrice.setError("Invalid price format");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(description)) {
+            etProductDescription.setError("Description is required");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(category)) {
+            Toast.makeText(this, "Please select a category", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (selectedBitmap == null) {
+            Toast.makeText(this, "Please upload a product image", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void saveProductToFirestore() {
+        String productName = etProductName.getText().toString().trim();
+        double price = Double.parseDouble(etProductPrice.getText().toString().trim());
+        String productDescription = etProductDescription.getText().toString().trim();
+        String selectedCategory = spinnerCategory.getSelectedItem().toString();
 
         // Convert image to Base64
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -110,9 +140,8 @@ public class AddProductActivity extends AppCompatActivity {
         product.put("category", selectedCategory);
         product.put("imageUrl", base64Image);
         product.put("shopId", shopId);
-        product.put("createdAt", FieldValue.serverTimestamp()); // NEW
-        product.put("updatedAt", FieldValue.serverTimestamp()); // NEW
-        product.put("timestamp", FieldValue.serverTimestamp()); // optional or can be removed
+        product.put("createdAt", FieldValue.serverTimestamp());
+        product.put("updatedAt", FieldValue.serverTimestamp());
 
         db.collection("products")
                 .add(product)
@@ -172,6 +201,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void selectImage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 

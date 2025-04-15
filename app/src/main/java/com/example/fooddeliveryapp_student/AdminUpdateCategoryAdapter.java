@@ -40,16 +40,35 @@ public class AdminUpdateCategoryAdapter extends RecyclerView.Adapter<AdminUpdate
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         AdminUpdateCategoryModel model = categoryList.get(position);
 
-        holder.tvCategoryName.setText(model.getName());
-        holder.tvCategoryDescription.setText(model.getDescription());
+        // === Validations ===
+        String name = model.getName();
+        String description = model.getDescription();
+        String imageBase64 = model.getImage();
 
-        // Decode Base64 image
-        try {
-            byte[] decodedBytes = Base64.decode(model.getImage(), Base64.DEFAULT);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-            holder.imgCategory.setImageBitmap(decodedBitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (name == null || name.trim().isEmpty()) {
+            holder.tvCategoryName.setText("No Name");
+        } else {
+            holder.tvCategoryName.setText(name);
+        }
+
+        if (description == null || description.trim().isEmpty()) {
+            holder.tvCategoryDescription.setText("No Description");
+        } else {
+            holder.tvCategoryDescription.setText(description);
+        }
+
+        // Decode Base64 image safely
+        if (imageBase64 != null && !imageBase64.trim().isEmpty()) {
+            try {
+                byte[] decodedBytes = Base64.decode(imageBase64, Base64.DEFAULT);
+                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                holder.imgCategory.setImageBitmap(decodedBitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+                holder.imgCategory.setImageResource(R.drawable.heartlogo); // fallback image if decode fails
+            }
+        } else {
+            holder.imgCategory.setImageResource(R.drawable.heartlogo); // fallback for missing image
         }
 
         holder.btnEdit.setOnClickListener(v -> {

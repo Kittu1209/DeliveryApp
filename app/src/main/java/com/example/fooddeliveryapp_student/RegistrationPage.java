@@ -66,16 +66,12 @@ public class RegistrationPage extends AppCompatActivity {
         regButton = findViewById(R.id.RRegisterButton);
         loginButton = findViewById(R.id.RLoginButton);
         progressBar = findViewById(R.id.progressBar);
-reg_del_men_text=findViewById(R.id.register_del_men_text);
-reg_del_men_text.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        Intent intent=new Intent(RegistrationPage.this,Admin_RegisterDeliveryMen.class);
-        startActivity(intent);
-    }
-});
+        reg_del_men_text = findViewById(R.id.register_del_men_text);
 
-
+        reg_del_men_text.setOnClickListener(v -> {
+            Intent intent = new Intent(RegistrationPage.this, Admin_RegisterDeliveryMen.class);
+            startActivity(intent);
+        });
 
         loginButton.setOnClickListener(view -> startActivity(new Intent(RegistrationPage.this, LoginPage.class)));
 
@@ -109,6 +105,7 @@ reg_del_men_text.setOnClickListener(new View.OnClickListener() {
             shopName = shopNameInput.getText().toString().trim();
             if (TextUtils.isEmpty(shopName)) {
                 showToast("Enter Shop Name");
+                shopNameInput.requestFocus();
                 progressBar.setVisibility(View.GONE);
                 return;
             }
@@ -118,29 +115,60 @@ reg_del_men_text.setOnClickListener(new View.OnClickListener() {
             return;
         }
 
-        // Validations
+        // Validate Unique ID
         if (TextUtils.isEmpty(userUniqueId)) {
             showToast("Enter a unique ID");
+            userId.requestFocus();
             progressBar.setVisibility(View.GONE);
             return;
         }
+        if (!userUniqueId.matches("^[A-Z]{5}\\d{5}$")) {
+            showToast("ID must be 10 characters: First 5 uppercase letters, last 5 digits (e.g., ABCDE12345)");
+            userId.requestFocus();
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
+        // Validate Name
         if (TextUtils.isEmpty(userName)) {
             showToast("Enter Name");
+            name.requestFocus();
             progressBar.setVisibility(View.GONE);
             return;
         }
-        if (TextUtils.isEmpty(userPhone) || !userPhone.matches("\\d{10}")) {
-            showToast("Phone number must be 10 digits");
+
+        // Validate Phone
+        if (TextUtils.isEmpty(userPhone)) {
+            showToast("Enter Phone Number");
+            phone.requestFocus();
             progressBar.setVisibility(View.GONE);
             return;
         }
+        if (!userPhone.matches("^\\d{10}$")) {
+            showToast("Phone number must be exactly 10 digits");
+            phone.requestFocus();
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
+        // Validate Email
         if (TextUtils.isEmpty(userEmail) || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             showToast("Enter a valid Email Address");
+            email.requestFocus();
             progressBar.setVisibility(View.GONE);
             return;
         }
-        if (TextUtils.isEmpty(userPassword) || !isValidPassword(userPassword)) {
+
+        // Validate Password
+        if (TextUtils.isEmpty(userPassword)) {
+            showToast("Enter Password");
+            password.requestFocus();
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+        if (!isValidPassword(userPassword)) {
             showToast("Password must be at least 6 characters, contain 1 uppercase letter, 1 digit, and 1 special character (@#$%^&+=!)");
+            password.requestFocus();
             progressBar.setVisibility(View.GONE);
             return;
         }

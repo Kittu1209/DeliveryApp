@@ -1,17 +1,22 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Task;
@@ -19,8 +24,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class LoginPage extends AppCompatActivity {
 
     private EditText email_lg, pass_lg;
@@ -28,9 +34,12 @@ public class LoginPage extends AppCompatActivity {
     private TextView forgotPassword;
     private FirebaseAuth authProfile;
     private FirebaseFirestore firestoreDB;
+    private ImageView togglePasswordIcon;
+    private boolean isPasswordVisible = false;
 
     private static final String TAG = "LoginPage";
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +52,7 @@ public class LoginPage extends AppCompatActivity {
         login_btn = findViewById(R.id.Loginbutton);
         register_btn = findViewById(R.id.Registerbutton);
         forgotPassword = findViewById(R.id.ForgotPassword);
+        togglePasswordIcon = findViewById(R.id.togglePasswordVisibility);
 
         authProfile = FirebaseAuth.getInstance();
         firestoreDB = FirebaseFirestore.getInstance();
@@ -50,6 +60,20 @@ public class LoginPage extends AppCompatActivity {
         login_btn.setOnClickListener(view -> loginUser());
         register_btn.setOnClickListener(v -> navigateTo(RegistrationPage.class, "Redirecting to Registration Page"));
         forgotPassword.setOnClickListener(v -> navigateTo(ForgetPassword.class, "Redirecting to Password Recovery"));
+
+        togglePasswordIcon.setOnClickListener(v -> togglePasswordVisibility());
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            pass_lg.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            togglePasswordIcon.setImageResource(R.drawable.baseline_block_24);
+        } else {
+            pass_lg.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            togglePasswordIcon.setImageResource(R.drawable.baseline_adjust_24);
+        }
+        pass_lg.setSelection(pass_lg.length());
+        isPasswordVisible = !isPasswordVisible;
     }
 
     private void loginUser() {
@@ -79,11 +103,17 @@ public class LoginPage extends AppCompatActivity {
             email_lg.requestFocus();
             return false;
         }
+
         if (TextUtils.isEmpty(password)) {
             pass_lg.setError("Password is required");
             pass_lg.requestFocus();
             return false;
+        } else if (password.length() < 6) {
+            pass_lg.setError("Password must be at least 6 characters");
+            pass_lg.requestFocus();
+            return false;
         }
+
         return true;
     }
 
@@ -126,73 +156,46 @@ public class LoginPage extends AppCompatActivity {
                 });
     }
 
-//    private void checkDeliveryManRole(String userId) {
-//        firestoreDB.collection("delivery_man").document(userId).get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful() && task.getResult().exists()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        String delManId = document.getString("del_man_id");
-//
-//                        if (delManId != null) {
-//                            // Store del_man_id in SharedPreferences
-//                            getSharedPreferences("DelManPrefs", MODE_PRIVATE)
-//                                    .edit()
-//                                    .putString("del_man_id", delManId)
-//                                    .apply();
-//                        }
-//
-//                        Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
-//                        startActivity(intent);
-//                        showToast("Welcome Delivery Man!");
-//                        finish();
-//                    } else {
-//                        showToast("Access Denied! Role not recognized");
-//                        authProfile.signOut();
-//                    }
-//                });
-//    }
-private void checkDeliveryManRole(String userId) {
-    firestoreDB.collection("delivery_man").document(userId).get()
-            .addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult().exists()) {
-                    DocumentSnapshot document = task.getResult();
-                    String delManId = document.getString("del_man_id");
-                    String adminControl = document.getString("admin_control");
+    private void checkDeliveryManRole(String userId) {
+        firestoreDB.collection("delivery_man").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        DocumentSnapshot document = task.getResult();
+                        String delManId = document.getString("del_man_id");
+                        String adminControl = document.getString("admin_control");
 
-                    if ("active".equalsIgnoreCase(adminControl)) {
-                        // Store del_man_id in SharedPreferences
-                        if (delManId != null) {
-                            getSharedPreferences("DelManPrefs", MODE_PRIVATE)
-                                    .edit()
-                                    .putString("del_man_id", delManId)
-                                    .apply();
+                        if ("active".equalsIgnoreCase(adminControl)) {
+                            if (delManId != null) {
+                                getSharedPreferences("DelManPrefs", MODE_PRIVATE)
+                                        .edit()
+                                        .putString("del_man_id", delManId)
+                                        .apply();
+                            }
+                            Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
+                            startActivity(intent);
+                            showToast("Welcome Delivery Personnel!");
+                            finish();
+                        } else {
+                            showAccountNotApprovedDialog();
+                            authProfile.signOut();
                         }
-
-                        Intent intent = new Intent(LoginPage.this, DeliveryHomeActivity.class);
-                        startActivity(intent);
-                        showToast("Welcome Delivery Personnel!");
-                        finish();
                     } else {
-                        showAccountNotApprovedDialog();
+                        showToast("Access Denied! Role not recognized");
                         authProfile.signOut();
                     }
-                } else {
-                    showToast("Access Denied! Role not recognized");
-                    authProfile.signOut();
-                }
-            });
-}
+                });
+    }
+
     private void showAccountNotApprovedDialog() {
         email_lg.setText("");
         pass_lg.setText("");
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Access Restricted")
                 .setMessage("Your account is currently under review and has not yet been approved by the administrator. Please try again later.")
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
     }
-
 
     private void handleLoginError(@NonNull Task<AuthResult> task) {
         if (task.getException() instanceof FirebaseAuthInvalidUserException) {
@@ -208,7 +211,7 @@ private void checkDeliveryManRole(String userId) {
         Intent intent = new Intent(LoginPage.this, targetActivity);
         startActivity(intent);
         showToast(message);
-        finish();  // Close the login activity
+        finish();
     }
 
     private void showToast(String message) {
