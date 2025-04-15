@@ -33,14 +33,14 @@ public class HomePage_Student extends AppCompatActivity implements NavigationVie
     BottomNavigationView bottomNavigationView;
     FragmentManager fregmentManager;
     Toolbar toolbar;
-    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page_student);
 
-        fab=findViewById(R.id.fab);
+
         toolbar=findViewById(R.id.toolbarr);
         setSupportActionBar(toolbar);
 
@@ -78,13 +78,6 @@ public class HomePage_Student extends AppCompatActivity implements NavigationVie
 
         fregmentManager = getSupportFragmentManager();
         openFragment(new Fragment_HomeStudent());
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(HomePage_Student.this,"Home Page",Toast.LENGTH_SHORT).show();
-            }
-        });
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {

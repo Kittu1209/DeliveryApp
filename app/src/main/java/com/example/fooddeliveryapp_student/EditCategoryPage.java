@@ -103,8 +103,29 @@ public class EditCategoryPage extends AppCompatActivity {
         String color = editCategoryColor.getText().toString().trim();
         boolean isActive = checkBoxIsActive.isChecked();
 
-        if (name.isEmpty() || slug.isEmpty() || description.isEmpty() || color.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        // Validation
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Category name is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (slug.isEmpty()) {
+            Toast.makeText(this, "Category slug is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (description.isEmpty()) {
+            Toast.makeText(this, "Category description is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (color.isEmpty()) {
+            Toast.makeText(this, "Category color is required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (base64Image.isEmpty()) {
+            Toast.makeText(this, "Please upload an image", Toast.LENGTH_SHORT).show();
             return;
         }
 

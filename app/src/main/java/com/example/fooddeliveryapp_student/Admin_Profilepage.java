@@ -1,6 +1,7 @@
 package com.example.fooddeliveryapp_student;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +21,7 @@ public class Admin_Profilepage extends AppCompatActivity {
     private EditText adminName, adminEmail, adminPhone, adminId;
     private Button btnUpdateProfile, btnSaveProfile;
     private FirebaseFirestore db;
-    private String adminDocId = "gBfoYGTXU9We4oJrkadZk7Kmcte2"; // Use dynamic value if needed
+    private String adminDocId = "gBfoYGTXU9We4oJrkadZk7Kmcte2"; // Replace with dynamic if needed
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,8 @@ public class Admin_Profilepage extends AppCompatActivity {
                 adminPhone.setText(documentSnapshot.getString("phone_number"));
                 adminId.setText(documentSnapshot.getString("admin_id"));
             }
-        }).addOnFailureListener(e -> Toast.makeText(this, "Failed to load data", Toast.LENGTH_SHORT).show());
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "Failed to load data", Toast.LENGTH_SHORT).show());
     }
 
     private void saveChanges() {
@@ -64,6 +66,38 @@ public class Admin_Profilepage extends AppCompatActivity {
         String email = adminEmail.getText().toString().trim();
         String phone = adminPhone.getText().toString().trim();
 
+        // === Validations ===
+        if (name.isEmpty()) {
+            adminName.setError("Name is required");
+            adminName.requestFocus();
+            return;
+        }
+
+        if (email.isEmpty()) {
+            adminEmail.setError("Email is required");
+            adminEmail.requestFocus();
+            return;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            adminEmail.setError("Invalid email format");
+            adminEmail.requestFocus();
+            return;
+        }
+
+        if (phone.isEmpty()) {
+            adminPhone.setError("Phone number is required");
+            adminPhone.requestFocus();
+            return;
+        }
+
+        if (phone.length() != 10 || !phone.matches("\\d+")) {
+            adminPhone.setError("Enter valid 10-digit phone number");
+            adminPhone.requestFocus();
+            return;
+        }
+
+        // === Update Firestore ===
         Map<String, Object> updatedData = new HashMap<>();
         updatedData.put("name", name);
         updatedData.put("email", email);
@@ -78,13 +112,14 @@ public class Admin_Profilepage extends AppCompatActivity {
                     btnSaveProfile.setVisibility(View.GONE);
                     btnUpdateProfile.setVisibility(View.VISIBLE);
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Failed to update", Toast.LENGTH_SHORT).show());
     }
 
     private void setFieldsEditable(boolean editable) {
         adminName.setEnabled(editable);
         adminEmail.setEnabled(editable);
         adminPhone.setEnabled(editable);
-        // ID is not editable
+        // adminId is not editable
     }
 }

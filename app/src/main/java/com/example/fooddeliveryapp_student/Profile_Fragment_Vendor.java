@@ -24,6 +24,8 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Profile_Fragment_Vendor extends Fragment {
 
@@ -59,7 +61,7 @@ public class Profile_Fragment_Vendor extends Fragment {
         editProfileButton = view.findViewById(R.id.edit_profile_btn_v);
         saveButton = view.findViewById(R.id.save_btn_v);
         addAddressButton = view.findViewById(R.id.add_address); // Corrected ID
-        logout=view.findViewById(R.id.logout_button_vendor);
+        logout = view.findViewById(R.id.logout_button_vendor);
 
         // Disable editing initially
         disableEditing();
@@ -71,27 +73,23 @@ public class Profile_Fragment_Vendor extends Fragment {
         // Edit Profile button click
         editProfileButton.setOnClickListener(v -> enableEditing());
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        logout.setOnClickListener(v -> {
+            mAuth.signOut();
 
-                    mAuth.signOut();
-
-                    // Check if the user is logged out successfully
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    if (user == null) {
-                        // If the user is logged out, redirect to login activity
-                        Intent intent = new Intent(getActivity(), LoginPage.class); // Replace with your LoginActivity
-                        startActivity(intent);
-                        getActivity().finish(); // Finish current activity to prevent going back
-                        Toast.makeText(getActivity(), "Logged out successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // If there's an error in logout
-                        Toast.makeText(getActivity(), "Logout failed", Toast.LENGTH_SHORT).show();
-                    }}
-
-
+            // Check if the user is logged out successfully
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null) {
+                // If the user is logged out, redirect to login activity
+                Intent intent = new Intent(getActivity(), LoginPage.class); // Replace with your LoginActivity
+                startActivity(intent);
+                getActivity().finish(); // Finish current activity to prevent going back
+                Toast.makeText(getActivity(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                // If there's an error in logout
+                Toast.makeText(getActivity(), "Logout failed", Toast.LENGTH_SHORT).show();
+            }
         });
+
         // Save Profile button click
         saveButton.setOnClickListener(v -> saveUpdatedData());
 
@@ -147,25 +145,37 @@ public class Profile_Fragment_Vendor extends Fragment {
         saveButton.setVisibility(View.VISIBLE);
     }
 
-    // Save updated data to Firestore
+    // Save updated data to Firestore with validation
     private void saveUpdatedData() {
+        String name = nameEditText.getText().toString().trim();
+        String email = emailEditText.getText().toString().trim();
+        String phone = phoneEditText.getText().toString().trim();
+        String shopName = shopEditText.getText().toString().trim();
+
+        // Validate inputs
+        if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || shopName.isEmpty()) {
+            Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            Toast.makeText(getContext(), "Please enter a valid email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isValidPhone(phone)) {
+            Toast.makeText(getContext(), "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> updatedData = new HashMap<>();
+        updatedData.put("vendorName", name);
+        updatedData.put("vendorEmail", email);
+        updatedData.put("vendorPhone", phone);
+        updatedData.put("shopName", shopName);
+
+        // Save data to Firestore
         if (userRef != null) {
-            String name = nameEditText.getText().toString().trim();
-            String email = emailEditText.getText().toString().trim();
-            String phone = phoneEditText.getText().toString().trim();
-            String shopName = shopEditText.getText().toString().trim();
-
-            if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || shopName.isEmpty()) {
-                Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Map<String, Object> updatedData = new HashMap<>();
-            updatedData.put("vendorName", name);
-            updatedData.put("vendorEmail", email);
-            updatedData.put("vendorPhone", phone);
-            updatedData.put("shopName", shopName);
-
             userRef.set(updatedData, SetOptions.merge())  // Merge updates
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -194,5 +204,18 @@ public class Profile_Fragment_Vendor extends Fragment {
         shopEditText.setFocusableInTouchMode(false);
 
         saveButton.setVisibility(View.GONE);
+    }
+
+    // Validate email format
+    private boolean isValidEmail(String email) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
+        Pattern pattern = Pattern.compile(emailPattern);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    // Validate phone number (simple validation for 10 digits)
+    private boolean isValidPhone(String phone) {
+        return phone.length() == 10 && phone.matches("[0-9]+");
     }
 }

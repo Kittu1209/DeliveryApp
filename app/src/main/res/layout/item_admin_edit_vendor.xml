@@ -29,6 +29,8 @@
             android:layout_height="wrap_content"
             android:text="Vendor Email"
             android:textSize="18sp"
+            android:focusable="false"
+            android:enabled="false"
             android:textColor="@color/dark_brown" />
 
         <TextView
@@ -45,6 +47,8 @@
             android:layout_height="wrap_content"
             android:text="Vendor ID"
             android:textSize="18sp"
+            android:focusable="false"
+            android:enabled="false"
             android:textColor="@color/dark_brown" />
 
         <TextView

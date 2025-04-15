@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 
 public class AdminEditVendorAdapter extends RecyclerView.Adapter<AdminEditVendorAdapter.ViewHolder> {
+
     private final List<AdminEditVendorModel> vendorList;
     private final Context context;
 
@@ -51,37 +52,71 @@ public class AdminEditVendorAdapter extends RecyclerView.Adapter<AdminEditVendor
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AdminEditVendorModel vendor = vendorList.get(position);
-        holder.name.setText("Name: " + vendor.getVendorName());
-        holder.email.setText("Email: " + vendor.getVendorEmail());
-        holder.phone.setText("Phone: " + vendor.getVendorPhone());
-        holder.id.setText("ID: " + vendor.getVendorId());
-        holder.shop.setText("Shop: " + vendor.getShopName());
+
+        // Safe field access and display
+        holder.name.setText("Name: " + safeText(vendor.getVendorName()));
+        holder.email.setText("Email: " + safeText(vendor.getVendorEmail()));
+        holder.phone.setText("Phone: " + safeText(vendor.getVendorPhone()));
+        holder.id.setText("ID: " + safeText(vendor.getVendorId()));
+        holder.shop.setText("Shop: " + safeText(vendor.getShopName()));
 
         holder.editBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EditVendorPage.class);
-            intent.putExtra("docId", vendor.getDocId());
-            intent.putExtra("vendorName", vendor.getVendorName());
-            intent.putExtra("vendorEmail", vendor.getVendorEmail());
-            intent.putExtra("vendorPhone", vendor.getVendorPhone());
-            intent.putExtra("vendorId", vendor.getVendorId());
-            intent.putExtra("shopName", vendor.getShopName());
-            context.startActivity(intent);
+            if (isValidVendor(vendor)) {
+                Intent intent = new Intent(context, EditVendorPage.class);
+                intent.putExtra("docId", vendor.getDocId());
+                intent.putExtra("vendorName", vendor.getVendorName());
+                intent.putExtra("vendorEmail", vendor.getVendorEmail());
+                intent.putExtra("vendorPhone", vendor.getVendorPhone());
+                intent.putExtra("vendorId", vendor.getVendorId());
+                intent.putExtra("shopName", vendor.getShopName());
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "Invalid vendor data. Cannot edit.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         holder.deleteBtn.setOnClickListener(v -> {
+            String docId = vendor.getDocId();
+            if (docId == null || docId.trim().isEmpty()) {
+                Toast.makeText(context, "Invalid vendor ID", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             FirebaseFirestore.getInstance().collection("Vendors")
-                    .document(vendor.getDocId())
+                    .document(docId)
                     .delete()
                     .addOnSuccessListener(aVoid -> {
                         vendorList.remove(position);
                         notifyItemRemoved(position);
                         Toast.makeText(context, "Vendor deleted", Toast.LENGTH_SHORT).show();
-                    });
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(context, "Failed to delete vendor", Toast.LENGTH_SHORT).show());
         });
     }
 
     @Override
     public int getItemCount() {
         return vendorList.size();
+    }
+
+    // Helper to check for valid vendor fields
+    private boolean isValidVendor(AdminEditVendorModel vendor) {
+        return vendor != null &&
+                !isNullOrEmpty(vendor.getDocId()) &&
+                !isNullOrEmpty(vendor.getVendorName()) &&
+                !isNullOrEmpty(vendor.getVendorEmail()) &&
+                !isNullOrEmpty(vendor.getVendorPhone()) &&
+                !isNullOrEmpty(vendor.getVendorId()) &&
+                !isNullOrEmpty(vendor.getShopName());
+    }
+
+    // Helper to avoid null display
+    private String safeText(String str) {
+        return (str == null || str.trim().isEmpty()) ? "N/A" : str.trim();
+    }
+
+    // Helper to validate non-null non-empty strings
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 }

@@ -1,9 +1,9 @@
 package com.example.fooddeliveryapp_student;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +25,7 @@ public class Fragment_ProfileStudent extends Fragment {
 
     private EditText nameEditText, emailEditText, phoneEditText, idEditText;
     private Button changePasswordButton, editProfileButton, saveButton;
-    private FirebaseAuth auth, mAuth;
+    private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private DocumentReference userRef;
     private FirebaseUser user;
@@ -38,7 +37,6 @@ public class Fragment_ProfileStudent extends Fragment {
 
         // Initialize Firebase
         auth = FirebaseAuth.getInstance();
-        mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
 
@@ -104,14 +102,11 @@ public class Fragment_ProfileStudent extends Fragment {
                                 String phone = documentSnapshot.getString("stuphno");
                                 String studentId = documentSnapshot.getString("stuid");
 
-                                Log.d("Firestore", "Fetched: " + name + ", " + email + ", " + phone + ", " + studentId);
                                 nameEditText.setText(name);
                                 emailEditText.setText(email);
                                 phoneEditText.setText(phone);
                                 idEditText.setText(studentId);
                             }
-                        } else {
-                            Log.e("Firestore", "Error fetching document", task.getException());
                         }
                     });
         }
@@ -126,28 +121,44 @@ public class Fragment_ProfileStudent extends Fragment {
     }
 
     private void saveUpdatedData() {
-        if (userRef != null) {
-            String name = nameEditText.getText().toString();
-            String email = emailEditText.getText().toString();
-            String phone = phoneEditText.getText().toString();
-            String studentId = idEditText.getText().toString();
+        String name = nameEditText.getText().toString().trim();
+        String email = emailEditText.getText().toString().trim();
+        String phone = phoneEditText.getText().toString().trim();
+        String studentId = idEditText.getText().toString().trim();
 
-            if (!name.isEmpty() && !email.isEmpty() && !phone.isEmpty() && !studentId.isEmpty()) {
-                RegisterModelStudent updatedStudent = new RegisterModelStudent(name, studentId, email, phone, "Student");
-
-                userRef.set(updatedStudent, SetOptions.merge())
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
-                                disableEditing();
-                            } else {
-                                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            } else {
-                Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
-            }
+        // Validations
+        if (TextUtils.isEmpty(name)) {
+            nameEditText.setError("Name is required");
+            return;
         }
+
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEditText.setError("Valid email is required");
+            return;
+        }
+
+        if (TextUtils.isEmpty(phone) || !phone.matches("^[+]?[0-9]{10,13}$")) {  // Basic phone validation
+            phoneEditText.setError("Enter a valid phone number");
+            return;
+        }
+
+        if (TextUtils.isEmpty(studentId) || !studentId.matches("^[A-Z]{5}[0-9]{5}$")) {
+            idEditText.setError("Student ID must be 5 uppercase letters followed by 5 digits");
+            return;
+        }
+
+        // If all validations pass, proceed to save data
+        RegisterModelStudent updatedStudent = new RegisterModelStudent(name, studentId, email, phone, "Student");
+
+        userRef.set(updatedStudent, SetOptions.merge())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getContext(), "Profile updated", Toast.LENGTH_SHORT).show();
+                        disableEditing();
+                    } else {
+                        Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void disableEditing() {
