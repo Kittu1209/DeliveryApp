@@ -15,8 +15,8 @@ public class PaymentDistributor {
         db.collection("orders").document(orderId).get().addOnSuccessListener(orderSnapshot -> {
             if (!orderSnapshot.exists()) return;
 
-            double totalAmount = orderSnapshot.getDouble("totalAmount");
-            String deliveryManId = orderSnapshot.getString("assignedDeliveryManID");
+            double totalAmount = roundToTwoDecimals(orderSnapshot.getDouble("totalAmount"));
+            String deliveryManId = orderSnapshot.getString("assignedDeliveryManId");
             String userId = orderSnapshot.getString("userId");
             List<Map<String, Object>> items = (List<Map<String, Object>>) orderSnapshot.get("items");
 
@@ -28,55 +28,57 @@ public class PaymentDistributor {
                         DocumentSnapshot paymentDoc = paymentSnapshots.getDocuments().get(0);
                         String paymentId = paymentDoc.getString("paymentId");
 
-                        // Calculate shares
-                        double deliveryFee = 15.0;
-                        double adminFee = 5.0 + (0.045 * totalAmount);
-                        double gatewayFee = 0.01 * totalAmount;
-                        double vendorAmount = totalAmount - (deliveryFee + adminFee + gatewayFee);
+                        // Calculate shares with rounding
+                        double deliveryFee = roundToTwoDecimals(15.0);
+                        double adminFee = roundToTwoDecimals(5.0 + (0.045 * totalAmount));
+                        double gatewayFee = roundToTwoDecimals(0.01 * totalAmount);
+                        double vendorAmount = roundToTwoDecimals(totalAmount - (deliveryFee + adminFee + gatewayFee));
+                        double netPlatformEarning = roundToTwoDecimals(adminFee - deliveryFee);
 
-                        // Save admin_payments
+                        // Admin payments
                         Map<String, Object> adminMap = new HashMap<>();
-                        adminMap.put("paymentId", paymentId);
                         adminMap.put("orderId", orderId);
-                        adminMap.put("amount", adminFee);
-                        adminMap.put("createdAt", FieldValue.serverTimestamp());
-                        db.collection("admin_payments").add(adminMap);
+                        adminMap.put("totalAmount", totalAmount);
+                        adminMap.put("adminShare", adminFee);
+                        adminMap.put("deliveryManEarning", deliveryFee);
+                        adminMap.put("paymentGatewayFee", gatewayFee);
+                        adminMap.put("netPlatformEarning", netPlatformEarning);
+                        adminMap.put("timestamp", FieldValue.serverTimestamp());
+                        db.collection("admin_payments").document(orderId).set(adminMap);
 
-                        // Save delivery_man_payments
+                        // Delivery man payments
                         Map<String, Object> delMap = new HashMap<>();
                         delMap.put("paymentId", paymentId);
                         delMap.put("orderId", orderId);
                         delMap.put("deliveryManId", deliveryManId);
                         delMap.put("amount", deliveryFee);
                         delMap.put("createdAt", FieldValue.serverTimestamp());
-                        db.collection("delivery_man_payments").add(delMap);
+                        db.collection("delivery_man_payments").document(orderId).set(delMap);
 
-                        // Save gateway fee
+                        // Gateway fee
                         Map<String, Object> gatewayMap = new HashMap<>();
                         gatewayMap.put("paymentId", paymentId);
                         gatewayMap.put("orderId", orderId);
                         gatewayMap.put("amount", gatewayFee);
                         gatewayMap.put("createdAt", FieldValue.serverTimestamp());
-                        db.collection("payment_gateway_payments").add(gatewayMap);
+                        db.collection("payment_gateway_payments").document(orderId).set(gatewayMap);
 
-                        // Calculate vendor payments
+                        // Vendor payments
                         Map<String, Double> shopTotals = new HashMap<>();
                         for (Map<String, Object> item : items) {
                             String shopId = (String) item.get("shopId");
                             double price = ((Number) item.get("price")).doubleValue();
                             int quantity = ((Number) item.get("quantity")).intValue();
-                            double itemTotal = price * quantity;
-                            //shopTotals.put(shopId, shopTotals.getOrDefault(shopId, 0.0) + itemTotal);
-                            Double existingTotal = shopTotals.get(shopId);
-                            if (existingTotal == null) {
-                                existingTotal = 0.0;
-                            }
-                            shopTotals.put(shopId, existingTotal + itemTotal);
+                            double itemTotal = roundToTwoDecimals(price * quantity);
+                           // shopTotals.put(shopId, shopTotals.getOrDefault(shopId, 0.0) + itemTotal);
+                            Double currentTotal = shopTotals.get(shopId);
+                            if (currentTotal == null) currentTotal = 0.0;
+                            shopTotals.put(shopId, currentTotal + itemTotal);
 
                         }
 
                         for (String shopId : shopTotals.keySet()) {
-                            double share = (shopTotals.get(shopId) / totalAmount) * vendorAmount;
+                            double share = roundToTwoDecimals((shopTotals.get(shopId) / totalAmount) * vendorAmount);
                             Map<String, Object> vendorMap = new HashMap<>();
                             vendorMap.put("paymentId", paymentId);
                             vendorMap.put("orderId", orderId);
@@ -88,5 +90,9 @@ public class PaymentDistributor {
 
                     });
         });
+    }
+
+    private double roundToTwoDecimals(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 }
