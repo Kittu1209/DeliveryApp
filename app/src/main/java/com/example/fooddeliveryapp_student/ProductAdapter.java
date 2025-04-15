@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,9 +48,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = productList.get(position);
         holder.textViewName.setText(product.getName());
-        holder.textViewCategory.setText(product.getCategory());
         holder.textViewPrice.setText("₹" + product.getPrice());
-        holder.textViewDescription.setText(product.getDescription());
 
         // Decode Base64 image and set to ImageView
         try {
@@ -59,14 +58,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                 Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
                 holder.imageViewProduct.setImageBitmap(bitmap);
             } else {
-                // Optional: Set a placeholder image
-                holder.imageViewProduct.setImageResource(android.R.drawable.ic_menu_report_image);
-
+                // Set a placeholder image if no Base64 string or empty string
+                holder.imageViewProduct.setImageResource(R.drawable.heartlogo); // Replace with actual placeholder image resource
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            holder.imageViewProduct.setImageResource(android.R.drawable.ic_menu_report_image);
-//holder.imageViewProduct.setImageResource(R.drawable.placeholder_image);
+            Log.e("ProductAdapter", "Error decoding Base64 image", e);
+            // Set a default image in case of error
+            holder.imageViewProduct.setImageResource(R.drawable.heartlogo); // Replace with actual placeholder image resource
         }
 
         holder.itemView.setOnClickListener(v -> listener.onItemClick(product));
@@ -78,15 +76,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewName, textViewCategory, textViewPrice, textViewDescription;
+        TextView textViewName, textViewPrice;
         ImageView imageViewProduct;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.textViewProductName);
-            textViewCategory = itemView.findViewById(R.id.textViewProductCategory);
             textViewPrice = itemView.findViewById(R.id.textViewProductPrice);
-            textViewDescription = itemView.findViewById(R.id.textViewProductDescription);
             imageViewProduct = itemView.findViewById(R.id.imageViewProduct);
         }
     }
