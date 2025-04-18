@@ -52,7 +52,7 @@ public class splash_screen extends AppCompatActivity {
                                 } else {
                                     // User exists but not categorized, send to login
                                     startActivity(new Intent(splash_screen.this, LoginPage.class));
-                                    Toast.makeText(this, "User type not found. Please log in again.", Toast.LENGTH_SHORT).show();
+                                   // Toast.makeText(this, "User type not found. Please log in again.", Toast.LENGTH_SHORT).show();
                                 }
                                 finish();
                             }
