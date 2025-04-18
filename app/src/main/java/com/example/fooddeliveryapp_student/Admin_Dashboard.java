@@ -1,24 +1,29 @@
 package com.example.fooddeliveryapp_student;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
+import android.view.View;
+import androidx.cardview.widget.CardView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class Admin_Dashboard extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_admin_dashboard);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        CardView cardDashboard = findViewById(R.id.cardDashboard);
+        CardView cardReports = findViewById(R.id.cardReports);
+
+        cardDashboard.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_Dashboard.this, AdminDashboardPageActivity.class);
+            startActivity(intent);
+        });
+
+        cardReports.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_Dashboard.this, AdminReportsActivity.class);
+            startActivity(intent);
         });
     }
 }
