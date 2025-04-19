@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,6 +28,7 @@ public class Fragment_ContactusStudent extends Fragment {
     private Button btnSubmit;
 
     private FirebaseFirestore firestore;
+    private FirebaseAuth firebaseAuth;
 
     public Fragment_ContactusStudent() {
         // Required empty public constructor
@@ -43,7 +46,8 @@ public class Fragment_ContactusStudent extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firestore = FirebaseFirestore.getInstance(); // Initialize Firestore
+        firestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Nullable
@@ -51,17 +55,49 @@ public class Fragment_ContactusStudent extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment__contactus_student, container, false);
 
-        // Initialize UI elements
+        // Initialize UI components
         etName = view.findViewById(R.id.etName);
         etEmail = view.findViewById(R.id.etEmail);
         etSubject = view.findViewById(R.id.etSubject);
         etMessage = view.findViewById(R.id.etMessage);
         btnSubmit = view.findViewById(R.id.btnSubmit);
 
-        // Submit button click listener
+        // Fetch student details from Firestore
+        fetchStudentDetails();
+
+        // Submit button action
         btnSubmit.setOnClickListener(v -> submitContactForm());
 
         return view;
+    }
+
+    private void fetchStudentDetails() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            String studentId = currentUser.getUid();
+
+            firestore.collection("Students")
+                    .document(studentId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String name = documentSnapshot.getString("stuname");
+                            String email = documentSnapshot.getString("stuemail");
+
+                            etName.setText(name);
+                            etEmail.setText(email);
+
+                            // Optional: make fields read-only
+                            etName.setEnabled(false);
+                            etEmail.setEnabled(false);
+                        } else {
+                            Toast.makeText(getContext(), "Student data not found", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to fetch student info", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     private void submitContactForm() {
@@ -89,8 +125,11 @@ public class Fragment_ContactusStudent extends Fragment {
         CollectionReference studentFeedbackRef = feedbackRef.collection("Student_Feedback");
 
         studentFeedbackRef.add(contactData)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(getContext(), "Message Sent!", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getContext(), "Message Sent!", Toast.LENGTH_SHORT).show();
+                    etSubject.setText("");
+                    etMessage.setText("");
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }

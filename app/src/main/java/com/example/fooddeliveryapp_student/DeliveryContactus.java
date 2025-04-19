@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,14 +23,16 @@ public class DeliveryContactus extends AppCompatActivity {
     private Button btnSubmit;
 
     private FirebaseFirestore firestore;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delivery_contactus); // make sure this XML exists
+        setContentView(R.layout.activity_delivery_contactus); // Make sure this layout exists
 
-        // Initialize Firestore
+        // Initialize Firestore and FirebaseAuth
         firestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         // Initialize Views
         etName = findViewById(R.id.etName);
@@ -37,7 +41,40 @@ public class DeliveryContactus extends AppCompatActivity {
         etMessage = findViewById(R.id.etMessage);
         btnSubmit = findViewById(R.id.btnSubmit);
 
+        // Fetch delivery person data
+        fetchDeliveryPersonInfo();
+
+        // Submit button listener
         btnSubmit.setOnClickListener(v -> submitContactForm());
+    }
+
+    private void fetchDeliveryPersonInfo() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            String deliveryManId = currentUser.getUid();
+
+            firestore.collection("delivery_man")
+                    .document(deliveryManId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String name = documentSnapshot.getString("name");
+                            String email = documentSnapshot.getString("email");
+
+                            etName.setText(name);
+                            etEmail.setText(email);
+
+                            // Make fields read-only
+                            etName.setEnabled(false);
+                            etEmail.setEnabled(false);
+                        } else {
+                            Toast.makeText(this, "Delivery man data not found", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Failed to fetch delivery info", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     private void submitContactForm() {
@@ -64,9 +101,14 @@ public class DeliveryContactus extends AppCompatActivity {
         CollectionReference deliveryFeedbackRef = feedbackRef.collection("Delivery_Feedback");
 
         deliveryFeedbackRef.add(contactData)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Message Sent!", Toast.LENGTH_SHORT).show();
+                    // Clear only subject and message
+                    etSubject.setText("");
+                    etMessage.setText("");
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

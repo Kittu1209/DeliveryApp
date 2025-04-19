@@ -1,5 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -54,6 +55,12 @@ public class Admin_VendorDetails extends AppCompatActivity {
         CardView cardAddCategory = findViewById(R.id.cardAddCategory);
         cardAddCategory.setOnClickListener(v -> {
             Intent intent = new Intent(Admin_VendorDetails.this, AddCategoryActivity.class);
+            startActivity(intent);
+        });
+
+        CardView cardVendorFeedback = findViewById(R.id.cardVendorFeedback);
+        cardAddCategory.setOnClickListener(v -> {
+            Intent intent = new Intent(Admin_VendorDetails.this, AdminVendorFeedback.class);
             startActivity(intent);
         });
     }

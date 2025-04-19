@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,6 +28,7 @@ public class Contactus_Fragment_Vendor extends Fragment {
     private Button btnSubmit;
 
     private FirebaseFirestore firestore;
+    private FirebaseAuth firebaseAuth;
 
     public Contactus_Fragment_Vendor() {
         // Required empty public constructor
@@ -43,11 +46,8 @@ public class Contactus_Fragment_Vendor extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        firestore = FirebaseFirestore.getInstance(); // Initialize Firestore
-
-        if (getArguments() != null) {
-            // Retrieve any passed arguments if needed
-        }
+        firestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Nullable
@@ -62,9 +62,42 @@ public class Contactus_Fragment_Vendor extends Fragment {
         etMessage = view.findViewById(R.id.etMessage);
         btnSubmit = view.findViewById(R.id.btnSubmit);
 
+        // Fetch vendor name and email from Firestore
+        fetchVendorDetails();
+
+        // Set submit button action
         btnSubmit.setOnClickListener(v -> submitContactForm());
 
         return view;
+    }
+
+    private void fetchVendorDetails() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            String vendorId = currentUser.getUid();
+
+            firestore.collection("Vendors")
+                    .document(vendorId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String name = documentSnapshot.getString("vendorName");
+                            String email = documentSnapshot.getString("vendorEmail");
+
+                            etName.setText(name);
+                            etEmail.setText(email);
+
+                            // Optional: make name and email read-only
+                            etName.setEnabled(false);
+                            etEmail.setEnabled(false);
+                        } else {
+                            Toast.makeText(getContext(), "Vendor data not found", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to fetch vendor info", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     private void submitContactForm() {
@@ -92,8 +125,11 @@ public class Contactus_Fragment_Vendor extends Fragment {
         CollectionReference vendorFeedbackRef = feedbackDocRef.collection("Vendor_Feedback");
 
         vendorFeedbackRef.add(contactData)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(getContext(), "Message Sent!", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getContext(), "Message Sent!", Toast.LENGTH_SHORT).show();
+                    etSubject.setText(""); // Clear subject field
+                    etMessage.setText(""); // Clear message field
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }

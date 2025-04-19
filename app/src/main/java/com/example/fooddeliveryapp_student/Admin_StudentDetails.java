@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Admin_StudentDetails extends AppCompatActivity {
 
-    CardView cardOrderHistory, cardFeedback;
+    CardView cardOrderHistory, cardFeedback, cardStudentDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +31,20 @@ public class Admin_StudentDetails extends AppCompatActivity {
         // Initialize Cards
         cardOrderHistory = findViewById(R.id.cardOrderHistory);
         cardFeedback = findViewById(R.id.cardFeedback);
-
+        cardStudentDetail= findViewById(R.id.carduserdetail);
         // Set Click Listeners
         cardOrderHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Admin_StudentDetails.this, Admin_StudentOrderHistory.class);
+                startActivity(intent);
+            }
+        });
+
+        cardStudentDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Admin_StudentDetails.this, AdminViewUserDetails.class);
                 startActivity(intent);
             }
         });
