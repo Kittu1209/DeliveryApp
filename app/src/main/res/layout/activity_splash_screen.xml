@@ -1,26 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".splash_screen"
-    android:background="@color/white">
+    android:background="@drawable/gradient_background"
+    tools:context=".splash_screen">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <!-- Background elements -->
+    <ImageView
+        android:id="@+id/bg_orb_1"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/purple_orb"
+        android:alpha="0.2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_rawRes="@raw/splash_screen"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="false"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
+    <ImageView
+        android:id="@+id/bg_orb_2"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/pink_orb"
+        android:alpha="0.2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
+    <!-- Logo and text container -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Heart icon with orbiting items -->
+        <RelativeLayout
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="32dp">
+
+            <ImageView
+                android:id="@+id/heart_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_heart"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/package_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_package"
+                android:alpha="0.8"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/truck_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_truck"
+                android:alpha="0.8"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/bag_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_shopping_bag"
+                android:alpha="0.8"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                app:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/map_icon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_map"
+                android:alpha="0.8"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                app:tint="@color/white" />
+        </RelativeLayout>
+
+        <!-- Main title -->
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DOORSTEP"
+            android:textColor="@color/white"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/subtitle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BANASTHALI UNIVERSITY"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:alpha="0.9"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Split text -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:id="@+id/delivery_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DELIVERY"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:alpha="0.8"/>
+
+            <TextView
+                android:id="@+id/application_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APPLICATION"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:alpha="0.8"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+
+        <!-- Features -->
+        <LinearLayout
+            android:id="@+id/features_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="48dp">
+
+            <!-- Features will be added programmatically -->
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Loading indicator -->
+    <LinearLayout
+        android:id="@+id/loading_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        android:background="@drawable/rounded_white_bg"
+        android:alpha="0.1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="48dp">
+
+        <View
+            android:id="@+id/loading_bar"
+            android:layout_width="48dp"
+            android:layout_height="4dp"
+            android:background="@drawable/gradient_loading_bar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginStart="12dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
