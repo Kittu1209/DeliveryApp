@@ -13,6 +13,7 @@ import java.util.List;
 public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.FAQViewHolder> {
 
     private List<FAQ> faqList;
+    private int expandedPosition = -1;
 
     public FAQAdapter(List<FAQ> faqList) {
         this.faqList = faqList;
@@ -21,7 +22,8 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.FAQViewHolder> {
     @NonNull
     @Override
     public FAQViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_faq, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_faq, parent, false);
         return new FAQViewHolder(view);
     }
 
@@ -31,12 +33,16 @@ public class FAQAdapter extends RecyclerView.Adapter<FAQAdapter.FAQViewHolder> {
         holder.textQuestion.setText(faq.getQuestion());
         holder.textAnswer.setText(faq.getAnswer());
 
-        // Toggle visibility
-        holder.textAnswer.setVisibility(faq.isExpanded() ? View.VISIBLE : View.GONE);
+        final boolean isExpanded = position == expandedPosition;
+        holder.textAnswer.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+        holder.textQuestion.setCompoundDrawablesWithIntrinsicBounds(
+                0, 0,
+                isExpanded ? R.drawable.ic_expand_less : R.drawable.ic_expand_more,
+                0);
 
         holder.itemView.setOnClickListener(v -> {
-            faq.setExpanded(!faq.isExpanded());
-            notifyItemChanged(position);
+            expandedPosition = isExpanded ? -1 : position;
+            notifyDataSetChanged();
         });
     }
 

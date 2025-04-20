@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardFAQ"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:padding="12dp"
-    android:backgroundTint="@color/light_yellow"
-    android:elevation="4dp">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="?attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/textQuestion"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Question?"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:drawableEnd="@drawable/ic_expand_more"
+            android:drawablePadding="8dp"/>
 
         <TextView
             android:id="@+id/textAnswer"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Answer here..."
             android:textSize="16sp"
+            android:textColor="@color/dark_gray"
             android:visibility="gone"/>
 
     </LinearLayout>

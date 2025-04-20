@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/yellow"
-    tools:context=".Fragment_faqStudent">
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Frequently Asked Questions"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFAQ"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="FAQs"
-        android:textSize="36sp"
-        android:layout_marginTop="40dp"
-        android:gravity="center_horizontal"
-        android:textColor="@color/white"/>
-
-    <Button
-        android:id="@+id/faqbtn"
-        android:layout_width="261dp"
-        android:layout_height="90dp"
-        android:layout_gravity="center"
-        android:textSize="22sp"
-        android:layout_marginTop="27dp"
-        android:backgroundTint="@color/dark_orange"
-        android:text="FAQ"
-        android:textColor="@color/white" />
-
-</FrameLayout>
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"/>
+</LinearLayout>
