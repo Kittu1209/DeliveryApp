@@ -81,7 +81,7 @@ public class HomePageVendor extends AppCompatActivity implements NavigationView.
                 } else if (itemId == R.id.bottom_profile_vendor) {
                     openFragment(new Profile_Fragment_Vendor());
                     return true;
-                } else if (itemId == R.id.fab) {
+                } else if (itemId == R.id.bottom_addition_vendor) {
                     openFragment(new Product_Fragment_Vendor());
                     return true;
                 }

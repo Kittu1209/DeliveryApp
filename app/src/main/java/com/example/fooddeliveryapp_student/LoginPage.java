@@ -145,17 +145,37 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("Vendors").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
-                        Intent intent = new Intent(LoginPage.this, HomePageVendor.class);
-                        intent.putExtra("fragment", "vendor_home");
-                        startActivity(intent);
-                        showToast("Welcome Vendor!");
-                        finish();
+                        // First check if shop exists
+                        firestoreDB.collection("shops")
+                                .whereEqualTo("ownerId", userId)
+                                .limit(1)
+                                .get()
+                                .addOnCompleteListener(shopTask -> {
+                                    if (shopTask.isSuccessful()) {
+                                        if (shopTask.getResult().isEmpty()) {
+                                            // No shop exists - redirect to shop setup
+                                            Intent intent = new Intent(LoginPage.this, Shops_Address.class);
+                                            intent.putExtra("setup_new_shop", true);
+                                            startActivity(intent);
+                                            showToast("Please complete your shop setup");
+                                            finish();
+                                        } else {
+                                            // Shop exists - proceed to vendor home
+                                            Intent intent = new Intent(LoginPage.this, HomePageVendor.class);
+                                            intent.putExtra("fragment", "vendor_home");
+                                            startActivity(intent);
+                                            showToast("Welcome Vendor!");
+                                            finish();
+                                        }
+                                    } else {
+                                        showToast("Error checking shop status");
+                                    }
+                                });
                     } else {
                         checkDeliveryManRole(userId);
                     }
                 });
     }
-
     private void checkDeliveryManRole(String userId) {
         firestoreDB.collection("delivery_man").document(userId).get()
                 .addOnCompleteListener(task -> {

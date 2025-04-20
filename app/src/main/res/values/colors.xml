@@ -22,5 +22,27 @@
     <color name="gray_default">#9E9E9E</color>
 
 
+<color name="colorPrimary">#FF6B6B</color>  <!-- Coral red -->
+<color name="colorPrimaryDark">#EE5B5B</color>  <!-- Darker coral -->
+<color name="colorAccent">#4ECDC4</color>   <!-- Teal accent -->
 
+
+
+<!-- Text Colors -->
+<color name="textPrimary">#212121</color>  <!-- Dark gray for primary text -->
+<color name="textSecondary">#757575</color>  <!-- Medium gray for secondary text -->
+
+<!-- Backgrounds -->
+<color name="backgroundLight">#FAFAFA</color>
+
+<!-- Input Field Colors -->
+<color name="inputBackground">#FFFFFF</color>
+<color name="inputStroke">#E0E0E0</color>
+
+<!-- Button States -->
+<color name="buttonPressed">#D84315</color>
+<color name="buttonDisabled">#BDBDBD</color>
+
+<!-- Image Placeholder -->
+<color name="imagePlaceholder">#EEEEEE</color>
 </resources>

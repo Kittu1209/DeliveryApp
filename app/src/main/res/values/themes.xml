@@ -24,4 +24,7 @@
         <item name="hintTextColor">@color/dark_gray</item>
         <item name="android:textColorHint">#757575</item>
     </style>
+    <style name="SpinnerStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+    </style>
 </resources>

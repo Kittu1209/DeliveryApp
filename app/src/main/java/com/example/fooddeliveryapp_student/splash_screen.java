@@ -223,34 +223,42 @@ public class splash_screen extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
 
-            // Check if the user is a Vendor
-            db.collection("Vendors").document(userId).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // User is a Vendor
-                        startActivity(new Intent(splash_screen.this, HomePageVendor.class));
-                        finish();
-                    } else {
-                        // Check if the user is a Student
-                        db.collection("Students").document(userId).get().addOnCompleteListener(studentTask -> {
-                            if (studentTask.isSuccessful()) {
-                                DocumentSnapshot studentDoc = studentTask.getResult();
-                                if (studentDoc.exists()) {
-                                    // User is a Student
-                                    startActivity(new Intent(splash_screen.this, HomePage_Student.class));
-                                } else {
-                                    // User exists but not categorized, send to login
-                                    startActivity(new Intent(splash_screen.this, LoginPage.class));
-                                }
-                                finish();
-                            }
-                        });
-                    }
-                } else {
-                    // Firestore error or no user record found
-                    startActivity(new Intent(splash_screen.this, LoginPage.class));
+            // Check if the user is an Admin first (since admins might have higher privileges)
+            db.collection("Admins").document(userId).get().addOnCompleteListener(adminTask -> {
+                if (adminTask.isSuccessful() && adminTask.getResult().exists()) {
+                    // User is an Admin
+                    startActivity(new Intent(splash_screen.this, HomePageAdmin.class));
                     finish();
+                } else {
+                    // If not admin, check if the user is a Vendor
+                    db.collection("Vendors").document(userId).get().addOnCompleteListener(vendorTask -> {
+                        if (vendorTask.isSuccessful() && vendorTask.getResult().exists()) {
+                            // User is a Vendor
+                            startActivity(new Intent(splash_screen.this, HomePageVendor.class));
+                            finish();
+                        } else {
+                            // If not vendor, check if the user is a Delivery Man
+                            db.collection("delivery_man").document(userId).get().addOnCompleteListener(deliveryTask -> {
+                                if (deliveryTask.isSuccessful() && deliveryTask.getResult().exists()) {
+                                    // User is a Delivery Man
+                                    startActivity(new Intent(splash_screen.this, DeliveryHomeActivity.class));
+                                    finish();
+                                } else {
+                                    // If not delivery man, check if the user is a Student
+                                    db.collection("Students").document(userId).get().addOnCompleteListener(studentTask -> {
+                                        if (studentTask.isSuccessful() && studentTask.getResult().exists()) {
+                                            // User is a Student
+                                            startActivity(new Intent(splash_screen.this, HomePage_Student.class));
+                                        } else {
+                                            // User exists but not categorized, send to login
+                                            startActivity(new Intent(splash_screen.this, LoginPage.class));
+                                        }
+                                        finish();
+                                    });
+                                }
+                            });
+                        }
+                    });
                 }
             });
         } else {
