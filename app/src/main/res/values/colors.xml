@@ -14,6 +14,10 @@
     <color name="red">#DC3545</color>
     <color name="yellow">#F5CB58</color>
     <color name="light_yellow">#F6F6D3</color>
+    <color name="status_preparing">#FFA500</color> <!-- Orange -->
+    <color name="status_ready">#4CAF50</color>    <!-- Green -->
+    <color name="status_delivered">#2196F3</color> <!-- Blue -->
+    <color name="status_assigned">#9C27B0</color>
     <color name="dark_orange">#EB4D22</color>
     <color name="dark_brown">#3D1F00</color>
     <color name="green_success">#4CAF50</color>
@@ -45,4 +49,11 @@
 
 <!-- Image Placeholder -->
 <color name="imagePlaceholder">#EEEEEE</color>
+    <!-- Add these to your existing colors -->
+    <color name="primary">#FF6D00</color>
+    <color name="primary_dark">#E65100</color>
+    <color name="gray_light">#E0E0E0</color>
+    <color name="gray_dark">#757575</color>
+    <!-- Purple -->
+    <color name="status_default">#607D8B</color>  <!-- Gray -->
 </resources>
