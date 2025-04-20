@@ -1,88 +1,238 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/yellow"
+    android:fillViewport="true"
     tools:context=".Fragment_HomeStudent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingBottom="72dp">
 
-        <!-- Search Bar -->
-        <EditText
-            android:id="@+id/search_box"
+        <!-- Modern Search Bar -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="3dp"
-            android:shadowColor="@color/white"
-            android:textSize="14sp"
-            android:textColor="@color/dark_brown"
-            android:textColorHint="@color/dark_brown"
-            android:layout_margin="8dp"
-            android:drawableLeft="@drawable/baseline_contentsearch_24"
-            android:padding="13dp"
-            android:background="@color/light_yellow"
-            android:hint="Search Your Item Here...."
-            app:drawableTint="@color/dark_orange"
-            android:drawablePadding="5dp"/>
+            android:layout_margin="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/light_yellow"
+            app:strokeWidth="1dp">
 
-        <TextView
-            android:layout_width="300dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="@color/white">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/dark_orange"/>
+
+                <EditText
+                    android:id="@+id/search_box"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Search for restaurants or dishes..."
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:textColor="@color/dark_brown"
+                    android:textColorHint="@color/dark_brown"
+                    android:textSize="14sp"/>
+
+                <ImageView
+                    android:id="@+id/filter_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_filter"
+                    app:tint="@color/dark_orange"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Promo Banner Slider -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/bannerViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="16dp"
+            android:clipToPadding="false"
+            android:paddingEnd="32dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Categories"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
-        <!-- No Results Text -->
-        <TextView
-            android:id="@+id/no_results_text"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/bannerIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabBackground="@drawable/dot_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="10dp" />
+        </LinearLayout>
+
+        <!-- Categories Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No products found"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
 
-        <!-- Horizontal Category RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/hor_rec"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categories"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/seeAllCategories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="See all"
+                    android:textColor="@color/dark_orange"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/categoriesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"/>
+        </LinearLayout>
+
+        <!-- Filters Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_poprec"
-            android:layout_margin="5dp"
-            android:padding="12dp"
-            android:text="Popular Item"
-            android:textColor="@color/dark_brown"
-            android:gravity="center"
-            android:nestedScrollingEnabled="true"/>
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="300dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Filters"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/filtersRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"/>
+        </LinearLayout>
+
+        <!-- Restaurants Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Items"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
 
-        <!-- Vertical Product RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pop_rec"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shops"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/seeAllRestaurants"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="See all"
+                    android:textColor="@color/dark_orange"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/restaurantsRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"/>
+        </LinearLayout>
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/emptyState"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_margin="5dp"
-            android:padding="12dp"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_poprec"
-            android:text="Popular Item"
-            android:textColor="@color/dark_brown"
             android:gravity="center"
-            android:nestedScrollingEnabled="true"/>
+            android:orientation="vertical"
+            android:visibility="gone">
 
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_empty_state"
+                app:tint="@color/dark_orange"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="No Shops found"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Try Again"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/dark_orange"
+                app:cornerRadius="8dp"/>
+        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

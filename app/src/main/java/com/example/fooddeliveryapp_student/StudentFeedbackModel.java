@@ -1,28 +1,53 @@
 package com.example.fooddeliveryapp_student;
 
 public class StudentFeedbackModel {
-    private String name;
     private String email;
-    private String subject;
     private String message;
+    private String name;
+    private String subject;
     private long timestamp;
 
-    public StudentFeedbackModel() {
-        // Required empty constructor
+    // Empty constructor required for Firestore
+    public StudentFeedbackModel() {}
+
+    // Getters and Setters
+    public String getEmail() {
+        return email;
     }
 
-    public StudentFeedbackModel(String name, String email, String subject, String message, long timestamp) {
-        this.name = name;
+    public void setEmail(String email) {
         this.email = email;
-        this.subject = subject;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
-
-    // Getters
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getSubject() { return subject; }
-    public String getMessage() { return message; }
-    public long getTimestamp() { return timestamp; }
 }
