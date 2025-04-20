@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    android:backgroundTint="@color/light_yellow"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView android:id="@+id/order_id"
+            android:text="Order ID: "
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/customer_name"
+            android:text="Name: "
+            android:layout_width="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/customer_phone"
+            android:text="Phone: "
+            android:layout_width="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/address"
+            android:text="Address: "
+            android:textColor="@color/dark_brown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/item_details"
+            android:text="Items: "
+            android:layout_width="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/total_amount"
+            android:text="Total Amount: "
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:textColor="@color/teal_200"
+            android:layout_height="wrap_content"/>
+
+        <TextView android:id="@+id/status"
+            android:text="Status: "
+            android:textColor="@color/dark_orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -25,8 +25,6 @@
             app:navigationIcon="@drawable/ic_menu"
             app:navigationIconTint="@color/dark_orange"
             android:contentInsetStart="16dp">
-
-
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
@@ -60,7 +58,6 @@
                     app:menu="@menu/bottom_navigation_menu_student"
                     android:background="@color/dark_orange"/>
             </com.google.android.material.bottomappbar.BottomAppBar>
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </RelativeLayout>
 
