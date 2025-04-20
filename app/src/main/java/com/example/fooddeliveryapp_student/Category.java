@@ -3,36 +3,28 @@ package com.example.fooddeliveryapp_student;
 public class Category {
     private String id;
     private String name;
-    private String imageUrl;  // or iconUrl if you prefer
+    private String image;
     private boolean isSelected;
 
-    // Constructor with all fields
-    public Category(String id, String name, String imageUrl) {
+    // Required empty constructor for Firestore
+    public Category() {}
+
+    public Category(String id, String name, String image) {
         this.id = id;
         this.name = name;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.isSelected = false;
     }
 
     // Getters
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getImageUrl() {  // or getIconUrl() if you prefer
-        return imageUrl;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getImage() { return image; }
+    public boolean isSelected() { return isSelected; }
 
     // Setters
-    public void setSelected(boolean selected) {
-        isSelected = selected;
-    }
+    public void setId(String id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setImage(String image) { this.image = image; }
+    public void setSelected(boolean selected) { isSelected = selected; }
 }

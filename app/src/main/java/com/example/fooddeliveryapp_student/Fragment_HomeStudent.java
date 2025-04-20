@@ -194,20 +194,27 @@ public class Fragment_HomeStudent extends Fragment {
     }
 
     private void loadCategories() {
-        db.collection("categories").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            categoryList.clear();
-            categoryList.add(new Category("all", "All", ""));
+        db.collection("categories")
+                .whereEqualTo("isActive", true)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    categoryList.clear();
+                    // Add "All" category first
+                    categoryList.add(new Category("all", "All", "https://cdn-icons-png.flaticon.com/512/16955/16955062.png"));
 
-            for (DocumentSnapshot document : queryDocumentSnapshots) {
-                Category category = new Category(
-                        document.getId(),
-                        document.getString("name"),
-                        document.getString("imageUrl")
-                );
-                categoryList.add(category);
-            }
-            categoryAdapter.notifyDataSetChanged();
-        });
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        Category category = document.toObject(Category.class);
+                        if (category != null) {
+                            category.setId(document.getId());
+                            categoryList.add(category);
+                        }
+                    }
+                    categoryAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error loading categories", e);
+                    Toast.makeText(getContext(), "Failed to load categories", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void loadShops() {

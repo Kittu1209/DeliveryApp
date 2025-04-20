@@ -55,7 +55,8 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
     implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.squareup.picasso:picasso:2.71828")
-
+    implementation ("com.google.android.gms:play-services-base:18.3.0")
+    implementation ("com.google.firebase:firebase-bom:32.7.0")
 }}
 dependencies {
     implementation(libs.cardview)

@@ -10,20 +10,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapterhome extends RecyclerView.Adapter<CategoryAdapterhome.CategoryViewHolder> {
     private List<Category> categories;
     private OnCategoryClickListener listener;
+    private static final String ALL_CATEGORY_ID = "all";
+    private static final String DEFAULT_ALL_IMAGE_URL = "https://cdn-icons-png.flaticon.com/512/16955/16955062.png";
 
     public interface OnCategoryClickListener {
         void onCategoryClick(Category category);
     }
 
     public CategoryAdapterhome(List<Category> categories, OnCategoryClickListener listener) {
-        this.categories = categories;
+        this.categories = categories != null ? categories : new ArrayList<>();
         this.listener = listener;
     }
 
@@ -43,11 +45,11 @@ public class CategoryAdapterhome extends RecyclerView.Adapter<CategoryAdapterhom
 
     @Override
     public int getItemCount() {
-        return categories != null ? categories.size() : 0;
+        return categories.size();
     }
 
     public void updateCategories(List<Category> newCategories) {
-        this.categories = newCategories != null ? newCategories : new ArrayList<>();
+        this.categories = new ArrayList<>(newCategories);
         notifyDataSetChanged();
     }
 
@@ -64,21 +66,53 @@ public class CategoryAdapterhome extends RecyclerView.Adapter<CategoryAdapterhom
         }
 
         public void bind(final Category category, final OnCategoryClickListener listener) {
-            // Change getIconUrl() to getImageUrl() if you renamed it
-            if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
-                try {
-                    byte[] decodedString = Base64.decode(category.getImageUrl(), Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    categoryIcon.setImageBitmap(decodedByte);
-                } catch (IllegalArgumentException e) {
-                    categoryIcon.setImageResource(R.drawable.heartlogo);
-                }
-            } else {
-                categoryIcon.setImageResource(R.drawable.heartlogo);
-            }
-
             categoryName.setText(category.getName());
             selectionIndicator.setVisibility(category.isSelected() ? View.VISIBLE : View.INVISIBLE);
+            loadCategoryImage(category);
             itemView.setOnClickListener(v -> listener.onCategoryClick(category));
         }
-    }}
+
+        private void loadCategoryImage(Category category) {
+            if (category.getId().equals(ALL_CATEGORY_ID)) {
+                loadImageFromUrl(DEFAULT_ALL_IMAGE_URL);
+            } else if (category.getImage() == null || category.getImage().isEmpty()) {
+                setDefaultImage();
+            } else if (isBase64(category.getImage())) {
+                loadBase64Image(category.getImage());
+            } else {
+                loadImageFromUrl(category.getImage());
+            }
+        }
+
+        private boolean isBase64(String str) {
+            return str.startsWith("data:image") || str.startsWith("/9j/") || str.length() > 1000;
+        }
+
+        private void loadBase64Image(String base64Image) {
+            try {
+                String cleanBase64 = base64Image.replaceAll("data:image/[^;]+;base64,", "").trim();
+                byte[] decodedBytes = Base64.decode(cleanBase64, Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                if (bitmap != null) {
+                    categoryIcon.setImageBitmap(bitmap);
+                } else {
+                    setDefaultImage();
+                }
+            } catch (Exception e) {
+                setDefaultImage();
+            }
+        }
+
+        private void loadImageFromUrl(String imageUrl) {
+            Glide.with(itemView.getContext())
+                    .load(imageUrl)
+                    .placeholder(R.drawable.heartlogo)
+                    .error(R.drawable.heartlogo)
+                    .into(categoryIcon);
+        }
+
+        private void setDefaultImage() {
+            categoryIcon.setImageResource(R.drawable.heartlogo);
+        }
+    }
+}
