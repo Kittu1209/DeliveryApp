@@ -11,8 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.Timestamp;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
     }
 
     public ShopAdapter(List<Shop> shops, OnShopClickListener listener) {
-        this.shops = shops;
+        this.shops = shops != null ? shops : new ArrayList<>();
         this.listener = listener;
     }
 
@@ -72,19 +70,22 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         }
 
         public void bind(Shop shop, OnShopClickListener listener) {
-            // Load shop image using Glide
-            Glide.with(itemView.getContext())
-                    .load(shop.getImageUrl())
-                    .placeholder(R.drawable.heartlogo)
-                    .into(shopImage);
+            // Load shop image using Glide with the direct URL
+            if (shop.getImage() != null && !shop.getImage().isEmpty()) {
+                Glide.with(itemView.getContext())
+                        .load(shop.getImage())
+                        .placeholder(R.drawable.heartlogo)
+                        .error(R.drawable.heartlogo) // fallback image if loading fails
+                        .into(shopImage);
+            } else {
+                shopImage.setImageResource(R.drawable.heartlogo);
+            }
 
             shopName.setText(shop.getName());
-            shopCategory.setText(shop.getCategory());
-            shopRating.setRating((float) shop.getRating());
-            priceRange.setText(String.format("₹%.2f - ₹%.2f",
-                    shop.getAveragePrice() * 0.8,
-                    shop.getAveragePrice() * 1.2));
-
+            shopCategory.setText(shop.getCuisine());
+            shopRating.setRating((float) (shop.getRating() / 2)); // Assuming rating is out of 10, converting to 5-star scale
+            priceRange.setText(String.format("₹%d for two", shop.getPriceForTwo()));
+            deliveryTime.setText(shop.getDeliveryTime());
 
             itemView.setOnClickListener(v -> listener.onShopClick(shop));
         }
