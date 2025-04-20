@@ -13,7 +13,7 @@ import android.widget.Button;
 
 public class Home_Fragment_Vendor extends Fragment {
 
-    private Button btnAddProduct,shop_add,categoryBtn,editProd,editCat; // Declare button
+    // Declare button
 
     public Home_Fragment_Vendor() {
         // Required empty public constructor
@@ -39,49 +39,6 @@ public class Home_Fragment_Vendor extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home___vendor, container, false);
 
-        // Initialize button
-        btnAddProduct = view.findViewById(R.id.btnAddProduct);
-
-        // Handle button click to open AddProductActivity
-        btnAddProduct.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AddProductActivity.class);
-            startActivity(intent);
-        });
-        shop_add=view.findViewById(R.id.shop_address_btn_);
-        shop_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Shops_Address.class);
-                startActivity(intent);
-            }
-        });
-        categoryBtn=view.findViewById(R.id.category_btn);
-        categoryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), CategoryPage.class);
-                startActivity(intent);
-            }
-        });
-        editProd=view.findViewById(R.id.btneditProduct);
-        editProd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), CategoryPage.class);
-                startActivity(intent);
-            }
-        });
-        editCat=view.findViewById(R.id.btnAddCategory);
-        editCat.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(getActivity(), "Category Button Clicked", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), AddCategoryActivity.class);
-                startActivity(intent);
-            }
-        });
         return view;
     }
 }

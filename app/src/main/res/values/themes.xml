@@ -15,4 +15,16 @@
     <style name="ThemeOverlay.AppCompat.navTheme">
         <item name="colorPrimary">@color/white</item>
     </style>
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxStrokeColor">#BDBDBD</item>
+        <item name="hintTextColor">@color/dark_gray</item>
+        <item name="android:textColorHint">#757575</item>
+    </style>
+    <style name="SpinnerStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+    </style>
 </resources>
