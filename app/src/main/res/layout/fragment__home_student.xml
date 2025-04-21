@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/yellow"
+    android:id="@+id/main"
     android:fillViewport="true"
     tools:context=".Fragment_HomeStudent">
 
@@ -84,9 +85,11 @@
                 android:id="@+id/bannerIndicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:tabBackground="@drawable/dot_selector"
                 app:tabGravity="center"
-                app:tabIndicatorHeight="10dp" />
+                app:tabIndicatorColor="@color/dark_orange"
+                app:tabIndicatorHeight="10dp"
+                app:tabSelectedTextColor="@android:color/transparent"
+                app:tabTextColor="@android:color/transparent" />
         </LinearLayout>
 
         <!-- Categories Section -->
@@ -149,16 +152,52 @@
                 android:textSize="18sp"
                 android:textStyle="bold"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/filtersRecycler"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/filterCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 android:layout_marginTop="8dp"
-                android:clipToPadding="false"
-                android:paddingStart="16dp"/>
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:strokeColor="@color/light_yellow"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_filter"
+                        app:tint="@color/dark_orange"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="Apply Filters"
+                        android:textColor="@color/dark_brown"
+                        android:textSize="16sp"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/baseline_arrow_forward_24"
+                        app:tint="@color/dark_orange"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
-        <!-- Restaurants Section -->
+        <!-- Shops Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

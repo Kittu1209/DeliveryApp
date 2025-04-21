@@ -5,56 +5,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     android:background="@color/yellow"
     tools:context=".ShowProductActivity">
 
+    <!-- App Bar Layout -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:elevation="0dp">
+        android:background="@color/yellow"
+        android:elevation="4dp">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentScrim="@color/white"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            android:layout_height="?attr/actionBarSize"
+            app:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/ic_back_arrow"
+            app:title="Products"
+            android:background="@color/yellow"/>
 
-            <ImageView
-                android:id="@+id/restaurantImage"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/heartlogo"
-                app:layout_collapseMode="parallax"/>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleTextColor="@color/white">
-
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="start"
-                    android:src="@drawable/ic_back_arrow" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Restaurant Name"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-            </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,153 +36,129 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <!-- Restaurant Info Card -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Search View -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginBottom="16dp">
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/searchView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:hint="Search products..."
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"/>
 
-                    <TextView
-                        android:id="@+id/restaurantName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Restaurant Name"
-                        android:textColor="@color/dark_brown"
-                        android:textSize="20sp"
-                        android:textStyle="bold"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_star"
-                            app:tint="@color/dark_orange"/>
-
-                        <TextView
-                            android:id="@+id/ratingText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="4.5"
-                            android:textColor="@color/dark_brown"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="12dp"
-                            android:layout_marginHorizontal="8dp"
-                            android:background="@color/dark_gray"/>
-
-                        <TextView
-                            android:id="@+id/deliveryTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="25-30 mins"
-                            android:textColor="@color/dark_brown"/>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="12dp"
-                            android:layout_marginHorizontal="8dp"
-                            android:background="@color/dark_gray"/>
-
-                        <TextView
-                            android:id="@+id/deliveryFee"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Free delivery"
-                            android:textColor="@color/dark_brown"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/restaurantDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Italian, Pizza, Pasta"
-                        android:textColor="@color/dark_brown"
-                        android:textSize="14sp"/>
-
-                    <TextView
-                        android:id="@+id/restaurantAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="123 Food Street, City"
-                        android:textColor="@color/dark_brown"
-                        android:textSize="14sp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Menu Categories -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/menuCategoriesRecycler"
+            <!-- Filter Chips -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/filterChipGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clipToPadding="false"
-                android:paddingHorizontal="16dp"/>
+                android:layout_marginBottom="16dp"
+                app:singleSelection="true">
 
-            <!-- Products List -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productsRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clipToPadding="false"
-                android:paddingHorizontal="16dp" />
-
-            <!-- Empty State -->
-            <LinearLayout
-                android:id="@+id/emptyProductsState"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/ic_empty_products"
-                    app:tint="@color/dark_orange"/>
-
-                <TextView
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="No products found"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
-            </LinearLayout>
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="All" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipNew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="New" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chiphighlow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="Price High to Low" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipaz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="A-Z" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chiplowhigh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="Price Low to High" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_gravity="center"
+                tools:listitem="@layout/item_product"/>
+
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Add to Cart Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/cartButton"
-        android:layout_width="match_parent"
+    <!-- Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="16dp"
-        android:text="View Cart (0)"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:backgroundTint="@color/dark_orange"
-        app:cornerRadius="8dp"
-        app:elevation="8dp"/>
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <!-- Empty State View -->
+    <LinearLayout
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/baseline_add_shopping_cart_24"
+            app:tint="@color/dark_orange"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="No products found"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Try adjusting your search or filter"
+            android:textColor="@color/dark_brown"/>
+
+    </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
