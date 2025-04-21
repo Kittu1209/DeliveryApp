@@ -184,22 +184,37 @@
     </LinearLayout>
    </androidx.cardview.widget.CardView>
 
-   <!-- Recent Orders Title -->
-   <TextView
-       android:id="@+id/textRecentOrdersTitle"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:text="Recent Orders"
-       android:textSize="18sp"
-       android:textStyle="bold"
-       android:layout_marginBottom="8dp"/>
 
-   <!-- Recent Orders List -->
-   <androidx.recyclerview.widget.RecyclerView
-       android:id="@+id/recyclerRecentOrders"
+   <!-- Replace your current RecyclerView with this -->
+   <androidx.cardview.widget.CardView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_marginBottom="16dp"/>
+       android:layout_marginBottom="16dp"
+       app:cardCornerRadius="12dp"
+       app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+     <TextView
+         android:id="@+id/textRecentOrdersTitle"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="Orders Ready for Packing"
+         android:textSize="18sp"
+         android:textStyle="bold"
+         android:layout_marginBottom="8dp"
+         tools:ignore="DuplicateIds" />
+
+     <androidx.recyclerview.widget.RecyclerView
+         android:id="@+id/recyclerRecentOrders"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"/>
+    </LinearLayout>
+   </androidx.cardview.widget.CardView>
 
    <!-- Quick Actions Title -->
    <TextView

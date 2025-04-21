@@ -1,6 +1,5 @@
 package com.example.fooddeliveryapp_student;
 
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,7 @@ public class OrderVendorHome {
     private double totalAmount;
     private Date createdAt;
     private Map<String, Object> deliveryAddress;
-    private List<Map<String, Object>> items;
+    private List<OrderItem> items; // Changed to List<OrderItem>
     private String assignedDeliveryManId;
     private String userId;
 
@@ -69,11 +68,11 @@ public class OrderVendorHome {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public List<Map<String, Object>> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Map<String, Object>> items) {
+    public void setItems(List<OrderItem> items) {
         this.items = items;
     }
 
