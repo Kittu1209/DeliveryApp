@@ -61,5 +61,13 @@
             android:textStyle="bold"
             android:paddingTop="8dp"/>
 
+        <!-- Add this Button at the bottom of your existing layout -->
+        <Button
+            android:id="@+id/btn_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rate This Order"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

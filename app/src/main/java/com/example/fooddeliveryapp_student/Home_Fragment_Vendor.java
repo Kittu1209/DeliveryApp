@@ -99,28 +99,22 @@ public class Home_Fragment_Vendor extends Fragment {
 //        view.findViewById(R.id.textManageOrdersSubtitle).setOnClickListener(v -> {
 //            navigateToFragment(new Orders_Fragment_Vendor());
 //        });
-        view.findViewById(R.id.textManageOrdersSubtitle).setOnClickListener(v -> {
-            if (isAdded() && getActivity() != null) {
-                navigateToFragment(new Orders_Fragment_Vendor());
-            }
-        });
 
-        view.findViewById(R.id.cardAnalytics).setOnClickListener(v -> {
-            if (isAdded() && getActivity() != null) {
-                navigateToFragment(new Dashboard_Fragment_vendor());
-            }
-        });
 
         view.findViewById(R.id.cardAddItem).setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), AddProductActivity.class));
         });
 
-//        view.findViewById(R.id.cardAnalytics).setOnClickListener(v -> {
-//            navigateToFragment(new Dashboard_Fragment_vendor());
-//        });
+        view.findViewById(R.id.cardAnalytics).setOnClickListener(v -> {
+            navigateToFragment(new Dashboard_Fragment_vendor());
+        });
 
         view.findViewById(R.id.cardReviews).setOnClickListener(v -> {
-            // Implement when Reviews fragment/activity is ready
+            if (isAdded() && getActivity() != null) {
+                Intent intent = new Intent(getActivity(), VendorReviewActivity.class);
+                intent.putExtra("shopId", currentShopId);
+                startActivity(intent);
+            }
         });
 
         // Initialize media and vibration
