@@ -39,8 +39,8 @@ public class CategoryProductAdapter extends RecyclerView.Adapter<CategoryProduct
         holder.productPrice.setText("₹" + product.getPrice());
 
         // Decode base64 image
-        if (product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-            byte[] decodedBytes = Base64.decode(product.getImageUrl(), Base64.DEFAULT);
+        if (product.getProductImage() != null && !product.getProductImage().isEmpty()) {
+            byte[] decodedBytes = Base64.decode(product.getProductImage(), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             holder.productImage.setImageBitmap(bitmap);
         }
@@ -50,7 +50,7 @@ public class CategoryProductAdapter extends RecyclerView.Adapter<CategoryProduct
             Intent intent = new Intent(context, ProductDetailActivity.class);
             intent.putExtra("productName", product.getName());
             intent.putExtra("productPrice", product.getPrice());
-            intent.putExtra("productImageBase64", product.getImageUrl());
+            intent.putExtra("productImageBase64", product.getProductImage());
             context.startActivity(intent);
         });
     }

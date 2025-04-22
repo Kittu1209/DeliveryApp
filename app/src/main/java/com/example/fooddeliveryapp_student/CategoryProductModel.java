@@ -1,33 +1,32 @@
 package com.example.fooddeliveryapp_student;
-
 public class CategoryProductModel {
-    private String name, imageUrl, description;
+    private String productId;
+    private String name;
     private double price;
+    private String productImage;
 
-    public CategoryProductModel() {
-        // Required for Firebase
+    // Constructor
+    public CategoryProductModel(String productId, String name, double price, String productImage) {
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.productImage = productImage;
     }
 
-    public CategoryProductModel(String name, String imageUrl, double price) {
-        this.name = name;
-        this.imageUrl = imageUrl;
-        this.description = description;
-        this.price = price;
+    // Getter methods
+    public String getProductId() {
+        return productId;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public double getPrice() {
         return price;
+    }
+
+    public String getProductImage() {
+        return productImage;
     }
 }

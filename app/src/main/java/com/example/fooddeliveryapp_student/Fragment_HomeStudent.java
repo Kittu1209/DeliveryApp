@@ -77,7 +77,7 @@ public class Fragment_HomeStudent extends Fragment {
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         categoryAdapter = new CategoryAdapterhome(categoryList, category -> {
             Intent intent = new Intent(getContext(), CategoryShowProduct.class);
-            intent.putExtra("name", category.getName());
+            intent.putExtra("name", category.getName());  // Fix: Pass category name here
             startActivity(intent);
         });
         categoriesRecyclerView.setAdapter(categoryAdapter);
@@ -85,13 +85,11 @@ public class Fragment_HomeStudent extends Fragment {
         shopsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         shopAdapter = new ShopAdapter(shopList, shop -> {
             Intent intent = new Intent(getContext(), ShopProductActivity.class);
-            intent.putExtra("id", shop.getOwnerId()); // Updated: Pass ownerId instead of document ID
+            intent.putExtra("id", shop.getOwnerId()); // Pass ownerId instead of document ID
             startActivity(intent);
         });
         shopsRecyclerView.setAdapter(shopAdapter);
     }
-
-
 
     private void setupListeners() {
         searchBox.addTextChangedListener(new TextWatcher() {
@@ -122,11 +120,12 @@ public class Fragment_HomeStudent extends Fragment {
                 Category category = new Category(
                         document.getId(),
                         document.getString("name"),
-                        document.getString("image")
-                );
+                        document.getString("image"));
+
                 categoryList.add(category);
             }
             categoryAdapter.notifyDataSetChanged();
+            updateCategoryEmptyState();  // Update empty state for categories
         });
     }
 
@@ -169,6 +168,12 @@ public class Fragment_HomeStudent extends Fragment {
 
     private void updateEmptyState() {
         emptyState.setVisibility(shopAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    private void updateCategoryEmptyState() {
+        // Update empty state for categories as well
+        // Example: Show a message if no categories are available
+        emptyState.setVisibility(categoryAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
