@@ -1,15 +1,18 @@
 package com.example.fooddeliveryapp_student;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,10 +27,11 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private ImageView productImage;
     private TextView productName, productPrice, productDescription;
-    private Button addToCartButton;
+    private Button addToCartButton, gotocart;
     private FirebaseFirestore db;
     private String productId;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +45,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         productPrice = findViewById(R.id.textViewProductPrice);
         productDescription = findViewById(R.id.textViewProductDescription);
         addToCartButton = findViewById(R.id.buttonAddToCart);
+        gotocart=findViewById(R.id.buttonGoToCart);
 
         loadProductDetails();
+        gotocart.setOnClickListener(v -> goToCart());
 
         addToCartButton.setOnClickListener(v -> addToCart());
     }
@@ -85,6 +91,21 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Failed to load product", Toast.LENGTH_SHORT).show()
         );
     }
+
+    private void goToCart() {
+        // Show the fragment container and hide the product details layout
+        findViewById(R.id.productDetailLayout).setVisibility(View.GONE);
+        findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment_CartStudent fragment = new Fragment_CartStudent();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+
+
 
     private void addToCart() {
         if (productId == null) {
