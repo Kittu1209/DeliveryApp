@@ -20,19 +20,13 @@
             app:contentScrim="@color/white"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-            <ImageView
-                android:id="@+id/restaurantImage"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/heartlogo"
-                app:layout_collapseMode="parallax"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                android:background="@color/yellow"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleTextColor="@color/white">
 
@@ -156,15 +150,20 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Products List -->
+
+            <!-- Empty State -->
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productsRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/productsRecyclerView"
+                android:layout_width="378dp"
+                android:layout_height="422dp"
+                android:layout_marginLeft="40dp"
                 android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="40dp"
                 android:clipToPadding="false"
                 android:paddingHorizontal="16dp" />
 
-            <!-- Empty State -->
             <LinearLayout
                 android:id="@+id/emptyProductsState"
                 android:layout_width="match_parent"

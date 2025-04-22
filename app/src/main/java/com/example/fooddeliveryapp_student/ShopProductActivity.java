@@ -65,17 +65,20 @@ public class ShopProductActivity extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     allProducts.clear();
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        Product product = new Product(
-                                doc.getId(),
-                                doc.getString("name"),
-                                doc.getString("category"),
-                                doc.getDouble("price"),
-                                doc.getString("description"),
-                                doc.getString("imageUrl"),
-                                doc.getBoolean("available"),
-                                doc.getString("shopId")
-                        );
-                        allProducts.add(product);
+                        Boolean available = doc.getBoolean("available");
+                        if (available != null && available) {
+                            Product product = new Product(
+                                    doc.getId(),
+                                    doc.getString("name"),
+                                    doc.getString("category"),
+                                    doc.getDouble("price"),
+                                    doc.getString("description"),
+                                    doc.getString("imageUrl"),
+                                    available,
+                                    doc.getString("shopId")
+                            );
+                            allProducts.add(product);
+                        }
                     }
                     productAdapter.updateList(allProducts);
                     progressBar.setVisibility(View.GONE);
@@ -85,4 +88,5 @@ public class ShopProductActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to load products", Toast.LENGTH_SHORT).show();
                 });
     }
+
 }

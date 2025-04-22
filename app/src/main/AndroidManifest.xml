@@ -35,6 +35,10 @@
             android:name=".ShowProductActivity"
             android:exported="false" />
         <activity
+            android:name=".ShopProductActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".AdminViewUserDetails"
             android:exported="false" />
         <activity
