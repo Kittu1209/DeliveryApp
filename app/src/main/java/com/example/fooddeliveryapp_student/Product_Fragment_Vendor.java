@@ -73,7 +73,7 @@ public class Product_Fragment_Vendor extends Fragment {
 
         editProd.setOnClickListener(v -> {
             // Changed this to go to EditProductActivity if that's what you intended
-            Intent intent = new Intent(getActivity(), CategoryPage.class);
+            Intent intent = new Intent(getActivity(), VendorProductsActivity.class);
             startActivity(intent);
         });
 

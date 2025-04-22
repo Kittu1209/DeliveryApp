@@ -55,6 +55,10 @@ public class AddProductActivity extends AppCompatActivity {
     private Bitmap selectedBitmap;
     private String encodedImage;
 
+    // Category data
+    private List<String> categoryNames = new ArrayList<>();
+    private List<String> categoryIds = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,7 +177,7 @@ public class AddProductActivity extends AppCompatActivity {
         double price = Double.parseDouble(etProductPrice.getText().toString().trim());
         String description = etProductDescription.getText().toString().trim();
         int stock = Integer.parseInt(etStockQuantity.getText().toString().trim());
-        String category = spinnerCategory.getSelectedItem().toString();
+        String categoryId = categoryIds.get(spinnerCategory.getSelectedItemPosition()); // Get the ID instead of name
         boolean available = cbAvailable.isChecked();
 
         // Create product data
@@ -181,7 +185,7 @@ public class AddProductActivity extends AppCompatActivity {
         product.put("name", name);
         product.put("price", price);
         product.put("description", description);
-        product.put("category", category);
+        product.put("category", categoryId); // Store category ID instead of name
         product.put("imageUrl", encodedImage); // Storing Base64 encoded string
         product.put("shopId", shopId);
         product.put("available", available);
@@ -230,22 +234,26 @@ public class AddProductActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<String> categories = new ArrayList<>();
+                        categoryNames.clear();
+                        categoryIds.clear();
+
                         for (DocumentSnapshot doc : task.getResult()) {
                             String name = doc.getString("name");
                             if (name != null) {
-                                categories.add(name);
+                                categoryNames.add(name);
+                                categoryIds.add(doc.getId()); // Store the document ID
                             }
                         }
 
-                        if (categories.isEmpty()) {
-                            categories.add("Uncategorized");
+                        if (categoryNames.isEmpty()) {
+                            categoryNames.add("Uncategorized");
+                            categoryIds.add("uncategorized"); // You might want to handle this case properly
                         }
 
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                                 this,
                                 android.R.layout.simple_spinner_item,
-                                categories
+                                categoryNames
                         );
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerCategory.setAdapter(adapter);

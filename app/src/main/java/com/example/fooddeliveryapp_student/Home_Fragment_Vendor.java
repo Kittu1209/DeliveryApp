@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -36,6 +37,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -89,18 +91,15 @@ public class Home_Fragment_Vendor extends Fragment {
         textShopName = view.findViewById(R.id.textShopName);
         textTodaysOrdersCount = view.findViewById(R.id.textTodaysOrdersCount);
         recyclerRecentOrders = view.findViewById(R.id.recyclerRecentOrders);
-
+       // manageorders=view.findViewById(R.id.textManageOrdersTitle);
         // Setup RecyclerView for recent orders
         recyclerRecentOrders.setLayoutManager(new LinearLayoutManager(getContext()));
         recentOrdersAdapter = new RecentOrdersAdapter(recentOrdersList);
         recyclerRecentOrders.setAdapter(recentOrdersAdapter);
-
+        view.findViewById(R.id.textManageOrdersSubtitle).setOnClickListener(v -> {
+            navigateToFragment(new Orders_Fragment_Vendor());
+        });
         // Set click listeners for navigation
-//        view.findViewById(R.id.textManageOrdersSubtitle).setOnClickListener(v -> {
-//            navigateToFragment(new Orders_Fragment_Vendor());
-//        });
-
-
         view.findViewById(R.id.cardAddItem).setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), AddProductActivity.class));
         });
@@ -136,24 +135,18 @@ public class Home_Fragment_Vendor extends Fragment {
 
     private void navigateToFragment(Fragment fragment) {
         try {
-            // Get the activity's fragment manager
             FragmentTransaction transaction = requireActivity()
                     .getSupportFragmentManager()
                     .beginTransaction();
-
-            // Replace whatever is in the fragment_container view with this fragment
             transaction.replace(R.id.fragment_container, fragment);
-
-            // Add the transaction to the back stack (optional)
             transaction.addToBackStack(null);
-
-            // Commit the transaction
             transaction.commit();
         } catch (Exception e) {
             Log.e(TAG, "Fragment navigation failed", e);
             Toast.makeText(requireContext(), "Navigation error", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void fetchShopName() {
         shopsRef.document(currentShopId)
                 .get()
@@ -177,23 +170,7 @@ public class Home_Fragment_Vendor extends Fragment {
     }
 
     private void fetchEarningsAmount() {
-        paymentsRef.whereEqualTo("shopId", currentShopId)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    double total = 0;
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Double amount = doc.getDouble("amount");
-                        if (amount != null) total += amount;
-                    }
-
-                    String formattedAmount = NumberFormat.getCurrencyInstance(new Locale("en", "IN"))
-                            .format(total);
-                    textEarningsAmount.setText(formattedAmount);
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Error fetching earnings", e));
-    }
-
-    private void fetchTodaysOrders() {
+        // Get today's date range
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -205,42 +182,139 @@ public class Home_Fragment_Vendor extends Fragment {
         calendar.set(Calendar.SECOND, 59);
         final Date endDate = calendar.getTime();
 
-        // Try the indexed query first
-        ordersRef.whereEqualTo("shopId", currentShopId)
-                .whereGreaterThanOrEqualTo("createdAt", startDate)
-                .whereLessThanOrEqualTo("createdAt", endDate)
+        paymentsRef.whereEqualTo("shopId", currentShopId)
+                .whereGreaterThanOrEqualTo("timestamp", startDate)
+                .whereLessThanOrEqualTo("timestamp", endDate)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    textTodaysOrdersCount.setText(String.valueOf(querySnapshot.size()));
+                    double total = 0;
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        // Check multiple possible amount field names
+                        Double amount = null;
+                        if (doc.contains("amount")) {
+                            amount = doc.getDouble("amount");
+                        } else if (doc.contains("totalAmount")) {
+                            amount = doc.getDouble("totalAmount");
+                        } else if (doc.contains("total")) {
+                            amount = doc.getDouble("total");
+                        }
+
+                        if (amount != null) {
+                            total += amount;
+                        }
+                    }
+
+                    // Format the amount with currency symbol
+                    String formattedAmount = NumberFormat.getCurrencyInstance(new Locale("en", "IN"))
+                            .format(total);
+
+                    // Update UI
+                    if (textEarningsAmount != null) {
+                        textEarningsAmount.setText(formattedAmount);
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Log.w(TAG, "Indexed query failed, falling back to client-side filtering", e);
-
-                    // Fallback to client-side filtering
-                    ordersRef.whereEqualTo("shopId", currentShopId)
-                            .get()
-                            .addOnSuccessListener(querySnapshot -> {
-                                int count = 0;
-                                for (QueryDocumentSnapshot doc : querySnapshot) {
-                                    Date createdAt = doc.getDate("createdAt");
-                                    if (createdAt != null &&
-                                            !createdAt.before(startDate) &&
-                                            !createdAt.after(endDate)) {
-                                        count++;
-                                    }
-                                }
-                                textTodaysOrdersCount.setText(String.valueOf(count));
-                            })
-                            .addOnFailureListener(e2 -> {
-                                Log.e(TAG, "Error fetching orders", e2);
-                                textTodaysOrdersCount.setText("0");
-                            });
+                    Log.e(TAG, "Error fetching earnings", e);
+                    if (textEarningsAmount != null) {
+                        textEarningsAmount.setText("₹0");
+                    }
                 });
     }
+
+//    private void fetchTodaysOrders() {
+//    Calendar calendar = Calendar.getInstance();
+//    calendar.set(Calendar.HOUR_OF_DAY, 0);
+//    calendar.set(Calendar.MINUTE, 0);
+//    calendar.set(Calendar.SECOND, 0);
+//    final Date startDate = calendar.getTime();
+//
+//    calendar.set(Calendar.HOUR_OF_DAY, 23);
+//    calendar.set(Calendar.MINUTE, 59);
+//    calendar.set(Calendar.SECOND, 59);
+//    final Date endDate = calendar.getTime();
+//
+//    ordersRef.whereEqualTo("shopId", currentShopId)
+//            .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
+//            .whereGreaterThanOrEqualTo("createdAt", startDate)
+//            .whereLessThanOrEqualTo("createdAt", endDate)
+//            .get()
+//            .addOnSuccessListener(querySnapshot -> {
+//                textTodaysOrdersCount.setText(String.valueOf(querySnapshot.size()));
+//            })
+//            .addOnFailureListener(e -> {
+//                Log.w(TAG, "Indexed query failed, falling back to client-side filtering", e);
+//                ordersRef.whereEqualTo("shopId", currentShopId)
+//                        .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
+//                        .get()
+//                        .addOnSuccessListener(querySnapshot -> {
+//                            int count = 0;
+//                            for (QueryDocumentSnapshot doc : querySnapshot) {
+//                                Date createdAt = doc.getDate("createdAt");
+//                                if (createdAt != null &&
+//                                        !createdAt.before(startDate) &&
+//                                        !createdAt.after(endDate)) {
+//                                    count++;
+//                                }
+//                            }
+//                            textTodaysOrdersCount.setText(String.valueOf(count));
+//                        })
+//                        .addOnFailureListener(e2 -> {
+//                            Log.e(TAG, "Error fetching orders", e2);
+//                            textTodaysOrdersCount.setText("0");
+//                        });
+//            });
+//}
+private void fetchTodaysOrders() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    final Date startDate = calendar.getTime();
+
+    calendar.set(Calendar.HOUR_OF_DAY, 23);
+    calendar.set(Calendar.MINUTE, 59);
+    calendar.set(Calendar.SECOND, 59);
+    final Date endDate = calendar.getTime();
+
+    Log.d(TAG, "Fetching orders between: " + startDate + " and " + endDate);
+
+    ordersRef.whereEqualTo("shopId", currentShopId)
+            .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
+            .whereGreaterThanOrEqualTo("createdAt", startDate)
+            .whereLessThanOrEqualTo("createdAt", endDate)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                Log.d(TAG, "Found " + querySnapshot.size() + " orders today");
+                textTodaysOrdersCount.setText(String.valueOf(querySnapshot.size()));
+            })
+            .addOnFailureListener(e -> {
+                Log.w(TAG, "Indexed query failed, falling back to client-side filtering", e);
+                ordersRef.whereEqualTo("shopId", currentShopId)
+                        .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
+                        .get()
+                        .addOnSuccessListener(querySnapshot -> {
+                            int count = 0;
+                            for (QueryDocumentSnapshot doc : querySnapshot) {
+                                Date createdAt = doc.getDate("createdAt");
+                                if (createdAt != null &&
+                                        !createdAt.before(startDate) &&
+                                        !createdAt.after(endDate)) {
+                                    count++;
+                                }
+                            }
+                            Log.d(TAG, "Client-side filtered count: " + count);
+                            textTodaysOrdersCount.setText(String.valueOf(count));
+                        })
+                        .addOnFailureListener(e2 -> {
+                            Log.e(TAG, "Error fetching orders", e2);
+                            textTodaysOrdersCount.setText("0");
+                        });
+            });
+}
     private void fetchRecentOrders() {
         ordersRef.whereEqualTo("shopId", currentShopId)
+                .whereEqualTo("status", Arrays.asList("pending", "Delivery Man Assigned"))
                 .orderBy("createdAt", Query.Direction.DESCENDING)
-                .limit(5)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     recentOrdersList.clear();
@@ -256,9 +330,47 @@ public class Home_Fragment_Vendor extends Fragment {
                 .addOnFailureListener(e -> Log.e(TAG, "Error fetching recent orders", e));
     }
 
+    private void markOrderAsPacked(OrderVendorHome order) {
+        ordersRef.document(order.getId())
+                .update("status", "Order Packed")
+                .addOnSuccessListener(aVoid -> {
+                    updateStockQuantities(order);
+                    fetchRecentOrders();
+                    Toast.makeText(getContext(), "Order marked as packed", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to update order status", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error updating order status", e);
+                });
+    }
+
+    private void updateStockQuantities(OrderVendorHome order) {
+        if (order.getItems() != null) {
+            for (OrderItem item : order.getItems()) {
+                if (item.getShopId().equals(currentShopId)) {
+                    productsRef.document(item.getProductId())
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    long currentStock = documentSnapshot.getLong("stockQuantity");
+                                    long newStock = currentStock - item.getQuantity();
+
+                                    productsRef.document(item.getProductId())
+                                            .update("stockQuantity", newStock)
+                                            .addOnFailureListener(e ->
+                                                    Log.e(TAG, "Error updating stock for product: " + item.getProductId(), e));
+                                }
+                            })
+                            .addOnFailureListener(e ->
+                                    Log.e(TAG, "Error fetching product: " + item.getProductId(), e));
+                }
+            }
+        }
+    }
+
     private void setupRealTimeOrderListener() {
         orderListener = ordersRef
-                .whereEqualTo("status", "pending")
+                .whereEqualTo("status", Arrays.asList("pending", "Delivery Man Assigned"))
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
@@ -315,7 +427,7 @@ public class Home_Fragment_Vendor extends Fragment {
         }
     }
 
-    private static class RecentOrdersAdapter extends RecyclerView.Adapter<RecentOrdersAdapter.OrderViewHolder> {
+    private class RecentOrdersAdapter extends RecyclerView.Adapter<RecentOrdersAdapter.OrderViewHolder> {
         private List<OrderVendorHome> orders;
 
         public RecentOrdersAdapter(List<OrderVendorHome> orders) {
@@ -326,7 +438,7 @@ public class Home_Fragment_Vendor extends Fragment {
         @Override
         public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_recent_order_vendor, parent, false);
+                    .inflate(R.layout.item_order_packing, parent, false);
             return new OrderViewHolder(view);
         }
 
@@ -341,9 +453,9 @@ public class Home_Fragment_Vendor extends Fragment {
             return orders.size();
         }
 
-        static class OrderViewHolder extends RecyclerView.ViewHolder {
+        class OrderViewHolder extends RecyclerView.ViewHolder {
             TextView textOrderId, textCustomerName, textCustomerAddress, textOrderTotal, textOrderTime;
-            Chip chipStatus;
+            Button btnMarkAsPacked;
 
             public OrderViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -352,36 +464,19 @@ public class Home_Fragment_Vendor extends Fragment {
                 textCustomerAddress = itemView.findViewById(R.id.textCustomerAddress);
                 textOrderTotal = itemView.findViewById(R.id.textOrderTotal);
                 textOrderTime = itemView.findViewById(R.id.textOrderTime);
-                chipStatus = itemView.findViewById(R.id.chipStatus);
+                btnMarkAsPacked = itemView.findViewById(R.id.btnMarkAsPacked);
             }
 
             public void bind(OrderVendorHome order) {
                 textOrderId.setText("#" + (order.getOrderId() != null ? order.getOrderId().substring(0, Math.min(6, order.getOrderId().length())) : ""));
                 textCustomerName.setText(order.getCustomerName());
                 textCustomerAddress.setText("Hostel: " + order.getCustomerHostel() + ", Room: " + order.getCustomerRoom());
-                textOrderTotal.setText("₹" + order.getTotalAmount());
+                textOrderTotal.setText("Total: ₹" + order.getTotalAmount());
                 textOrderTime.setText(formatTime(order.getCreatedAt()));
 
-                if (order.getStatus() != null) {
-                    chipStatus.setText(order.getStatus());
-                    switch (order.getStatus().toLowerCase()) {
-                        case "preparing":
-                            chipStatus.setChipBackgroundColorResource(R.color.status_preparing);
-                            break;
-                        case "ready":
-                            chipStatus.setChipBackgroundColorResource(R.color.status_ready);
-                            break;
-                        case "delivered":
-                            chipStatus.setChipBackgroundColorResource(R.color.status_delivered);
-                            break;
-                        case "delivery man assigned":
-                            chipStatus.setChipBackgroundColorResource(R.color.status_assigned);
-                            break;
-                        default:
-                            chipStatus.setChipBackgroundColorResource(R.color.status_default);
-                            break;
-                    }
-                }
+                btnMarkAsPacked.setOnClickListener(v -> {
+                    markOrderAsPacked(order);
+                });
             }
 
             private String formatTime(Date date) {

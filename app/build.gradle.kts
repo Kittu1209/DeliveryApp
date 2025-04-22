@@ -57,6 +57,8 @@ dependencies {
     implementation ("com.squareup.picasso:picasso:2.71828")
     implementation ("com.google.android.gms:play-services-base:18.3.0")
     implementation ("com.google.firebase:firebase-bom:32.7.0")
+    implementation ("com.google.android.gms:play-services-auth:21.0.0")
+    implementation ("com.google.firebase:firebase-analytics")
 }}
 dependencies {
     implementation(libs.cardview)
