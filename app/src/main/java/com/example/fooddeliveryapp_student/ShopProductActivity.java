@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar; // ✅ Correct Toolbar import
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -72,8 +73,7 @@ public class ShopProductActivity extends AppCompatActivity {
             intent.putExtra("productId", product.getId());  // Pass productId
             startActivity(intent);
         });
-
-        productsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        productsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         productsRecyclerView.setAdapter(productAdapter);
     }
 
