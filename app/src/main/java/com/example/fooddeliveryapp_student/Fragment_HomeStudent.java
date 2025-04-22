@@ -10,15 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -33,6 +35,8 @@ public class Fragment_HomeStudent extends Fragment {
     private EditText searchBox;
     private View emptyState;
     private MaterialCardView filtercard;
+    private ViewPager2 bannerViewPager;
+    private TabLayout bannerIndicator;
 
     // Adapters
     private CategoryAdapterhome categoryAdapter;
@@ -56,6 +60,7 @@ public class Fragment_HomeStudent extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         initViews(view);
+        setupBannerSlider(); // 👈 Banner setup
         setupAdapters();
         setupListeners();
 
@@ -71,13 +76,38 @@ public class Fragment_HomeStudent extends Fragment {
         shopsRecyclerView = view.findViewById(R.id.restaurantsRecycler);
         emptyState = view.findViewById(R.id.emptyState);
         filtercard = view.findViewById(R.id.filterCard);
+        bannerViewPager = view.findViewById(R.id.bannerViewPager); // 👈 new
+
     }
+
+    private void setupBannerSlider() {
+        List<Banner> bannerList = new ArrayList<>();
+        bannerList.add(new Banner(R.drawable.banner1));
+        bannerList.add(new Banner(R.drawable.banner2));
+        bannerList.add(new Banner(R.drawable.banner3));
+
+        BannerAdapter bannerAdapter = new BannerAdapter(getContext(), bannerList);
+        bannerViewPager.setAdapter(bannerAdapter);
+
+        final Runnable autoScrollRunnable = new Runnable() {
+            @Override
+            public void run() {
+                int currentItem = bannerViewPager.getCurrentItem();
+                int nextItem = (currentItem + 1) % bannerList.size();  // Loop back to the first banner
+                bannerViewPager.setCurrentItem(nextItem, true);
+                handler.postDelayed(this, 2000); // Auto-scroll every 2 seconds
+            }
+        };
+
+        handler.postDelayed(autoScrollRunnable, 2000); // Start auto-scrolling after 2 seconds
+    }
+
 
     private void setupAdapters() {
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         categoryAdapter = new CategoryAdapterhome(categoryList, category -> {
             Intent intent = new Intent(getContext(), CategoryShowProduct.class);
-            intent.putExtra("name", category.getName());  // Fix: Pass category name here
+            intent.putExtra("name", category.getName());
             startActivity(intent);
         });
         categoriesRecyclerView.setAdapter(categoryAdapter);
@@ -85,7 +115,7 @@ public class Fragment_HomeStudent extends Fragment {
         shopsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         shopAdapter = new ShopAdapter(shopList, shop -> {
             Intent intent = new Intent(getContext(), ShopProductActivity.class);
-            intent.putExtra("id", shop.getOwnerId()); // Pass ownerId instead of document ID
+            intent.putExtra("id", shop.getOwnerId());
             startActivity(intent);
         });
         shopsRecyclerView.setAdapter(shopAdapter);
@@ -101,12 +131,8 @@ public class Fragment_HomeStudent extends Fragment {
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        // OnClickListener for the filtercard
         filtercard.setOnClickListener(v -> {
-            // Example action: Show a Toast (You can replace this with your filter action)
             Toast.makeText(getContext(), "Filter options coming soon!", Toast.LENGTH_SHORT).show();
-
-            // Alternatively, you can launch a filter dialog or new activity:
             Intent intent = new Intent(getContext(), ShowProductActivity.class);
             startActivity(intent);
         });
@@ -125,7 +151,7 @@ public class Fragment_HomeStudent extends Fragment {
                 categoryList.add(category);
             }
             categoryAdapter.notifyDataSetChanged();
-            updateCategoryEmptyState();  // Update empty state for categories
+            updateCategoryEmptyState();
         });
     }
 
@@ -171,8 +197,6 @@ public class Fragment_HomeStudent extends Fragment {
     }
 
     private void updateCategoryEmptyState() {
-        // Update empty state for categories as well
-        // Example: Show a message if no categories are available
         emptyState.setVisibility(categoryAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 

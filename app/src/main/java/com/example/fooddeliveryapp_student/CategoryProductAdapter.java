@@ -49,8 +49,7 @@ public class CategoryProductAdapter extends RecyclerView.Adapter<CategoryProduct
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProductDetailActivity.class);
             intent.putExtra("productName", product.getName());
-            intent.putExtra("productPrice", product.getPrice());
-            intent.putExtra("productImageBase64", product.getProductImage());
+            intent.putExtra("productId",product.getProductId());
             context.startActivity(intent);
         });
     }
