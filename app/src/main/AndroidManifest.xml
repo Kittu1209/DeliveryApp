@@ -17,6 +17,12 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".EditProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VendorProductsActivity"
+            android:exported="false" />
+        <activity
             android:name=".CategoryShowProduct"
             android:exported="false" />
         <activity
