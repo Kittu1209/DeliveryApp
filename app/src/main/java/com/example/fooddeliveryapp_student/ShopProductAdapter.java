@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.example.fooddeliveryapp_student.Product;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class ShopProductAdapter extends RecyclerView.Adapter<ShopProductAdapter.ProductViewHolder> {
+
     public interface OnProductClickListener {
         void onProductClick(Product product);
     }
@@ -42,7 +43,8 @@ public class ShopProductAdapter extends RecyclerView.Adapter<ShopProductAdapter.
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = productList.get(position);
-        holder.bind(product);
+        holder.setProductDetails(product);  // Fetch and prepare data
+        holder.bind();                      // Bind data to UI
     }
 
     @Override
@@ -53,6 +55,8 @@ public class ShopProductAdapter extends RecyclerView.Adapter<ShopProductAdapter.
     class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
         TextView productName, productPrice;
+        Product product;
+        Bitmap decodedBitmap;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,16 +65,30 @@ public class ShopProductAdapter extends RecyclerView.Adapter<ShopProductAdapter.
             productPrice = itemView.findViewById(R.id.textViewProductPrice);
         }
 
-        void bind(Product product) {
-            productName.setText(product.getName());
-            productPrice.setText("Rs. " + product.getPrice());
+        // This method is responsible for preparing data
+        void setProductDetails(Product product) {
+            this.product = product;
+
+            // Decode the image
             try {
                 byte[] decodedBytes = Base64.decode(product.getImageUrl(), Base64.DEFAULT);
-                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-                productImage.setImageBitmap(decodedBitmap);
+                decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             } catch (Exception e) {
+                decodedBitmap = null;
+            }
+        }
+
+        // This method binds data to the UI (CardView)
+        void bind() {
+            productName.setText(product.getName());
+            productPrice.setText("Rs. " + product.getPrice());
+
+            if (decodedBitmap != null) {
+                productImage.setImageBitmap(decodedBitmap);
+            } else {
                 productImage.setImageResource(R.drawable.heartlogo); // fallback image
             }
+
             itemView.setOnClickListener(v -> listener.onProductClick(product));
         }
     }
