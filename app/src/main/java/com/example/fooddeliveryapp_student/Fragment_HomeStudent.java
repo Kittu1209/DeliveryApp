@@ -89,11 +89,12 @@ public class Fragment_HomeStudent extends Fragment {
         shopsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         shopAdapter = new ShopAdapter(shopList, shop -> {
             Intent intent = new Intent(getContext(), ShopProductActivity.class);
-            intent.putExtra("id", shop.getId());
+            intent.putExtra("id", shop.getOwnerId()); // Updated: Pass ownerId instead of document ID
             startActivity(intent);
         });
         shopsRecyclerView.setAdapter(shopAdapter);
     }
+
 
     private void setupListeners() {
         searchBox.addTextChangedListener(new TextWatcher() {

@@ -50,6 +50,7 @@ public class FilterProductAdapter extends RecyclerView.Adapter<FilterProductAdap
             intent.putExtra("productName", product.getName());
             intent.putExtra("productPrice", product.getPrice());
             intent.putExtra("productImageBase64", product.getImageUrl());
+            intent.putExtra("productId",product.getProductId());
 
             context.startActivity(intent);
         });

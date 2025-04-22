@@ -114,8 +114,9 @@ public class ShowProductActivity extends AppCompatActivity {
                             double price = priceValue != null ? priceValue : 0.0;
                             String imageUrl = document.getString("imageUrl");
                             Timestamp createdAt = document.getTimestamp("timestamp");
+                            String productId = document.getId(); // Get productId
 
-                            FilterProductModel product = new FilterProductModel(name, price, createdAt, imageUrl);
+                            FilterProductModel product = new FilterProductModel(name, price, createdAt, imageUrl,productId);
                             productList.add(product);
                             originalProductList.add(product);
                         }
