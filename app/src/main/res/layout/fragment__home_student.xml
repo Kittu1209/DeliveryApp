@@ -118,13 +118,7 @@
                     android:layout_height="1dp"
                     android:layout_weight="1"/>
 
-                <TextView
-                    android:id="@+id/seeAllCategories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See all"
-                    android:textColor="@color/dark_orange"
-                    android:textSize="14sp"/>
+
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -223,13 +217,6 @@
                     android:layout_height="1dp"
                     android:layout_weight="1"/>
 
-                <TextView
-                    android:id="@+id/seeAllRestaurants"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See all"
-                    android:textColor="@color/dark_orange"
-                    android:textSize="14sp"/>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

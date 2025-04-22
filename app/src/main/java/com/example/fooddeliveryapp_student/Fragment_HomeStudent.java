@@ -31,8 +31,6 @@ public class Fragment_HomeStudent extends Fragment {
     private RecyclerView categoriesRecyclerView;
     private RecyclerView shopsRecyclerView;
     private EditText searchBox;
-    private TextView seeAllCategories;
-    private TextView seeAllShops;
     private View emptyState;
     private MaterialCardView filtercard;
 
@@ -71,8 +69,6 @@ public class Fragment_HomeStudent extends Fragment {
         searchBox = view.findViewById(R.id.search_box);
         categoriesRecyclerView = view.findViewById(R.id.categoriesRecycler);
         shopsRecyclerView = view.findViewById(R.id.restaurantsRecycler);
-        seeAllCategories = view.findViewById(R.id.seeAllCategories);
-        seeAllShops = view.findViewById(R.id.seeAllRestaurants);
         emptyState = view.findViewById(R.id.emptyState);
         filtercard = view.findViewById(R.id.filterCard);
     }
@@ -105,18 +101,6 @@ public class Fragment_HomeStudent extends Fragment {
                 handler.postDelayed(() -> searchShops(s.toString()), 300);
             }
             @Override public void afterTextChanged(Editable s) {}
-        });
-
-        seeAllCategories.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), CategoryShowProduct.class);
-            intent.putExtra("show_all_categories", true);
-            startActivity(intent);
-        });
-
-        seeAllShops.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ShopProductActivity.class);
-            intent.putExtra("show_all_shops", true);
-            startActivity(intent);
         });
 
         // OnClickListener for the filtercard

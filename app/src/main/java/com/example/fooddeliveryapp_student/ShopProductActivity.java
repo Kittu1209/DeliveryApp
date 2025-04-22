@@ -1,5 +1,6 @@
 package com.example.fooddeliveryapp_student;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -46,6 +47,9 @@ public class ShopProductActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private void initViews() {
         productsRecyclerView = findViewById(R.id.productsRecyclerView);
         progressBar = findViewById(R.id.progressBar);
@@ -64,7 +68,11 @@ public class ShopProductActivity extends AppCompatActivity {
     private void setupRecyclerView() {
         productAdapter = new ShopProductAdapter(new ArrayList<>(), product -> {
             Toast.makeText(this, "Clicked: " + product.getName(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ShopProductActivity.this, ProductDetailActivity.class);
+            intent.putExtra("productId", product.getId());  // Pass productId
+            startActivity(intent);
         });
+
         productsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         productsRecyclerView.setAdapter(productAdapter);
     }
