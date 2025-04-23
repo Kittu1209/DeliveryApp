@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Order #1234"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -34,7 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="10:30 AM"/>
+                android:textColor="@color/gray_light"
+                android:textSize="14sp"/>
         </LinearLayout>
 
         <TextView
@@ -42,28 +44,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Customer Name"/>
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/textCustomerAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hostel: AB5, Room: 123"/>
+            android:layout_marginTop="4dp"
+            android:textColor="@color/gray_light"
+            android:textSize="12sp"/>
 
         <TextView
             android:id="@+id/textOrderTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Total: ₹350"
+            android:textColor="@color/black"
+            android:textSize="14sp"
             android:textStyle="bold"/>
 
         <Button
             android:id="@+id/btnMarkAsPacked"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
             android:text="Mark as Packed"
-            android:backgroundTint="@color/green"/>
+            android:backgroundTint="@color/colorPrimary"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

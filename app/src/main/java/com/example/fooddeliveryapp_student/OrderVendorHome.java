@@ -113,4 +113,15 @@ public class OrderVendorHome {
         }
         return "";
     }
+    @Override
+    public String toString() {
+        return "OrderVendorHome{" +
+                "id='" + id + '\'' +
+                ", orderId='" + orderId + '\'' +
+                ", status='" + status + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", createdAt=" + createdAt +
+                ", itemsCount=" + (items != null ? items.size() : 0) +
+                '}';
+    }
 }

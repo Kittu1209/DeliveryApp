@@ -3,7 +3,6 @@ package com.example.fooddeliveryapp_student;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -22,7 +21,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.chip.Chip;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -67,7 +65,10 @@ public class Home_Fragment_Vendor extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initializeFirebase();
+    }
 
+    private void initializeFirebase() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             currentShopId = auth.getCurrentUser().getUid();
@@ -83,30 +84,38 @@ public class Home_Fragment_Vendor extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home___vendor, container, false);
+        initializeViews(view);
+        setupRecyclerView();
+        setupClickListeners(view);
+        initializeNotificationSystem();
+        fetchAllData();
+        return view;
+    }
 
-        // Initialize views
+    private void initializeViews(View view) {
         textMenuItemsCount = view.findViewById(R.id.textMenuItemsCount);
         textEarningsAmount = view.findViewById(R.id.textEarningsAmount);
         toggleMute = view.findViewById(R.id.toggleMute);
         textShopName = view.findViewById(R.id.textShopName);
         textTodaysOrdersCount = view.findViewById(R.id.textTodaysOrdersCount);
         recyclerRecentOrders = view.findViewById(R.id.recyclerRecentOrders);
-       // manageorders=view.findViewById(R.id.textManageOrdersTitle);
-        // Setup RecyclerView for recent orders
+    }
+
+    private void setupRecyclerView() {
         recyclerRecentOrders.setLayoutManager(new LinearLayoutManager(getContext()));
         recentOrdersAdapter = new RecentOrdersAdapter(recentOrdersList);
         recyclerRecentOrders.setAdapter(recentOrdersAdapter);
-        view.findViewById(R.id.textManageOrdersSubtitle).setOnClickListener(v -> {
-            navigateToFragment(new Orders_Fragment_Vendor());
-        });
-        // Set click listeners for navigation
-        view.findViewById(R.id.cardAddItem).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), AddProductActivity.class));
-        });
+    }
 
-        view.findViewById(R.id.cardAnalytics).setOnClickListener(v -> {
-            navigateToFragment(new Dashboard_Fragment_vendor());
-        });
+    private void setupClickListeners(View view) {
+        view.findViewById(R.id.textManageOrdersSubtitle).setOnClickListener(v ->
+                navigateToFragment(new Orders_Fragment_Vendor()));
+
+        view.findViewById(R.id.cardAddItem).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), AddProductActivity.class)));
+
+        view.findViewById(R.id.cardAnalytics).setOnClickListener(v ->
+                navigateToFragment(new Dashboard_Fragment_vendor()));
 
         view.findViewById(R.id.cardReviews).setOnClickListener(v -> {
             if (isAdded() && getActivity() != null) {
@@ -115,22 +124,21 @@ public class Home_Fragment_Vendor extends Fragment {
                 startActivity(intent);
             }
         });
+    }
 
-        // Initialize media and vibration
+    private void initializeNotificationSystem() {
         vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
         mediaPlayer = MediaPlayer.create(requireContext(), R.raw.cha_ching);
-
         toggleMute.setOnCheckedChangeListener((buttonView, isChecked) -> isMuted = !isChecked);
+    }
 
-        // Fetch all data
+    private void fetchAllData() {
         fetchShopName();
         fetchMenuItemsCount();
         fetchEarningsAmount();
         fetchTodaysOrders();
         fetchRecentOrders();
         setupRealTimeOrderListener();
-
-        return view;
     }
 
     private void navigateToFragment(Fragment fragment) {
@@ -170,164 +178,217 @@ public class Home_Fragment_Vendor extends Fragment {
     }
 
     private void fetchEarningsAmount() {
-        // Get today's date range
+        Date[] dateRange = getTodayDateRange();
+
+        paymentsRef.whereEqualTo("shopId", currentShopId)
+                .whereGreaterThanOrEqualTo("createdAt", dateRange[0])
+                .whereLessThanOrEqualTo("createdAt", dateRange[1])
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    double total = calculateTotalEarnings(querySnapshot);
+                    String formattedAmount = formatCurrency(total);
+                    textEarningsAmount.setText(formattedAmount);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching earnings, trying fallback query", e);
+                    fetchEarningsFallback();
+                });
+    }
+
+    private Date[] getTodayDateRange() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        final Date startDate = calendar.getTime();
+        Date startDate = calendar.getTime();
 
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);
-        final Date endDate = calendar.getTime();
+        Date endDate = calendar.getTime();
 
+        return new Date[]{startDate, endDate};
+    }
+
+    private double calculateTotalEarnings(QuerySnapshot querySnapshot) {
+        double total = 0;
+        for (QueryDocumentSnapshot doc : querySnapshot) {
+            Double amount = doc.getDouble("amount");
+            if (amount != null) {
+                total += amount;
+            }
+        }
+        return total;
+    }
+
+    private String formatCurrency(double amount) {
+        return NumberFormat.getCurrencyInstance(new Locale("en", "IN")).format(amount);
+    }
+
+    private void fetchEarningsFallback() {
         paymentsRef.whereEqualTo("shopId", currentShopId)
-                .whereGreaterThanOrEqualTo("timestamp", startDate)
-                .whereLessThanOrEqualTo("timestamp", endDate)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    double total = 0;
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        // Check multiple possible amount field names
-                        Double amount = null;
-                        if (doc.contains("amount")) {
-                            amount = doc.getDouble("amount");
-                        } else if (doc.contains("totalAmount")) {
-                            amount = doc.getDouble("totalAmount");
-                        } else if (doc.contains("total")) {
-                            amount = doc.getDouble("total");
-                        }
-
-                        if (amount != null) {
-                            total += amount;
-                        }
-                    }
-
-                    // Format the amount with currency symbol
-                    String formattedAmount = NumberFormat.getCurrencyInstance(new Locale("en", "IN"))
-                            .format(total);
-
-                    // Update UI
-                    if (textEarningsAmount != null) {
-                        textEarningsAmount.setText(formattedAmount);
-                    }
+                    double total = calculateTotalEarnings(querySnapshot);
+                    textEarningsAmount.setText(formatCurrency(total));
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error fetching earnings", e);
-                    if (textEarningsAmount != null) {
-                        textEarningsAmount.setText("₹0");
-                    }
+                    Log.e(TAG, "Fallback query failed", e);
+                    textEarningsAmount.setText("₹0");
                 });
     }
 
-//    private void fetchTodaysOrders() {
-//    Calendar calendar = Calendar.getInstance();
-//    calendar.set(Calendar.HOUR_OF_DAY, 0);
-//    calendar.set(Calendar.MINUTE, 0);
-//    calendar.set(Calendar.SECOND, 0);
-//    final Date startDate = calendar.getTime();
-//
-//    calendar.set(Calendar.HOUR_OF_DAY, 23);
-//    calendar.set(Calendar.MINUTE, 59);
-//    calendar.set(Calendar.SECOND, 59);
-//    final Date endDate = calendar.getTime();
-//
-//    ordersRef.whereEqualTo("shopId", currentShopId)
-//            .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
-//            .whereGreaterThanOrEqualTo("createdAt", startDate)
-//            .whereLessThanOrEqualTo("createdAt", endDate)
-//            .get()
-//            .addOnSuccessListener(querySnapshot -> {
-//                textTodaysOrdersCount.setText(String.valueOf(querySnapshot.size()));
-//            })
-//            .addOnFailureListener(e -> {
-//                Log.w(TAG, "Indexed query failed, falling back to client-side filtering", e);
-//                ordersRef.whereEqualTo("shopId", currentShopId)
-//                        .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
-//                        .get()
-//                        .addOnSuccessListener(querySnapshot -> {
-//                            int count = 0;
-//                            for (QueryDocumentSnapshot doc : querySnapshot) {
-//                                Date createdAt = doc.getDate("createdAt");
-//                                if (createdAt != null &&
-//                                        !createdAt.before(startDate) &&
-//                                        !createdAt.after(endDate)) {
-//                                    count++;
-//                                }
-//                            }
-//                            textTodaysOrdersCount.setText(String.valueOf(count));
-//                        })
-//                        .addOnFailureListener(e2 -> {
-//                            Log.e(TAG, "Error fetching orders", e2);
-//                            textTodaysOrdersCount.setText("0");
-//                        });
-//            });
-//}
-private void fetchTodaysOrders() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.set(Calendar.HOUR_OF_DAY, 0);
-    calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, 0);
-    final Date startDate = calendar.getTime();
+    private void fetchTodaysOrders() {
+        Date[] dateRange = getTodayDateRange();
 
-    calendar.set(Calendar.HOUR_OF_DAY, 23);
-    calendar.set(Calendar.MINUTE, 59);
-    calendar.set(Calendar.SECOND, 59);
-    final Date endDate = calendar.getTime();
+        ordersRef.whereGreaterThanOrEqualTo("createdAt", dateRange[0])
+                .whereLessThanOrEqualTo("createdAt", dateRange[1])
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int count = countOrdersForShop(querySnapshot);
+                    textTodaysOrdersCount.setText(String.valueOf(count));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching today's orders, trying fallback", e);
+                    fetchTodaysOrdersFallback();
+                });
+    }
 
-    Log.d(TAG, "Fetching orders between: " + startDate + " and " + endDate);
+    private int countOrdersForShop(QuerySnapshot querySnapshot) {
+        int count = 0;
+        for (QueryDocumentSnapshot doc : querySnapshot) {
+            if (hasItemsFromCurrentShop(doc)) {
+                count++;
+            }
+        }
+        return count;
+    }
 
-    ordersRef.whereEqualTo("shopId", currentShopId)
-            .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
-            .whereGreaterThanOrEqualTo("createdAt", startDate)
-            .whereLessThanOrEqualTo("createdAt", endDate)
-            .get()
-            .addOnSuccessListener(querySnapshot -> {
-                Log.d(TAG, "Found " + querySnapshot.size() + " orders today");
-                textTodaysOrdersCount.setText(String.valueOf(querySnapshot.size()));
-            })
-            .addOnFailureListener(e -> {
-                Log.w(TAG, "Indexed query failed, falling back to client-side filtering", e);
-                ordersRef.whereEqualTo("shopId", currentShopId)
-                        .whereIn("status", Arrays.asList("Delivery Man Assigned", "pending"))
-                        .get()
-                        .addOnSuccessListener(querySnapshot -> {
-                            int count = 0;
-                            for (QueryDocumentSnapshot doc : querySnapshot) {
-                                Date createdAt = doc.getDate("createdAt");
-                                if (createdAt != null &&
-                                        !createdAt.before(startDate) &&
-                                        !createdAt.after(endDate)) {
-                                    count++;
-                                }
-                            }
-                            Log.d(TAG, "Client-side filtered count: " + count);
-                            textTodaysOrdersCount.setText(String.valueOf(count));
-                        })
-                        .addOnFailureListener(e2 -> {
-                            Log.e(TAG, "Error fetching orders", e2);
-                            textTodaysOrdersCount.setText("0");
-                        });
-            });
-}
+    private boolean hasItemsFromCurrentShop(QueryDocumentSnapshot doc) {
+        List<Map<String, Object>> items = (List<Map<String, Object>>) doc.get("items");
+        if (items != null) {
+            for (Map<String, Object> item : items) {
+                String shopId = (String) item.get("shopId");
+                if (currentShopId.equals(shopId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void fetchTodaysOrdersFallback() {
+        ordersRef.get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int count = 0;
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        Date createdAt = doc.getDate("createdAt");
+                        if (createdAt != null && isToday(createdAt) && hasItemsFromCurrentShop(doc)) {
+                            count++;
+                        }
+                    }
+                    textTodaysOrdersCount.setText(String.valueOf(count));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Fallback query failed", e);
+                    textTodaysOrdersCount.setText("0");
+                });
+    }
+
+    private boolean isToday(Date date) {
+        Calendar today = Calendar.getInstance();
+        Calendar target = Calendar.getInstance();
+        target.setTime(date);
+        return today.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
+                today.get(Calendar.DAY_OF_YEAR) == target.get(Calendar.DAY_OF_YEAR);
+    }
+
     private void fetchRecentOrders() {
-        ordersRef.whereEqualTo("shopId", currentShopId)
-                .whereEqualTo("status", Arrays.asList("pending", "Delivery Man Assigned"))
+        ordersRef.whereIn("status", Arrays.asList("pending", "Delivery Man Assigned"))
                 .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(10)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    processRecentOrders(querySnapshot);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching recent orders", e);
+                    fetchRecentOrdersFallback();
+                });
+    }
+
+    private void processRecentOrders(QuerySnapshot querySnapshot) {
+        recentOrdersList.clear();
+        for (QueryDocumentSnapshot doc : querySnapshot) {
+            try {
+                OrderVendorHome order = doc.toObject(OrderVendorHome.class);
+                order.setId(doc.getId());
+                extractOrderItems(doc, order);
+
+                if (!order.getItems().isEmpty()) {
+                    recentOrdersList.add(order);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error mapping order document: " + doc.getId(), e);
+            }
+        }
+        recentOrdersAdapter.notifyDataSetChanged();
+
+        if (recentOrdersList.isEmpty()) {
+            Log.d(TAG, "No recent orders found for this shop");
+        }
+    }
+
+    private void extractOrderItems(QueryDocumentSnapshot doc, OrderVendorHome order) {
+        List<Map<String, Object>> itemsMap = (List<Map<String, Object>>) doc.get("items");
+        List<OrderItem> shopItems = new ArrayList<>();
+
+        if (itemsMap != null) {
+            for (Map<String, Object> itemMap : itemsMap) {
+                String shopId = (String) itemMap.get("shopId");
+                if (currentShopId.equals(shopId)) {
+                    OrderItem orderItem = createOrderItem(itemMap, shopId);
+                    shopItems.add(orderItem);
+                }
+            }
+        }
+        order.setItems(shopItems);
+    }
+
+    private OrderItem createOrderItem(Map<String, Object> itemMap, String shopId) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProductId((String) itemMap.get("productId"));
+        orderItem.setName((String) itemMap.get("name"));
+        orderItem.setPrice(((Number) itemMap.get("price")).doubleValue());
+        orderItem.setQuantity(((Number) itemMap.get("quantity")).intValue());
+        orderItem.setShopId(shopId);
+        return orderItem;
+    }
+
+    private void fetchRecentOrdersFallback() {
+        ordersRef.orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(10)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     recentOrdersList.clear();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
-                        OrderVendorHome order = doc.toObject(OrderVendorHome.class);
-                        if (order != null) {
+                        String status = doc.getString("status");
+                        if ("pending".equals(status) || "Delivery Man Assigned".equals(status)) {
+                            OrderVendorHome order = doc.toObject(OrderVendorHome.class);
                             order.setId(doc.getId());
-                            recentOrdersList.add(order);
+                            extractOrderItems(doc, order);
+
+                            if (!order.getItems().isEmpty()) {
+                                recentOrdersList.add(order);
+                            }
                         }
                     }
                     recentOrdersAdapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> Log.e(TAG, "Error fetching recent orders", e));
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Fallback query failed", e);
+                    Toast.makeText(getContext(), "Failed to load orders", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void markOrderAsPacked(OrderVendorHome order) {
@@ -335,7 +396,7 @@ private void fetchTodaysOrders() {
                 .update("status", "Order Packed")
                 .addOnSuccessListener(aVoid -> {
                     updateStockQuantities(order);
-                    fetchRecentOrders();
+                    refreshDataAfterPacking();
                     Toast.makeText(getContext(), "Order marked as packed", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
@@ -344,33 +405,46 @@ private void fetchTodaysOrders() {
                 });
     }
 
+    private void refreshDataAfterPacking() {
+        fetchRecentOrders();
+        fetchTodaysOrders();
+        fetchEarningsAmount();
+    }
+
     private void updateStockQuantities(OrderVendorHome order) {
         if (order.getItems() != null) {
             for (OrderItem item : order.getItems()) {
                 if (item.getShopId().equals(currentShopId)) {
-                    productsRef.document(item.getProductId())
-                            .get()
-                            .addOnSuccessListener(documentSnapshot -> {
-                                if (documentSnapshot.exists()) {
-                                    long currentStock = documentSnapshot.getLong("stockQuantity");
-                                    long newStock = currentStock - item.getQuantity();
-
-                                    productsRef.document(item.getProductId())
-                                            .update("stockQuantity", newStock)
-                                            .addOnFailureListener(e ->
-                                                    Log.e(TAG, "Error updating stock for product: " + item.getProductId(), e));
-                                }
-                            })
-                            .addOnFailureListener(e ->
-                                    Log.e(TAG, "Error fetching product: " + item.getProductId(), e));
+                    updateProductStock(item);
                 }
             }
         }
     }
 
+    private void updateProductStock(OrderItem item) {
+        productsRef.document(item.getProductId())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        long currentStock = documentSnapshot.getLong("stockQuantity");
+                        long newStock = currentStock - item.getQuantity();
+                        updateStockInFirestore(item.getProductId(), newStock);
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Log.e(TAG, "Error fetching product: " + item.getProductId(), e));
+    }
+
+    private void updateStockInFirestore(String productId, long newStock) {
+        productsRef.document(productId)
+                .update("stockQuantity", newStock)
+                .addOnFailureListener(e ->
+                        Log.e(TAG, "Error updating stock for product: " + productId, e));
+    }
+
     private void setupRealTimeOrderListener() {
         orderListener = ordersRef
-                .whereEqualTo("status", Arrays.asList("pending", "Delivery Man Assigned"))
+                .whereIn("status", Arrays.asList("pending", "Delivery Man Assigned"))
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
@@ -379,45 +453,53 @@ private void fetchTodaysOrders() {
                             return;
                         }
 
-                        if (snapshots != null && !snapshots.isEmpty()) {
-                            boolean newOrder = false;
-                            for (QueryDocumentSnapshot doc : snapshots) {
-                                if (doc.contains("items")) {
-                                    for (Object itemObj : (Iterable<?>) doc.get("items")) {
-                                        if (itemObj instanceof Map) {
-                                            Map<?, ?> item = (Map<?, ?>) itemObj;
-                                            if (currentShopId.equals(item.get("shopId"))) {
-                                                newOrder = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (newOrder && !isMuted) {
-                                triggerNotification();
-                                fetchTodaysOrders();
-                                fetchRecentOrders();
-                            }
+                        if (hasNewOrdersForShop(snapshots)) {
+                            triggerNotification();
+                            refreshAllData();
                         }
                     }
                 });
     }
 
-    private void triggerNotification() {
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
+    private boolean hasNewOrdersForShop(QuerySnapshot snapshots) {
+        if (snapshots != null && !snapshots.isEmpty()) {
+            for (QueryDocumentSnapshot doc : snapshots) {
+                if (hasItemsFromCurrentShop(doc)) {
+                    return true;
+                }
+            }
         }
+        return false;
+    }
 
-        if (vibrator != null && vibrator.hasVibrator()) {
-            vibrator.vibrate(300);
+    private void refreshAllData() {
+        fetchTodaysOrders();
+        fetchRecentOrders();
+        fetchEarningsAmount();
+    }
+
+    private void triggerNotification() {
+        if (isMuted) return;
+
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+            }
+            if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.vibrate(300);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error triggering notification", e);
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        cleanupResources();
+    }
+
+    private void cleanupResources() {
         if (orderListener != null) {
             orderListener.remove();
         }
@@ -445,7 +527,46 @@ private void fetchTodaysOrders() {
         @Override
         public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
             OrderVendorHome order = orders.get(position);
-            holder.bind(order);
+            bindOrderToViewHolder(holder, order);
+        }
+
+        private void bindOrderToViewHolder(OrderViewHolder holder, OrderVendorHome order) {
+            holder.textOrderId.setText(formatOrderId(order.getOrderId()));
+            holder.textCustomerName.setText(order.getCustomerName());
+            holder.textCustomerAddress.setText(formatCustomerAddress(order));
+            holder.textOrderTotal.setText(formatOrderTotal(order));
+            holder.textOrderTime.setText(formatOrderTime(order.getCreatedAt()));
+            holder.btnMarkAsPacked.setOnClickListener(v -> markOrderAsPacked(order));
+        }
+
+        private String formatOrderId(String orderId) {
+            return "#" + (orderId != null ?
+                    orderId.substring(0, Math.min(6, orderId.length())) : "N/A");
+        }
+
+        private String formatCustomerAddress(OrderVendorHome order) {
+            return "Hostel: " + order.getCustomerHostel() + ", Room: " + order.getCustomerRoom();
+        }
+
+        private String formatOrderTotal(OrderVendorHome order) {
+            double total = calculateOrderTotal(order);
+            return "Total: ₹" + total;
+        }
+
+        private double calculateOrderTotal(OrderVendorHome order) {
+            double total = 0;
+            if (order.getItems() != null) {
+                for (OrderItem item : order.getItems()) {
+                    total += item.getPrice() * item.getQuantity();
+                }
+            }
+            return total;
+        }
+
+        private String formatOrderTime(Date date) {
+            if (date == null) return "N/A";
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+            return sdf.format(date);
         }
 
         @Override
@@ -465,24 +586,6 @@ private void fetchTodaysOrders() {
                 textOrderTotal = itemView.findViewById(R.id.textOrderTotal);
                 textOrderTime = itemView.findViewById(R.id.textOrderTime);
                 btnMarkAsPacked = itemView.findViewById(R.id.btnMarkAsPacked);
-            }
-
-            public void bind(OrderVendorHome order) {
-                textOrderId.setText("#" + (order.getOrderId() != null ? order.getOrderId().substring(0, Math.min(6, order.getOrderId().length())) : ""));
-                textCustomerName.setText(order.getCustomerName());
-                textCustomerAddress.setText("Hostel: " + order.getCustomerHostel() + ", Room: " + order.getCustomerRoom());
-                textOrderTotal.setText("Total: ₹" + order.getTotalAmount());
-                textOrderTime.setText(formatTime(order.getCreatedAt()));
-
-                btnMarkAsPacked.setOnClickListener(v -> {
-                    markOrderAsPacked(order);
-                });
-            }
-
-            private String formatTime(Date date) {
-                if (date == null) return "";
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-                return sdf.format(date);
             }
         }
     }
