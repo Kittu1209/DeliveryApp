@@ -261,68 +261,66 @@ public class Home_Fragment_Vendor extends Fragment {
                 });
     }
 
-
-    private void processOrderDocument(QueryDocumentSnapshot doc) {
-        try {
-            String orderId = doc.getString("orderId");
-            List<Map<String, Object>> items = (List<Map<String, Object>>) doc.get("items");
-
-            if (items != null) {
-                for (Map<String, Object> item : items) {
-                    String shopId = (String) item.get("shopId");
-                    if (currentShopId.equals(shopId)) {
-                        String productName = (String) item.get("name");
-                        Number quantity = (Number) item.get("quantity");
-
-                        addOrderToTable(
-                                orderId != null ? orderId.substring(0, Math.min(6, orderId.length())) : "N/A",
-                                productName != null ? productName : "N/A",
-                                quantity != null ? quantity.toString() : "0"
-                        );
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error processing order", e);
-        }
-    }
-
     private void addTableHeader() {
         TableRow headerRow = new TableRow(requireContext());
-        addHeaderCell(headerRow, "Order ID");
-        addHeaderCell(headerRow, "Product");
-        addHeaderCell(headerRow, "Qty");
+        headerRow.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        addStyledHeaderCell(headerRow, "Order ID");
+        addStyledHeaderCell(headerRow, "Product Name");
+        addStyledHeaderCell(headerRow, "Quantity");
         ordersTable.addView(headerRow);
     }
 
-    private void addHeaderCell(TableRow row, String text) {
+    private void addStyledHeaderCell(TableRow row, String text) {
         TextView textView = new TextView(requireContext());
         textView.setText(text);
         textView.setPadding(16, 16, 16, 16);
-        textView.setTextAppearance(requireContext(), android.R.style.TextAppearance_Medium);
+        textView.setTextColor(getResources().getColor(android.R.color.white));
+        textView.setBackgroundColor(getResources().getColor(R.color.black));
+        textView.setTypeface(null, android.graphics.Typeface.BOLD);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setTextSize(14);
+        TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        textView.setLayoutParams(params);
         row.addView(textView);
     }
+
+    private void addStyledDataCell(TableRow row, String text) {
+        TextView textView = new TextView(requireContext());
+        textView.setText(text);
+        textView.setPadding(16, 16, 16, 16);
+        textView.setTextColor(getResources().getColor(android.R.color.black));
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setTextSize(14);
+        textView.setBackgroundResource(R.drawable.table_cell_border);
+        TableRow.LayoutParams params = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        textView.setLayoutParams(params);
+        row.addView(textView);
+    }
+
 
     private void addOrderToTable(String orderId, String productName, String quantity) {
         TableRow row = new TableRow(requireContext());
-        addDataCell(row, orderId);
-        addDataCell(row, productName);
-        addDataCell(row, quantity);
+        int rowCount = ordersTable.getChildCount();
+
+        if (rowCount % 2 == 0) {
+            row.setBackgroundColor(getResources().getColor(android.R.color.white));
+        } else {
+            row.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+        }
+
+        addStyledDataCell(row, orderId);
+        addStyledDataCell(row, productName);
+        addStyledDataCell(row, quantity);
         ordersTable.addView(row);
     }
 
-    private void addDataCell(TableRow row, String text) {
-        TextView textView = new TextView(requireContext());
-        textView.setText(text);
-        textView.setPadding(16, 16, 16, 16);
-        row.addView(textView);
-    }
 
     private void showEmptyTableMessage(String message) {
         TableRow row = new TableRow(requireContext());
         TextView textView = new TextView(requireContext());
         textView.setText(message);
         textView.setPadding(16, 16, 16, 16);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         row.addView(textView);
         ordersTable.addView(row);
     }
