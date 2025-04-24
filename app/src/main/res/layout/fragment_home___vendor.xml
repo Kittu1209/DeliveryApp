@@ -184,8 +184,7 @@
     </LinearLayout>
    </androidx.cardview.widget.CardView>
 
-
-   <!-- Replace your current RecyclerView with this -->
+   <!-- Orders Table Card -->
    <androidx.cardview.widget.CardView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -206,13 +205,27 @@
          android:text="Orders Ready for Packing"
          android:textSize="18sp"
          android:textStyle="bold"
-         android:layout_marginBottom="8dp"
-         tools:ignore="DuplicateIds" />
+         android:layout_marginBottom="8dp"/>
 
-     <androidx.recyclerview.widget.RecyclerView
-         android:id="@+id/recyclerRecentOrders"
+     <Button
+         android:id="@+id/refreshButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Refresh"
+         android:layout_gravity="end"
+         android:layout_marginBottom="8dp"/>
+
+     <HorizontalScrollView
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"/>
+         android:layout_height="wrap_content">
+
+      <TableLayout
+          android:id="@+id/ordersTable"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:stretchColumns="*"
+          android:shrinkColumns="*"/>
+     </HorizontalScrollView>
     </LinearLayout>
    </androidx.cardview.widget.CardView>
 
