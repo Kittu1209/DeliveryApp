@@ -63,5 +63,11 @@ public class Admin_VendorDetails extends AppCompatActivity {
             Intent intent = new Intent(Admin_VendorDetails.this, AdminVendorFeedback.class);
             startActivity(intent);
         });
+
+        CardView cardAddNewVendor = findViewById(R.id.cardAddNewVendor);
+        cardAddNewVendor.setOnClickListener(v -> {  // Fixed: using correct CardView reference
+            Intent intent = new Intent(Admin_VendorDetails.this, AdminApproveVendor.class);
+            startActivity(intent);
+        });
     }
 }

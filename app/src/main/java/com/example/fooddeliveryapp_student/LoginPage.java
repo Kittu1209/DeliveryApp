@@ -145,6 +145,16 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("Vendors").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
+                        DocumentSnapshot vendorDoc = task.getResult();
+                        Boolean isActive = vendorDoc.getBoolean("isActive");
+
+                        // Check if vendor account is active
+                        if (isActive == null || !isActive) {
+                            showVendorAccountNotActiveDialog();
+                            authProfile.signOut();
+                            return;
+                        }
+
                         // First check if shop exists
                         firestoreDB.collection("shops")
                                 .whereEqualTo("ownerId", userId)
@@ -175,6 +185,17 @@ public class LoginPage extends AppCompatActivity {
                         checkDeliveryManRole(userId);
                     }
                 });
+    }
+
+    private void showVendorAccountNotActiveDialog() {
+        email_lg.setText("");
+        pass_lg.setText("");
+        new AlertDialog.Builder(this)
+                .setTitle("Account Not Active")
+                .setMessage("Your vendor account is not currently active. Please contact support for assistance.")
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
     private void checkDeliveryManRole(String userId) {
         firestoreDB.collection("delivery_man").document(userId).get()

@@ -314,7 +314,7 @@ public class Shops_Address extends AppCompatActivity {
         shopData.put("cuisine", cuisine);
         shopData.put("image", imageUrl);
         shopData.put("updatedAt", FieldValue.serverTimestamp());
-        shopData.put("isActive", true);
+        shopData.put("isActive", false);
 
         // Add data from Vendors collection
         db.collection(VENDORS_COLLECTION).document(ownerId).get()
@@ -362,9 +362,9 @@ public class Shops_Address extends AppCompatActivity {
     }
 
     private void navigateToHomePage() {
-        Intent intent = new Intent(this, HomePageVendor.class); // Replace with your actual home activity
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("fragment", "vendor_home");
+        Intent intent = new Intent(this,LoginPage.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra("fragment", "vendor_home");
         startActivity(intent);
         finish(); // Finish this activity so user can't go back
     }

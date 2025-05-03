@@ -17,6 +17,9 @@
         android:theme="@style/Theme.FoodDeliveryApp_Student"
         tools:targetApi="31">
         <activity
+            android:name=".AdminApproveVendor"
+            android:exported="false" />
+        <activity
             android:name=".EditProductActivity"
             android:exported="false" />
         <activity
@@ -36,8 +39,7 @@
             android:exported="false" />
         <activity
             android:name=".ShopProductActivity"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".AdminViewUserDetails"
             android:exported="false" />
