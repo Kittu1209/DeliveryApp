@@ -2,11 +2,13 @@ package com.example.fooddeliveryapp_student;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +20,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -38,6 +43,10 @@ public class LoginPage extends AppCompatActivity {
     private boolean isPasswordVisible = false;
 
     private static final String TAG = "LoginPage";
+    private static final String[] REQUIRED_SHOP_FIELDS = {
+            "address", "description", "deliveryTime",
+            "priceForTwo", "cuisine", "image", "name"
+    };
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -145,58 +154,82 @@ public class LoginPage extends AppCompatActivity {
         firestoreDB.collection("Vendors").document(userId).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
-                        DocumentSnapshot vendorDoc = task.getResult();
-                        Boolean isActive = vendorDoc.getBoolean("isActive");
-
-                        // Check if vendor account is active
-                        if (isActive == null || !isActive) {
-                            showVendorAccountNotActiveDialog();
-                            authProfile.signOut();
-                            return;
-                        }
-
-                        // First check if shop exists
-                        firestoreDB.collection("shops")
-                                .whereEqualTo("ownerId", userId)
-                                .limit(1)
-                                .get()
-                                .addOnCompleteListener(shopTask -> {
-                                    if (shopTask.isSuccessful()) {
-                                        if (shopTask.getResult().isEmpty()) {
-                                            // No shop exists - redirect to shop setup
-                                            Intent intent = new Intent(LoginPage.this, Shops_Address.class);
-                                            intent.putExtra("setup_new_shop", true);
-                                            startActivity(intent);
-                                            showToast("Please complete your shop setup");
-                                            finish();
-                                        } else {
-                                            // Shop exists - proceed to vendor home
-                                            Intent intent = new Intent(LoginPage.this, HomePageVendor.class);
-                                            intent.putExtra("fragment", "vendor_home");
-                                            startActivity(intent);
-                                            showToast("Welcome Vendor!");
-                                            finish();
-                                        }
-                                    } else {
-                                        showToast("Error checking shop status");
-                                    }
-                                });
+                        checkShopStatus(userId);
                     } else {
                         checkDeliveryManRole(userId);
                     }
                 });
     }
 
+    private void checkShopStatus(String userId) {
+        firestoreDB.collection("shops").document(userId).get()
+                .addOnCompleteListener(shopTask -> {
+                    if (shopTask.isSuccessful() && shopTask.getResult().exists()) {
+                        DocumentSnapshot shopDoc = shopTask.getResult();
+
+                        if (isShopComplete(shopDoc)) {
+                            Boolean isActive = shopDoc.getBoolean("isActive");
+                            if (isActive != null && isActive) {
+                                // All data present and active - proceed to vendor home
+                                Intent intent = new Intent(LoginPage.this, HomePageVendor.class);
+                                intent.putExtra("fragment", "vendor_home");
+                                startActivity(intent);
+                                showToast("Welcome Vendor!");
+                                finish();
+                            } else {
+                                showVendorAccountNotActiveDialog();
+                                authProfile.signOut();
+                            }
+                        } else {
+                            // Incomplete shop data - redirect to setup
+                            Intent intent = new Intent(LoginPage.this, Shops_Address.class);
+                            intent.putExtra("setup_new_shop", true);
+                            startActivity(intent);
+                            showToast("Please complete your shop setup");
+                            finish();
+                        }
+                    } else {
+                        // No shop exists - redirect to setup
+                        Intent intent = new Intent(LoginPage.this, Shops_Address.class);
+                        intent.putExtra("setup_new_shop", true);
+                        startActivity(intent);
+                        showToast("Please complete your shop setup");
+                        finish();
+                    }
+                });
+    }
+
+    private boolean isShopComplete(DocumentSnapshot shopDoc) {
+        for (String field : REQUIRED_SHOP_FIELDS) {
+            if (!shopDoc.contains(field)){
+                return false;
+            }
+            Object value = shopDoc.get(field);
+            if (value == null || (value instanceof String && ((String) value).isEmpty())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void showVendorAccountNotActiveDialog() {
         email_lg.setText("");
         pass_lg.setText("");
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.custom_dialog, null);
+        TextView title = dialogView.findViewById(R.id.dialog_title);
+        TextView message = dialogView.findViewById(R.id.dialog_message);
+
+        title.setText("Account Not Active");
+        message.setText("Your vendor account is not currently active. Please contact admin.");
+
         new AlertDialog.Builder(this)
-                .setTitle("Account Not Active")
-                .setMessage("Your vendor account is not currently active. Please contact support for assistance.")
+                .setView(dialogView)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
     }
+
     private void checkDeliveryManRole(String userId) {
         firestoreDB.collection("delivery_man").document(userId).get()
                 .addOnCompleteListener(task -> {
@@ -230,9 +263,16 @@ public class LoginPage extends AppCompatActivity {
     private void showAccountNotApprovedDialog() {
         email_lg.setText("");
         pass_lg.setText("");
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.custom_dialog, null);
+        TextView title = dialogView.findViewById(R.id.dialog_title);
+        TextView message = dialogView.findViewById(R.id.dialog_message);
+
+        title.setText("Access Restricted");
+        message.setText("Your account is under review and not yet approved by administrator.");
+
         new AlertDialog.Builder(this)
-                .setTitle("Access Restricted")
-                .setMessage("Your account is currently under review and has not yet been approved by the administrator. Please try again later.")
+                .setView(dialogView)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();

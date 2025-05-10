@@ -8,7 +8,6 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="50dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
@@ -29,10 +28,9 @@
             android:id="@+id/cardRegisterDeliveryMen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_margin="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginTop="50dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="5dp">
 
@@ -62,8 +60,7 @@
             android:id="@+id/cardDeliveryStaffDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="50dp"
+            android:layout_margin="12dp"
             android:clickable="true"
             android:focusable="true"
             app:cardCornerRadius="12dp"
@@ -95,9 +92,8 @@
             android:id="@+id/cardDeliveredOrders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_margin="12dp"
             android:clickable="true"
-            android:layout_marginTop="50dp"
             android:focusable="true"
             app:cardCornerRadius="12dp"
             app:cardElevation="5dp">
@@ -123,13 +119,13 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Feedback -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardDeliveredFeedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_margin="12dp"
             android:clickable="true"
-            android:layout_marginTop="50dp"
             android:focusable="true"
             app:cardCornerRadius="12dp"
             app:cardElevation="5dp">
@@ -149,7 +145,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delivered Orders"
+                    android:text="Delivery Feedback"
                     android:textSize="18sp"
                     android:layout_marginStart="12dp"/>
             </LinearLayout>

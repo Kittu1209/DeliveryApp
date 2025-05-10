@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,14 +25,25 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomePageVendor extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String[] REQUIRED_SHOP_FIELDS = {
+            "address", "description", "deliveryTime",
+            "priceForTwo", "cuisine", "image", "name"
+    };
 
     DrawerLayout drawerLayout;
     BottomNavigationView bottomNavigationView;
     FragmentManager fragmentManager;
     Toolbar toolbar;
     FloatingActionButton fab;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,60 @@ public class HomePageVendor extends AppCompatActivity implements NavigationView.
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page_vendor);
 
+        // Initialize Firebase
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // Check if shop data is complete before proceeding
+        checkShopDataCompleteness();
+    }
+
+    private void checkShopDataCompleteness() {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user == null) {
+            redirectToLogin();
+            return;
+        }
+
+        db.collection("shops").document(user.getUid()).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        DocumentSnapshot shopDoc = task.getResult();
+                        if (isShopComplete(shopDoc)) {
+                            Boolean isActive = shopDoc.getBoolean("isActive");
+                            if (isActive != null && isActive) {
+                                // All data present and active - proceed with setup
+                                initializeUI();
+                            } else {
+                                showInactiveAccountMessage();
+                                redirectToLogin();
+                            }
+                        } else {
+                            showIncompleteDataMessage();
+                            redirectToShopSetup();
+                        }
+                    } else {
+                        // No shop document exists
+                        showIncompleteDataMessage();
+                        redirectToShopSetup();
+                    }
+                });
+    }
+
+    private boolean isShopComplete(DocumentSnapshot shopDoc) {
+        for (String field : REQUIRED_SHOP_FIELDS) {
+            if (!shopDoc.contains(field)) {
+                return false;
+            }
+            Object value = shopDoc.get(field);
+            if (value == null || (value instanceof String && ((String) value).isEmpty())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void initializeUI() {
         // Initialize Views
         fab = findViewById(R.id.fab);
         toolbar = findViewById(R.id.toolbar_vendor);
@@ -60,9 +126,7 @@ public class HomePageVendor extends AppCompatActivity implements NavigationView.
 
         // Load Home_Fragment_Vendor by default
         fragmentManager = getSupportFragmentManager();
-        if (savedInstanceState == null) {
-            openFragment(new Home_Fragment_Vendor());
-        }
+        openFragment(new Home_Fragment_Vendor());
 
         // Handle Bottom Navigation Clicks
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -104,6 +168,27 @@ public class HomePageVendor extends AppCompatActivity implements NavigationView.
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void showIncompleteDataMessage() {
+        Toast.makeText(this, "Please complete your shop setup first", Toast.LENGTH_LONG).show();
+    }
+
+    private void showInactiveAccountMessage() {
+        Toast.makeText(this, "Your vendor account is not active yet", Toast.LENGTH_LONG).show();
+    }
+
+    private void redirectToShopSetup() {
+        Intent intent = new Intent(this, Shops_Address.class);
+        intent.putExtra("setup_new_shop", true);
+        startActivity(intent);
+        finish();
+    }
+
+    private void redirectToLogin() {
+        Intent intent = new Intent(this, LoginPage.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

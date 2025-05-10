@@ -3,17 +3,20 @@ package com.example.fooddeliveryapp_student;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -52,6 +55,7 @@ public class Shops_Address extends AppCompatActivity {
     private String ownerId;
     private Uri imageUri;
     private String imageUrl = "";
+    private boolean isEditing = false;
 
     // Constants
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -71,22 +75,23 @@ public class Shops_Address extends AppCompatActivity {
 
         // Initialize UI components
         initViews();
+        setupTextWatchers();
+        setBlackTextColor();
 
         // Check authentication
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
             ownerId = user.getUid();
-            initializeShop();
+            checkShopStatus();
         } else {
-            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
-            finish();
+            showAuthErrorAndFinish();
         }
 
         // Setup cuisine spinner
         setupCuisineSpinner();
 
         // Set click listeners
-        saveBtn.setOnClickListener(v -> saveShopDetails());
+        saveBtn.setOnClickListener(v -> validateAndSaveShopDetails());
         updateBtn.setOnClickListener(v -> enableEditing());
         uploadImageBtn.setOnClickListener(v -> openImageChooser());
     }
@@ -112,6 +117,43 @@ public class Shops_Address extends AppCompatActivity {
         updateBtn = findViewById(R.id.update_btn);
     }
 
+    private void setBlackTextColor() {
+        addressInput.setTextColor(Color.BLACK);
+        descriptionInput.setTextColor(Color.BLACK);
+        deliveryTimeInput.setTextColor(Color.BLACK);
+        priceForTwoInput.setTextColor(Color.BLACK);
+    }
+
+    private void setupTextWatchers() {
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                validateInputs();
+            }
+        };
+
+        addressInput.addTextChangedListener(textWatcher);
+        descriptionInput.addTextChangedListener(textWatcher);
+        deliveryTimeInput.addTextChangedListener(textWatcher);
+        priceForTwoInput.addTextChangedListener(textWatcher);
+    }
+
+    private void validateInputs() {
+        boolean isValid = !addressInput.getText().toString().trim().isEmpty() &&
+                !descriptionInput.getText().toString().trim().isEmpty() &&
+                !deliveryTimeInput.getText().toString().trim().isEmpty() &&
+                !priceForTwoInput.getText().toString().trim().isEmpty() &&
+                (imageUri != null || !imageUrl.isEmpty());
+
+        saveBtn.setEnabled(isValid);
+    }
+
     private void setupCuisineSpinner() {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -122,24 +164,30 @@ public class Shops_Address extends AppCompatActivity {
         cuisineSpinner.setAdapter(adapter);
     }
 
-    private void initializeShop() {
-        ShopManager.checkAndCreateShop(this, new ShopManager.ShopCheckCallback() {
-            @Override
-            public void onShopExists(String shopId) {
-                loadShopData();
-            }
+    private void checkShopStatus() {
+        db.collection(SHOPS_COLLECTION).document(ownerId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        loadShopData();
+                    } else {
+                        createNewShopDocument();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    showErrorAndFinish("Failed to check shop status");
+                });
+    }
 
-            @Override
-            public void onShopDoesNotExist() {
-                // Shouldn't happen as we create if doesn't exist
-            }
+    private void createNewShopDocument() {
+        Map<String, Object> initialData = new HashMap<>();
+        initialData.put("ownerId", ownerId);
+        initialData.put("isActive", false);
+        initialData.put("createdAt", FieldValue.serverTimestamp());
 
-            @Override
-            public void onError(String message) {
-                Toast.makeText(Shops_Address.this, message, Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+        db.collection(SHOPS_COLLECTION).document(ownerId)
+                .set(initialData)
+                .addOnSuccessListener(aVoid -> enableEditing())
+                .addOnFailureListener(e -> showErrorAndFinish("Failed to create shop"));
     }
 
     private void loadShopData() {
@@ -191,6 +239,7 @@ public class Shops_Address extends AppCompatActivity {
     }
 
     private void enableEditing() {
+        isEditing = true;
         addressInput.setEnabled(true);
         descriptionInput.setEnabled(true);
         deliveryTimeInput.setEnabled(true);
@@ -200,9 +249,11 @@ public class Shops_Address extends AppCompatActivity {
 
         saveBtn.setVisibility(View.VISIBLE);
         updateBtn.setVisibility(View.GONE);
+        validateInputs();
     }
 
     private void disableEditing() {
+        isEditing = false;
         addressInput.setEnabled(false);
         descriptionInput.setEnabled(false);
         deliveryTimeInput.setEnabled(false);
@@ -228,10 +279,11 @@ public class Shops_Address extends AppCompatActivity {
                 && data != null && data.getData() != null) {
             imageUri = data.getData();
             Picasso.get().load(imageUri).into(shopImageView);
+            validateInputs();
         }
     }
 
-    private void saveShopDetails() {
+    private void validateAndSaveShopDetails() {
         String address = addressInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
         String deliveryTime = deliveryTimeInput.getText().toString().trim();
@@ -240,47 +292,62 @@ public class Shops_Address extends AppCompatActivity {
 
         // Validate inputs
         if (address.isEmpty()) {
-            addressInput.setError("Address is required");
+            addressLayout.setError("Address is required");
             return;
+        } else {
+            addressLayout.setError(null);
         }
+
         if (description.isEmpty()) {
-            descriptionInput.setError("Description is required");
+            descriptionLayout.setError("Description is required");
             return;
+        } else {
+            descriptionLayout.setError(null);
         }
+
         if (deliveryTime.isEmpty()) {
-            deliveryTimeInput.setError("Delivery time is required");
+            deliveryTimeLayout.setError("Delivery time is required");
             return;
+        } else {
+            deliveryTimeLayout.setError(null);
         }
+
         if (priceForTwoStr.isEmpty()) {
-            priceForTwoInput.setError("Price for two is required");
+            priceForTwoLayout.setError("Price for two is required");
             return;
-        }
-        if (imageUri == null && imageUrl.isEmpty()) {
-            Toast.makeText(this, "Please upload a shop image", Toast.LENGTH_SHORT).show();
-            return;
+        } else {
+            priceForTwoLayout.setError(null);
         }
 
         long priceForTwo;
         try {
             priceForTwo = Long.parseLong(priceForTwoStr);
         } catch (NumberFormatException e) {
-            priceForTwoInput.setError("Invalid price");
+            priceForTwoLayout.setError("Invalid price");
             return;
         }
 
-        // Show progress dialog
+        if (imageUri == null && imageUrl.isEmpty()) {
+            Toast.makeText(this, "Please upload a shop image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        saveShopDetails(address, description, deliveryTime, priceForTwo, cuisine);
+    }
+
+    private void saveShopDetails(String address, String description, String deliveryTime,
+                                 long priceForTwo, String cuisine) {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Saving Shop Details");
         progressDialog.setMessage("Please wait...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // Upload image first if new image is selected
         if (imageUri != null) {
             uploadImage(progressDialog, address, description, deliveryTime, priceForTwo, cuisine);
         } else {
-            // No new image, just save other details
-            saveShopDataToFirestore(progressDialog, address, description, deliveryTime, priceForTwo, cuisine, imageUrl);
+            saveShopDataToFirestore(progressDialog, address, description, deliveryTime,
+                    priceForTwo, cuisine, imageUrl);
         }
     }
 
@@ -291,21 +358,18 @@ public class Shops_Address extends AppCompatActivity {
 
         UploadTask uploadTask = imageRef.putFile(imageUri);
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            // Get download URL
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                String imageUrl = uri.toString();
                 saveShopDataToFirestore(progressDialog, address, description, deliveryTime,
-                        priceForTwo, cuisine, imageUrl);
+                        priceForTwo, cuisine, uri.toString());
             });
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
-            Toast.makeText(this, "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            showErrorDialog("Failed to upload image: " + e.getMessage());
         });
     }
 
     private void saveShopDataToFirestore(ProgressDialog progressDialog, String address, String description,
                                          String deliveryTime, long priceForTwo, String cuisine, String imageUrl) {
-        // Create update data
         Map<String, Object> shopData = new HashMap<>();
         shopData.put("address", address);
         shopData.put("description", description);
@@ -316,56 +380,96 @@ public class Shops_Address extends AppCompatActivity {
         shopData.put("updatedAt", FieldValue.serverTimestamp());
         shopData.put("isActive", false);
 
-        // Add data from Vendors collection
-        db.collection(VENDORS_COLLECTION).document(ownerId).get()
-                .addOnSuccessListener(vendorDocument -> {
-                    if (vendorDocument.exists()) {
-                        shopData.put("name", vendorDocument.getString("shopName"));
-                        shopData.put("email", vendorDocument.getString("vendorEmail"));
-                        shopData.put("phone", vendorDocument.getString("vendorPhone"));
-                        shopData.put("ownerId", ownerId);
+        // First update the Vendors collection with shopAddress
+        Map<String, Object> vendorUpdate = new HashMap<>();
+        vendorUpdate.put("shopAddress", address);
+        vendorUpdate.put("updatedAt", FieldValue.serverTimestamp());
 
-                        // Save to shops collection
-                        db.collection(SHOPS_COLLECTION).document(ownerId)
-                                .set(shopData, SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(this, "Shop details saved successfully!", Toast.LENGTH_SHORT).show();
+        db.collection(VENDORS_COLLECTION).document(ownerId)
+                .update(vendorUpdate)
+                .addOnSuccessListener(aVoid -> {
+                    // After updating Vendors, proceed with updating Shops collection
+                    db.collection(VENDORS_COLLECTION).document(ownerId).get()
+                            .addOnSuccessListener(vendorDocument -> {
+                                if (vendorDocument.exists()) {
+                                    shopData.put("name", vendorDocument.getString("shopName"));
+                                    shopData.put("email", vendorDocument.getString("vendorEmail"));
+                                    shopData.put("phone", vendorDocument.getString("vendorPhone"));
 
-                                    // Clear all fields
-                                    clearFormFields();
-
-                                    // Navigate to home page
-                                    navigateToHomePage();
-                                })
-                                .addOnFailureListener(e -> {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(this, "Failed to save shop details", Toast.LENGTH_SHORT).show();
-                                });
-                    }
+                                    db.collection(SHOPS_COLLECTION).document(ownerId)
+                                            .set(shopData, SetOptions.merge())
+                                            .addOnSuccessListener(aVoid1 -> {
+                                                progressDialog.dismiss();
+                                                showSuccessDialog();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                progressDialog.dismiss();
+                                                showErrorDialog("Failed to save shop details");
+                                            });
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                progressDialog.dismiss();
+                                showErrorDialog("Failed to load vendor data");
+                            });
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Toast.makeText(this, "Failed to load vendor data", Toast.LENGTH_SHORT).show();
+                    showErrorDialog("Failed to update vendor address");
                 });
     }
 
-    private void clearFormFields() {
-        addressInput.setText("");
-        descriptionInput.setText("");
-        deliveryTimeInput.setText("");
-        priceForTwoInput.setText("");
-        cuisineSpinner.setSelection(0);
-        shopImageView.setImageResource(R.drawable.ic_image_placeholder); // Set a default placeholder image
-        imageUri = null;
-        imageUrl = "";
+    private void showSuccessDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Success")
+                .setMessage("Shop details saved successfully!")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    disableEditing();
+                    navigateToHomePage();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    private void showAuthErrorAndFinish() {
+        Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void showErrorAndFinish(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void navigateToHomePage() {
-        Intent intent = new Intent(this,LoginPage.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.putExtra("fragment", "vendor_home");
+        Intent intent = new Intent(this, HomePageVendor.class);
+        intent.putExtra("fragment", "vendor_home");
         startActivity(intent);
-        finish(); // Finish this activity so user can't go back
+        finish();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isEditing", isEditing);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        isEditing = savedInstanceState.getBoolean("isEditing", false);
+        if (isEditing) {
+            enableEditing();
+        } else {
+            disableEditing();
+        }
     }
 }

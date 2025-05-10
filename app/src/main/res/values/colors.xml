@@ -38,7 +38,8 @@
 <!-- Button States -->
 <color name="buttonPressed">#D84315</color>
 <color name="buttonDisabled">#BDBDBD</color>
-
+    <color name="primaryTextColor">#212121</color>
+    <color name="secondaryTextColor">#757575</color>
 <!-- Image Placeholder -->
 <color name="imagePlaceholder">#EEEEEE</color>
     <!-- Add these to your existing colors -->
