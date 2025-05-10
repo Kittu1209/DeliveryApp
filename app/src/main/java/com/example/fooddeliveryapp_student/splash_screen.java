@@ -203,6 +203,7 @@ public class splash_screen extends AppCompatActivity {
             featuresContainer.addView(featureView);
         }
     }
+
     private void startLoadingAnimation() {
         View loadingBar = findViewById(R.id.loading_bar);
 
@@ -223,7 +224,7 @@ public class splash_screen extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
 
-            // Check if the user is an Admin first (since admins might have higher privileges)
+            // Check if the user is an Admin first
             db.collection("Admins").document(userId).get().addOnCompleteListener(adminTask -> {
                 if (adminTask.isSuccessful() && adminTask.getResult().exists()) {
                     // User is an Admin
@@ -233,9 +234,31 @@ public class splash_screen extends AppCompatActivity {
                     // If not admin, check if the user is a Vendor
                     db.collection("Vendors").document(userId).get().addOnCompleteListener(vendorTask -> {
                         if (vendorTask.isSuccessful() && vendorTask.getResult().exists()) {
-                            // User is a Vendor
-                            startActivity(new Intent(splash_screen.this, HomePageVendor.class));
-                            finish();
+                            // User is a Vendor - check shop data completeness
+                            db.collection("shops").document(userId).get().addOnCompleteListener(shopTask -> {
+                                if (shopTask.isSuccessful() && shopTask.getResult().exists()) {
+                                    DocumentSnapshot shopDoc = shopTask.getResult();
+                                    boolean isShopComplete = shopDoc.contains("address") &&
+                                            shopDoc.contains("description") &&
+                                            shopDoc.contains("deliveryTime") &&
+                                            shopDoc.contains("priceForTwo") &&
+                                            shopDoc.contains("cuisine") &&
+                                            shopDoc.contains("image");
+
+                                    if (isShopComplete) {
+                                        startActivity(new Intent(splash_screen.this, HomePageVendor.class));
+                                    } else {
+                                        // Incomplete shop data - redirect to login
+                                        auth.signOut();
+                                        startActivity(new Intent(splash_screen.this, LoginPage.class));
+                                    }
+                                } else {
+                                    // No shop document - redirect to login
+                                    auth.signOut();
+                                    startActivity(new Intent(splash_screen.this, LoginPage.class));
+                                }
+                                finish();
+                            });
                         } else {
                             // If not vendor, check if the user is a Delivery Man
                             db.collection("delivery_man").document(userId).get().addOnCompleteListener(deliveryTask -> {
