@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapter.ViewHolder> {
@@ -39,13 +41,28 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
         holder.price.setText("₹" + product.getPrice());
         holder.category.setText(product.getCategory());
 
-        // Decode Base64 image
-        try {
-            byte[] decodedString = Base64.decode(product.getImageUrl(), Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            holder.image.setImageBitmap(decodedByte);
-        } catch (Exception e) {
-            e.printStackTrace();
+        String imageUrl = product.getImageUrl();
+
+        if (imageUrl != null && imageUrl.startsWith("/9j/")) {
+            // Base64-encoded image
+            try {
+                byte[] decodedString = Base64.decode(imageUrl, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                holder.image.setImageBitmap(decodedByte);
+            } catch (Exception e) {
+                holder.image.setImageResource(R.drawable.heartlogo);
+                e.printStackTrace();
+            }
+        } else if (imageUrl != null && imageUrl.startsWith("https://")) {
+            // Firebase Storage URL - use Glide
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.heartlogo)
+                    .error(R.drawable.heartlogo)
+                    .into(holder.image);
+        } else {
+            // Fallback image
+            holder.image.setImageResource(R.drawable.heartlogo);
         }
     }
 

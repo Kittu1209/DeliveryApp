@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Admin_ActiveDelMan extends AppCompatActivity {
@@ -68,7 +69,7 @@ public class Admin_ActiveDelMan extends AppCompatActivity {
 
     private void fetchDeliveryMen() {
         db.collection("delivery_man")
-                .whereEqualTo("admin_control", "block")
+                .whereEqualTo("admin_control", Arrays.asList("block", "inactive"))
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     list.clear(); // Clear previous data

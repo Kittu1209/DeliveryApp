@@ -3,6 +3,7 @@ package com.example.fooddeliveryapp_student;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,11 @@ public class ShopProductActivity extends AppCompatActivity {
         deliveryTime = findViewById(R.id.deliveryTime);
         restaurantDescription = findViewById(R.id.restaurantDescription);
         restaurantAddress = findViewById(R.id.restaurantAddress);
+        ImageView backButton = findViewById(R.id.backButton);
+
+        backButton.setOnClickListener(v -> {
+            onBackPressed(); // or simply: finish();
+        });
     }
 
     private void setupToolbar() {

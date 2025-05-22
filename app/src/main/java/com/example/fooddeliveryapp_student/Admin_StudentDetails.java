@@ -30,7 +30,7 @@ public class Admin_StudentDetails extends AppCompatActivity {
 
         // Initialize Cards
         cardOrderHistory = findViewById(R.id.cardOrderHistory);
-        cardFeedback = findViewById(R.id.cardFeedback);
+       // cardFeedback = findViewById(R.id.cardFeedback);
         cardStudentDetail= findViewById(R.id.carduserdetail);
         // Set Click Listeners
         cardOrderHistory.setOnClickListener(new View.OnClickListener() {
@@ -49,12 +49,12 @@ public class Admin_StudentDetails extends AppCompatActivity {
             }
         });
 
-        cardFeedback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Admin_StudentDetails.this, Admin_StudentFeedback.class);
-                startActivity(intent);
-            }
-        });
+//        cardFeedback.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Admin_StudentDetails.this, Admin_StudentFeedback.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 }
