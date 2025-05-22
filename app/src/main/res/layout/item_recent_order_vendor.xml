@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:backgroundTint="@color/light_yellow"
     android:layout_margin="8dp">
 
     <LinearLayout
@@ -28,6 +29,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipStatus"
+                android:text="*"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:chipBackgroundColor="@color/status_preparing"/>

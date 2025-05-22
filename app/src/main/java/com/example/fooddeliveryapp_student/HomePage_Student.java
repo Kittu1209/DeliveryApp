@@ -92,8 +92,6 @@ public class HomePage_Student extends AppCompatActivity implements NavigationVie
         int itemId = item.getItemId();
         if(itemId == R.id.my_orders){
             openFragment(new Fragment_myorderStudent());
-        }else if(itemId == R.id.payment_method) {
-            openFragment(new Fragment_PaymentStudent());
         }else if(itemId == R.id.settngs) {
             openFragment(new Fragment_SettingStudent());
         }else if(itemId == R.id.delivery_address) {

@@ -15,10 +15,6 @@
             android:title="Delivery Address"/>
 
         <item
-            android:id="@+id/payment_method"
-            android:title="Payment Method"/>
-
-        <item
 
             android:id="@+id/contact_us"
             android:title="Contact Us"/>

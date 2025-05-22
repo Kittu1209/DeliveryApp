@@ -141,7 +141,6 @@ public class Fragment_HomeStudent extends Fragment {
     private void loadCategories() {
         db.collection("categories").get().addOnSuccessListener(queryDocumentSnapshots -> {
             categoryList.clear();
-            categoryList.add(new Category("all", "All", ""));
             for (DocumentSnapshot document : queryDocumentSnapshots) {
                 Category category = new Category(
                         document.getId(),

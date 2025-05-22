@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFDE7"> <!-- Light yellow background -->
+    android:background="@color/light_yellow"> <!-- Light yellow background -->
 
     <!-- App Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#FFD600"
+        android:background="@color/yellow"
         android:elevation="4dp"
         android:id="@+id/app_bar"
         android:orientation="horizontal"
@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:text="Customer Reviews"
-        android:textColor="#212121"
-        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         android:textStyle="bold"/>
 
 </LinearLayout>
@@ -53,8 +53,8 @@ android:layout_height="match_parent"
 android:layout_below="@id/app_bar"
 android:gravity="center"
 android:text="No reviews found"
-android:textColor="#616161"
-android:textSize="16sp"
+android:textColor="@color/dark_brown"
+android:textSize="26sp"
 android:visibility="gone"/>
 
     </RelativeLayout>

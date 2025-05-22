@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/yellow"
     android:padding="16dp">
 
     <LinearLayout
@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Complete Your Shop Profile"
-            android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"/>
 
@@ -26,13 +26,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@color/light_yellow"
             android:layout_marginBottom="16dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Shop Image"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/dark_brown"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -50,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="Upload Image"
                 android:layout_marginTop="8dp"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/dark_orange"
                 android:textColor="@color/white"/>
         </LinearLayout>
 
@@ -61,8 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:boxStrokeColor="@color/colorPrimary"
-            app:hintTextColor="@color/colorPrimary"
+            app:boxStrokeColor="@color/dark_brown"
+            app:hintTextColor="@color/dark_brown"
             app:startIconDrawable="@drawable/ic_location">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -70,6 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Shop Address"
+                android:textColor="@color/dark_brown"
+                android:background="@drawable/custom_edittext"
                 android:inputType="textMultiLine"
                 android:lines="3"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -79,9 +82,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/dark_brown"
+            android:background="@drawable/custom_edittext"
             android:layout_marginBottom="8dp"
-            app:boxStrokeColor="@color/colorPrimary"
-            app:hintTextColor="@color/colorPrimary"
+            app:boxStrokeColor="@color/dark_brown"
+            app:hintTextColor="@color/dark_brown"
             app:startIconDrawable="@drawable/ic_description">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -89,6 +94,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Description"
+                android:textColor="@color/dark_brown"
+                android:background="@drawable/custom_edittext"
                 android:inputType="textMultiLine"
                 android:lines="3"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -99,14 +106,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:boxStrokeColor="@color/colorPrimary"
-            app:hintTextColor="@color/colorPrimary"
+            android:textColor="@color/dark_brown"
+            android:background="@drawable/custom_edittext"
+            app:boxStrokeColor="@color/dark_brown"
+            app:hintTextColor="@color/dark_brown"
             app:startIconDrawable="@drawable/ic_time">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/delivery_time_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/dark_brown"
+                android:background="@drawable/custom_edittext"
                 android:hint="Delivery Time (e.g., 30-40 min)"
                 android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -117,14 +128,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            app:boxStrokeColor="@color/colorPrimary"
-            app:hintTextColor="@color/colorPrimary"
+            app:boxStrokeColor="@color/dark_brown"
+            app:hintTextColor="@color/dark_brown"
+            android:textColor="@color/dark_brown"
+            android:background="@drawable/custom_edittext"
             app:startIconDrawable="@drawable/ic_money">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/price_for_two_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/dark_brown"
+                android:background="@drawable/custom_edittext"
                 android:hint="Average Price for Two"
                 android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -136,8 +151,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:hint="Select Cuisine Type"
-            app:boxStrokeColor="@color/colorPrimary"
-            app:hintTextColor="@color/colorPrimary"
+            android:textColor="@color/dark_brown"
+            android:background="@drawable/custom_edittext"
+            app:boxStrokeColor="@color/dark_brown"
+            app:hintTextColor="@color/dark_brown"
             app:startIconDrawable="@drawable/ic_food">
 
             <Spinner
@@ -145,6 +162,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:textColor="@color/dark_brown"
+                android:background="@drawable/custom_edittext"
                 android:minHeight="48dp"
                 tools:ignore="MissingPrefix" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -155,7 +174,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/dark_orange"
             android:text="Save Details"
             android:textColor="@color/white"
             android:textStyle="bold"/>
@@ -165,8 +184,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:backgroundTint="@color/colorAccent"
-            android:text="Update Details"
+            android:backgroundTint="@color/dark_orange"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone"/>

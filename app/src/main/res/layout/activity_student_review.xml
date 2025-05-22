@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     android:fillViewport="true">
 
     <LinearLayout
@@ -15,8 +16,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rate your experience"
-            android:textSize="18sp"
-            android:textColor="#333333"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"/>
 
@@ -25,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/light_yellow"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp">
 
@@ -36,17 +39,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0/5"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:layout_gravity="center_horizontal"
-            android:textColor="#333333"
+            android:textColor="@color/white"
             android:layout_marginBottom="16dp"/>
 
         <!-- Comment Section -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Additional comments (optional)"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:background="@drawable/custom_edittext"
             android:layout_marginBottom="8dp"/>
 
         <EditText
@@ -57,7 +61,7 @@
             android:inputType="textMultiLine"
             android:gravity="top"
             android:padding="12dp"
-            android:background="@drawable/edittext_border"
+            android:background="@drawable/custom_edittext"
             android:layout_marginBottom="24dp"/>
 
         <!-- Submit Button -->
@@ -66,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="SUBMIT REVIEW"
-            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTint="@color/dark_orange"
             android:textColor="@android:color/white"
             android:textAllCaps="false"
             android:textSize="16sp"

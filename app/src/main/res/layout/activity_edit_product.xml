@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow"
     android:padding="16dp">
 
     <LinearLayout
@@ -14,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
+            android:background="@color/light_yellow"
             android:src="@drawable/ic_image_placeholder" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -23,8 +25,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
+                android:background="@color/light_yellow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/dark_brown"
                 android:hint="Product Name" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,7 +41,9 @@
                 android:id="@+id/etPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/light_yellow"
                 android:inputType="numberDecimal"
+                android:textColor="@color/dark_brown"
                 android:hint="Price" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -49,7 +55,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDescription"
                 android:layout_width="match_parent"
+                android:background="@color/light_yellow"
                 android:layout_height="wrap_content"
+                android:textColor="@color/dark_brown"
                 android:hint="Description" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,6 +71,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
+                android:textColor="@color/dark_brown"
+                android:background="@color/light_yellow"
                 android:hint="Stock Quantity" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,6 +81,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:backgroundTint="@color/dark_orange"
+            android:textSize="18sp"
             android:text="Save Changes" />
     </LinearLayout>
 </ScrollView>
