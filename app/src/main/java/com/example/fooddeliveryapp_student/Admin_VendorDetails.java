@@ -59,7 +59,7 @@ public class Admin_VendorDetails extends AppCompatActivity {
         });
 
         CardView cardVendorFeedback = findViewById(R.id.cardVendorFeedback);
-        cardAddCategory.setOnClickListener(v -> {
+        cardVendorFeedback.setOnClickListener(v -> {
             Intent intent = new Intent(Admin_VendorDetails.this, AdminVendorFeedback.class);
             startActivity(intent);
         });
