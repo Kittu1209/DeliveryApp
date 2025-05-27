@@ -130,6 +130,7 @@ public class DeliveryHomeActivity extends AppCompatActivity {
         fetchAssignedOrders();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void fetchAssignedOrders() {
         // Get the logged-in delivery man ID (using Firebase UID)
         String loggedInDeliveryManId = mAuth.getCurrentUser().getUid();

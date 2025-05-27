@@ -22,6 +22,7 @@ import com.razorpay.PaymentResultListener;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -174,7 +175,7 @@ public class PaymentPage extends AppCompatActivity implements PaymentResultListe
     }
 
     private void assignOrderToDeliveryMan(String orderId) {
-        db.collection("delivery_man").whereEqualTo("admin_control", "active").whereEqualTo("current_duty", "Available").get().addOnSuccessListener(queryDocumentSnapshots -> {
+        db.collection("delivery_man").whereEqualTo("admin_control", "active").whereIn("current_duty", Arrays.asList("Available", "Busy")).get().addOnSuccessListener(queryDocumentSnapshots -> {
                     List<DocumentSnapshot> deliveryMen = queryDocumentSnapshots.getDocuments();
                     if (deliveryMen.isEmpty()) {
                         Log.d("DeliveryAssign", "No delivery men available");
