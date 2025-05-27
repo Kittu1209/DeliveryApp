@@ -9,10 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,9 @@ public class StudentReviewActivity extends AppCompatActivity {
         submitReview = findViewById(R.id.submitReview);
         db = FirebaseFirestore.getInstance();
 
+        // Button click listener to submit review
+        submitReview.setOnClickListener(v -> submitReview());
+
         // Get order details from intent
         orderId = getIntent().getStringExtra("orderId");
         shopId = getIntent().getStringExtra("shopId");
@@ -56,7 +60,6 @@ public class StudentReviewActivity extends AppCompatActivity {
                         if (document.exists()) {
                             studentId = document.getString("userId");
                             if (studentId != null && !studentId.isEmpty()) {
-                                // Now fetch student name
                                 fetchStudentName();
                             } else {
                                 showError("Student information not found in order");
@@ -79,9 +82,8 @@ public class StudentReviewActivity extends AppCompatActivity {
                         if (document.exists()) {
                             studentName = document.getString("stuname");
                             if (studentName == null || studentName.isEmpty()) {
-                                studentName = "Anonymous"; // Fallback if name not found
+                                studentName = "Anonymous";
                             }
-                            // Now that we have all data, setup the UI
                             createStarRating();
                         } else {
                             showError("Student document not found");
@@ -99,16 +101,15 @@ public class StudentReviewActivity extends AppCompatActivity {
     private void createStarRating() {
         starContainer.removeAllViews();
 
-        // Add 5 star images
         for (int i = 1; i <= 5; i++) {
             ImageView star = new ImageView(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    dpToPx(32), // Convert dp to pixels
+                    dpToPx(32),
                     dpToPx(32));
             params.setMargins(dpToPx(4), 0, dpToPx(4), 0);
             star.setLayoutParams(params);
-            star.setTag(i); // Store rating value as tag
-            star.setImageResource(R.drawable.ic_star_empty); // Default empty star
+            star.setTag(i);
+            star.setImageResource(R.drawable.ic_star_empty);
 
             star.setOnClickListener(v -> {
                 selectedRating = (int) v.getTag();
@@ -144,7 +145,6 @@ public class StudentReviewActivity extends AppCompatActivity {
             return;
         }
 
-        // Create review data
         Map<String, Object> review = new HashMap<>();
         review.put("studentId", studentId);
         review.put("studentName", studentName);
@@ -156,11 +156,9 @@ public class StudentReviewActivity extends AppCompatActivity {
         review.put("timestamp", System.currentTimeMillis());
         review.put("visible", true);
 
-        // Submit to Firestore
         db.collection("reviews")
                 .add(review)
                 .addOnSuccessListener(documentReference -> {
-                    // Mark order as reviewed
                     db.collection("orders").document(orderId)
                             .update("isReviewed", true)
                             .addOnSuccessListener(aVoid -> {
@@ -176,7 +174,6 @@ public class StudentReviewActivity extends AppCompatActivity {
 
     private void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        // Still allow review submission with anonymous name
         studentName = "Anonymous";
         createStarRating();
     }
